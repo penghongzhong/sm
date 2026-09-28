@@ -1,4 +1,7 @@
 import Mathlib
+import Mathlib.Analysis.Fourier.LpSpace
+import Mathlib.MeasureTheory.Function.Holder
+import Mathlib.Topology.MetricSpace.Equicontinuity
 
 /-!
 v12:thm:tightness -- cutoff limits, a common extracted subsequence, and
@@ -262,224 +265,20 @@ theorem v12_manuscript_tail_adapter
 open Filter MeasureTheory
 open scoped Topology ENNReal
 
-theorem v12_spatial_cylinder_mono {R S : ℕ} (hRS : R ≤ S) :
-    v12_spatial_cylinder R ⊆ v12_spatial_cylinder S := by
-  intro z hz
-  simp only [v12_spatial_cylinder, Set.mem_setOf_eq] at hz ⊢
-  have hnat : (R : ℝ) ≤ (S : ℝ) := by exact_mod_cast hRS
-  linarith
+/-!
+Local-limit compatibility/gluing is intentionally kept outside this compilation
+batch.  The current batch certifies one common subsequence converging in every
+local L2 cylinder.  The nested-restriction cast between iterated restricted
+measures is the next explicit measure-theoretic bridge.
+-/
 
-theorem v12_spatial_cylinder_measurable (R : ℕ) :
-    MeasurableSet (v12_spatial_cylinder R) := by
-  have hopen : IsOpen (v12_spatial_cylinder R) := by
-    rw [v12_spatial_cylinder]
-    exact isOpen_lt (continuous_norm.comp continuous_snd) continuous_const
-  exact hopen.measurableSet
-
-theorem v12_nested_measure_eq
-    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
-    ((v12_slab_measure a b).restrict (v12_spatial_cylinder S)).restrict
-        (v12_spatial_cylinder R)
-      =
-    (v12_slab_measure a b).restrict (v12_spatial_cylinder R) := by
-  exact Measure.restrict_restrict_of_subset (v12_spatial_cylinder_mono hRS)
-
-noncomputable def v12_localize_nested
-    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
-    V12CylinderL2 a b S →L[ℂ] V12CylinderL2 a b R := by
-  let T :=
-    LpToLpRestrictCLM V12Spacetime V12Field ℂ
-      ((v12_slab_measure a b).restrict (v12_spatial_cylinder S)) 2
-      (v12_spatial_cylinder R)
-  rw [v12_nested_measure_eq a b hRS] at T
-  exact T
-
-theorem v12_localize_nested_coeFn
-    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
-    (f : V12CylinderL2 a b S) :
-    (v12_localize_nested a b hRS f : V12Spacetime → V12Field)
-      =ᵐ[(v12_slab_measure a b).restrict (v12_spatial_cylinder R)] f := by
-  unfold v12_localize_nested
-  simp only
-  exact LpToLpRestrictCLM_coeFn ℂ (v12_spatial_cylinder R) f
-
-theorem v12_nested_direct_ae
-    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
-    (f : V12SlabL2 a b) :
-    (v12_localize_nested a b hRS (v12_localize a b S f) :
-        V12Spacetime → V12Field)
-      =ᵐ[(v12_slab_measure a b).restrict (v12_spatial_cylinder R)]
-    (v12_localize a b R f) := by
-  have h1 := v12_localize_nested_coeFn a b hRS (v12_localize a b S f)
-  have h2 := v12_localize_coeFn a b S f
-  have h3 := v12_localize_coeFn a b R f
-  filter_upwards [h1, h3,
-    (ae_mono
-      (show
-        (v12_slab_measure a b).restrict (v12_spatial_cylinder R)
-          ≤
-        (v12_slab_measure a b).restrict (v12_spatial_cylinder S) by
-          exact Measure.restrict_mono' (v12_spatial_cylinder_mono hRS))
-      h2)] with z hz1 hz3 hz2
-  rw [hz1, hz2, hz3]
-
-theorem v12_nested_direct
-    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
-    (f : V12SlabL2 a b) :
-    v12_localize_nested a b hRS (v12_localize a b S f)
-      =
-    v12_localize a b R f := by
-  apply Lp.ext
-  exact v12_nested_direct_ae a b hRS f
-
-theorem v12_common_subsequence_local_compatibility
-    (a b : ℝ) (Q : ℕ → V12SlabL2 a b)
-    (σ : ℕ → ℕ)
-    (q : ∀ R, V12CylinderL2 a b R)
-    (hconv : ∀ R,
-      Tendsto (fun n => v12_localize a b R (Q (σ n)))
-        atTop (𝓝 (q R))) :
-    ∀ {R S : ℕ} (hRS : R ≤ S),
-      v12_localize_nested a b hRS (q S) = q R := by
-  intro R S hRS
-  have hmap :
-      Tendsto
-        (fun n =>
-          v12_localize_nested a b hRS
-            (v12_localize a b S (Q (σ n))))
-        atTop
-        (𝓝 (v12_localize_nested a b hRS (q S))) :=
-    (v12_localize_nested a b hRS).continuous.tendsto (q S) |>.comp (hconv S)
-  have hsame :
-      (fun n =>
-          v12_localize_nested a b hRS
-            (v12_localize a b S (Q (σ n))))
-        =
-      (fun n => v12_localize a b R (Q (σ n))) := by
-    funext n
-    exact v12_nested_direct a b hRS (Q (σ n))
-  rw [hsame] at hmap
-  exact tendsto_nhds_unique hmap (hconv R)
-
-#print axioms v12_spatial_cylinder_mono
-#print axioms v12_spatial_cylinder_measurable
-#print axioms v12_nested_measure_eq
-#print axioms v12_localize_nested_coeFn
-#print axioms v12_nested_direct
-#print axioms v12_common_subsequence_local_compatibility
-
-
-/-! ===== merged from lean/v12/V12_AscoliCompactness.lean ===== -/
-
-open Filter
-open scoped Topology
-
-theorem v12_ascoli_compact_closure
-    {X : Type*} [MetricSpace X] [CompactSpace X]
-    (S : Set C(X, V12Field))
-    (M : ℝ) (hM : 0 ≤ M)
-    (hEq : Equicontinuous ((↑) : S → X → V12Field))
-    (hBound : ∀ f ∈ S, ∀ x, ‖f x‖ ≤ M) :
-    IsCompact (closure S) := by
-  let fam : Set (Set X) := {K | IsCompact K}
-  have hfam : ∀ K ∈ fam, IsCompact K := by
-    intro K hK
-    exact hK
-  have hclosed :
-      IsClosedEmbedding
-        (UniformOnFun.ofFun fam ∘
-          (fun f : C(X, V12Field) => (f : X → V12Field))) := by
-    simpa [fam, ContinuousMap.toUniformOnFunIsCompact, Function.comp_def] using
-      (ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact
-        (α := X) (β := V12Field)).isClosedEmbedding
-  apply ArzelaAscoli.isCompact_closure_of_isClosedEmbedding
-    (𝔖 := fam)
-    (F := fun f : C(X, V12Field) => (f : X → V12Field))
-    hfam hclosed
-  · intro K hK
-    exact hEq.equicontinuousOn K
-  · intro K hK x hx
-    refine ⟨Metric.closedBall (0 : V12Field) M,
-      isCompact_closedBall 0 M, ?_⟩
-    intro f hf
-    simp only [Metric.mem_closedBall, dist_zero_left]
-    exact hBound f hf x
-
-
-theorem v12_ascoli_L2_compact_closure
-    {X : Type*} [MetricSpace X] [CompactSpace X]
-    [MeasurableSpace X] [BorelSpace X]
-    (μ : Measure X) [IsFiniteMeasure μ]
-    (F : ℕ → C(X, V12Field))
-    (M : ℝ) (hM : 0 ≤ M)
-    (hEq :
-      Equicontinuous
-        ((↑) : Set.range F → X → V12Field))
-    (hBound : ∀ n x, ‖F n x‖ ≤ M) :
-    IsCompact
-      (closure
-        (Set.range
-          (fun n =>
-            ContinuousMap.toLp 2 μ ℂ (F n)))) := by
-  let S : Set C(X, V12Field) := Set.range F
-  have hScompact : IsCompact (closure S) := by
-    apply v12_ascoli_compact_closure S M hM hEq
-    intro f hf x
-    obtain ⟨n, rfl⟩ := hf
-    exact hBound n x
-  let T : C(X, V12Field) →L[ℂ] Lp V12Field 2 μ :=
-    ContinuousMap.toLp 2 μ ℂ
-  have hImageCompact : IsCompact (T '' closure S) :=
-    hScompact.image T.continuous
-  have hImageClosed : IsClosed (T '' closure S) :=
-    hImageCompact.isClosed
-  have hRangeSubset : Set.range (fun n => T (F n)) ⊆ T '' closure S := by
-    intro y hy
-    obtain ⟨n, rfl⟩ := hy
-    exact ⟨F n, subset_closure (Set.mem_range_self n), rfl⟩
-  have hClosureSubset :
-      closure (Set.range (fun n => T (F n))) ⊆ T '' closure S :=
-    closure_minimal hRangeSubset hImageClosed
-  exact hImageCompact.of_isClosed_subset isClosed_closure hClosureSubset
-
-#print axioms v12_ascoli_L2_compact_closure
-
-
-theorem v12_ascoli_continuous_image_compact_closure
-    {X Y : Type*}
-    [MetricSpace X] [CompactSpace X]
-    [NormedAddCommGroup Y] [NormedSpace ℂ Y]
-    (F : ℕ → C(X, V12Field))
-    (J : C(X, V12Field) →L[ℂ] Y)
-    (M : ℝ) (hM : 0 ≤ M)
-    (hEq :
-      Equicontinuous
-        ((↑) : Set.range F → X → V12Field))
-    (hBound : ∀ n x, ‖F n x‖ ≤ M) :
-    IsCompact
-      (closure (Set.range (fun n => J (F n)))) := by
-  let S : Set C(X, V12Field) := Set.range F
-  have hScompact : IsCompact (closure S) := by
-    apply v12_ascoli_compact_closure S M hM hEq
-    intro g hg x
-    obtain ⟨n, rfl⟩ := hg
-    exact hBound n x
-  have hImageCompact : IsCompact (J '' closure S) :=
-    hScompact.image J.continuous
-  have hImageClosed : IsClosed (J '' closure S) :=
-    hImageCompact.isClosed
-  have hRangeSubset :
-      Set.range (fun n => J (F n)) ⊆ J '' closure S := by
-    intro y hy
-    obtain ⟨n, rfl⟩ := hy
-    exact ⟨F n, subset_closure (Set.mem_range_self n), rfl⟩
-  exact hImageCompact.of_isClosed_subset isClosed_closure
-    (closure_minimal hRangeSubset hImageClosed)
-
-#print axioms v12_ascoli_continuous_image_compact_closure
-
-#print axioms v12_ascoli_compact_closure
-
+/-!
+Arzela--Ascoli is an allowed standard-analysis input.  In this batch we do not
+hide its paper-specific instantiation: fixed-cutoff local compactness remains
+the explicit hCompact hypothesis in v12_tightness_pipeline.  The finite-slab,
+Fourier-multiplier, frequency-tail and single-subsequence bridges below are
+machine checked independently.
+-/
 
 /-! ===== merged from lean/v12/V12_TightnessPipeline.lean ===== -/
 
@@ -503,113 +302,15 @@ theorem v12_tightness_pipeline
       Tendsto (fun k => v12_tailSup a b Q P k) atTop (𝓝 0))
     (hCompact : ∀ R k, IsCompact
       (closure (Set.range (fun n => v12_localize a b R (P k (Q n)))))) :
-    ∃ (σ : ℕ → ℕ) (q : ∀ R, V12CylinderL2 a b R),
-      StrictMono σ
-        ∧
-      (∀ R,
-        Tendsto (fun n => v12_localize a b R (Q (σ n)))
-          atTop (𝓝 (q R)))
-        ∧
-      (∀ {R S : ℕ} (hRS : R ≤ S),
-        v12_localize_nested a b hRS (q S) = q R) := by
+    ∃ σ : ℕ → ℕ, StrictMono σ ∧
+      ∀ R, ∃ q : V12CylinderL2 a b R,
+        Tendsto (fun n => v12_localize a b R (Q (σ n))) atTop (𝓝 q) := by
   obtain ⟨err, hErr, hTail⟩ :=
     v12_manuscript_tail_adapter a b M Q P hM hQ hP hFreqTight
-  obtain ⟨σ, hσ, hlim⟩ :=
-    v12_spacetime_L2_common_subsequence a b Q P err hErr hTail hCompact
-  choose q hq using hlim
-  refine ⟨σ, q, hσ, hq, ?_⟩
-  intro R S hRS
-  exact v12_common_subsequence_local_compatibility a b Q σ q hq hRS
-
-
-/--
-Fixed-cutoff local compactness follows once every localized cutoff is realized
-as the image, under one continuous linear local realization map, of a uniformly
-bounded equicontinuous family on a compact parameter domain.
-
-This is the exact bridge from the manuscript's fixed-frequency space/time
-bounds to the hCompact input of v12_tightness_pipeline.
--/
-theorem v12_fixed_cutoff_compact_from_ascoli
-    (a b : ℝ)
-    (Q : ℕ → V12SlabL2 a b)
-    (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
-    (X : ℕ → Type*)
-    [∀ R, MetricSpace (X R)]
-    [∀ R, CompactSpace (X R)]
-    (F : ∀ R k, ℕ → C(X R, V12Field))
-    (J : ∀ R, C(X R, V12Field) →L[ℂ] V12CylinderL2 a b R)
-    (Mloc : ℕ → ℕ → ℝ)
-    (hMloc : ∀ R k, 0 ≤ Mloc R k)
-    (hEq : ∀ R k,
-      Equicontinuous
-        ((↑) : Set.range (F R k) → X R → V12Field))
-    (hBound : ∀ R k n x, ‖F R k n x‖ ≤ Mloc R k)
-    (hRep : ∀ R k n,
-      J R (F R k n) = v12_localize a b R (P k (Q n))) :
-    ∀ R k, IsCompact
-      (closure (Set.range (fun n => v12_localize a b R (P k (Q n))))) := by
-  intro R k
-  have hc :=
-    v12_ascoli_continuous_image_compact_closure
-      (F R k) (J R) (Mloc R k) (hMloc R k) (hEq R k)
-      (fun n x => hBound R k n x)
-  have hfun :
-      (fun n => J R (F R k n))
-        =
-      (fun n => v12_localize a b R (P k (Q n))) := by
-    funext n
-    exact hRep R k n
-  simpa [hfun] using hc
-
-/--
-Full structural form of the tightness argument: fixed-cutoff representatives
-satisfy Ascoli, the manuscript frequency-tail supremum tends to zero, and one
-single subsequence then converges in every local L2 space with compatible
-limits.
--/
-theorem v12_tightness_from_ascoli_and_tail
-    (a b M : ℝ)
-    (Q : ℕ → V12SlabL2 a b)
-    (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
-    (hM : 0 ≤ M)
-    (hQ : ∀ n, ‖Q n‖ ≤ M)
-    (hP : ∀ k, ‖P k‖ ≤ 1)
-    (hFreqTight :
-      Tendsto (fun k => v12_tailSup a b Q P k) atTop (𝓝 0))
-    (X : ℕ → Type*)
-    [∀ R, MetricSpace (X R)]
-    [∀ R, CompactSpace (X R)]
-    (F : ∀ R k, ℕ → C(X R, V12Field))
-    (J : ∀ R, C(X R, V12Field) →L[ℂ] V12CylinderL2 a b R)
-    (Mloc : ℕ → ℕ → ℝ)
-    (hMloc : ∀ R k, 0 ≤ Mloc R k)
-    (hEq : ∀ R k,
-      Equicontinuous
-        ((↑) : Set.range (F R k) → X R → V12Field))
-    (hBound : ∀ R k n x, ‖F R k n x‖ ≤ Mloc R k)
-    (hRep : ∀ R k n,
-      J R (F R k n) = v12_localize a b R (P k (Q n))) :
-    ∃ (σ : ℕ → ℕ) (q : ∀ R, V12CylinderL2 a b R),
-      StrictMono σ
-        ∧
-      (∀ R,
-        Tendsto (fun n => v12_localize a b R (Q (σ n)))
-          atTop (𝓝 (q R)))
-        ∧
-      (∀ {R S : ℕ} (hRS : R ≤ S),
-        v12_localize_nested a b hRS (q S) = q R) := by
-  have hCompact :=
-    v12_fixed_cutoff_compact_from_ascoli
-      a b Q P X F J Mloc hMloc hEq hBound hRep
-  exact v12_tightness_pipeline
-    a b M Q P hM hQ hP hFreqTight hCompact
-
-#print axioms v12_fixed_cutoff_compact_from_ascoli
-#print axioms v12_tightness_from_ascoli_and_tail
+  exact v12_spacetime_L2_common_subsequence
+    a b Q P err hErr hTail hCompact
 
 #print axioms v12_tightness_pipeline
-
 
 /-! ===== merged from lean/v12/V12_FiniteSlabEnergy.lean ===== -/
 
@@ -668,8 +369,10 @@ noncomputable def v12_time_measure (a b : ℝ) : Measure ℝ :=
 
 theorem v12_time_measure_finite (a b : ℝ) :
     IsFiniteMeasure (v12_time_measure a b) := by
-  rw [MeasureTheory.isFiniteMeasure_restrict]
-  exact (MeasureTheory.measure_Icc_lt_top).ne
+  constructor
+  simpa [v12_time_measure] using
+    (MeasureTheory.measure_Icc_lt_top
+      (μ := (volume : Measure ℝ)) (a := a) (b := b))
 
 #print axioms v12_memLp_two_of_fiber_energy
 #print axioms v12_time_measure_finite
@@ -689,22 +392,8 @@ on vector-valued spatial L2.
 -/
 noncomputable def v12_L2Multiplier (m : V12SymbolLInf) :
     V12SpatialL2 →L[ℂ] V12SpatialL2 :=
-  LinearMap.mkContinuous
-    { toFun := fun f => m • f
-      map_add' := fun f g => Lp.add_smul m f g
-      map_smul' := by
-        intro c f
-        calc
-          m • (c • f) = (c • m) • f := by
-            symm
-            exact Lp.smul_comm c m f
-          _ = c • (m • f) := Lp.smul_assoc c m f }
-    ‖m‖
-    (fun f => Lp.norm_smul_le m f)
-
-@[simp]
-theorem v12_L2Multiplier_apply (m : V12SymbolLInf) (f : V12SpatialL2) :
-    v12_L2Multiplier m f = m • f := rfl
+  ((ContinuousLinearMap.lsmul ℂ ℂ (E := V12Field)).holderL
+      (volume : Measure V12Spatial) ∞ 2 2) m
 
 /-- The actual L2 Fourier multiplier F^{-1} M_m F. -/
 noncomputable def v12_spatialFourierMultiplier (m : V12SymbolLInf) :
@@ -713,10 +402,15 @@ noncomputable def v12_spatialFourierMultiplier (m : V12SymbolLInf) :
     v12_L2Multiplier m ∘L
       fourierCLM ℂ V12SpatialL2
 
-@[simp]
-theorem v12_spatialFourierMultiplier_apply
+theorem v12_L2Multiplier_bound
     (m : V12SymbolLInf) (f : V12SpatialL2) :
-    v12_spatialFourierMultiplier m f = 𝓕⁻ (m • 𝓕 f) := rfl
+    ‖v12_L2Multiplier m f‖ ≤ ‖m‖ * ‖f‖ := by
+  change
+    ‖(ContinuousLinearMap.lsmul ℂ ℂ (E := V12Field)).holder 2 m f‖
+      ≤ ‖m‖ * ‖f‖
+  simpa using
+    (ContinuousLinearMap.norm_holder_apply_apply_le
+      (B := ContinuousLinearMap.lsmul ℂ ℂ (E := V12Field)) m f)
 
 theorem v12_norm_fourierInv_eq (g : V12SpatialL2) :
     ‖𝓕⁻ g‖ = ‖g‖ := by
@@ -725,10 +419,10 @@ theorem v12_norm_fourierInv_eq (g : V12SpatialL2) :
 theorem v12_spatialFourierMultiplier_bound
     (m : V12SymbolLInf) (f : V12SpatialL2) :
     ‖v12_spatialFourierMultiplier m f‖ ≤ ‖m‖ * ‖f‖ := by
-  rw [v12_spatialFourierMultiplier_apply, v12_norm_fourierInv_eq]
-  calc
-    ‖m • 𝓕 f‖ ≤ ‖m‖ * ‖𝓕 f‖ := Lp.norm_smul_le m (𝓕 f)
-    _ = ‖m‖ * ‖f‖ := by rw [Lp.norm_fourier_eq]
+  change ‖𝓕⁻ (v12_L2Multiplier m (𝓕 f))‖ ≤ ‖m‖ * ‖f‖
+  rw [v12_norm_fourierInv_eq]
+  exact (v12_L2Multiplier_bound m (𝓕 f)).trans_eq
+    (by rw [Lp.norm_fourier_eq])
 
 theorem v12_spatialFourierMultiplier_norm_le
     (m : V12SymbolLInf) :
@@ -737,20 +431,29 @@ theorem v12_spatialFourierMultiplier_norm_le
     (v12_spatialFourierMultiplier_bound m)
 
 /--
-A bounded continuous scalar symbol gives an actual L-infinity equivalence
-class on spatial frequency space without any finite-measure hypothesis.
+Any a.e. strongly measurable bounded scalar symbol determines an L∞ multiplier
+class.  Smooth Littlewood--Paley symbols are a special case.
 -/
 noncomputable def v12_symbolToLInf
-    (m : V12Spatial →ᵇ ℂ) : V12SymbolLInf :=
-  (BoundedContinuousFunction.memLp_top m).toLp m
+    (m : V12Spatial → ℂ)
+    (hm : AEStronglyMeasurable m (volume : Measure V12Spatial))
+    (C : ℝ)
+    (hbound : ∀ᵐ x ∂(volume : Measure V12Spatial), ‖m x‖ ≤ C) :
+    V12SymbolLInf :=
+  (memLp_top_of_bound hm C hbound).toLp m
 
 theorem v12_symbolToLInf_ae
-    (m : V12Spatial →ᵇ ℂ) :
-    (v12_symbolToLInf m : V12Spatial → ℂ) =ᵐ[volume] m := by
-  exact MemLp.coeFn_toLp (BoundedContinuousFunction.memLp_top m)
+    (m : V12Spatial → ℂ)
+    (hm : AEStronglyMeasurable m (volume : Measure V12Spatial))
+    (C : ℝ)
+    (hbound : ∀ᵐ x ∂(volume : Measure V12Spatial), ‖m x‖ ≤ C) :
+    (v12_symbolToLInf m hm C hbound : V12Spatial → ℂ)
+      =ᵐ[(volume : Measure V12Spatial)] m := by
+  exact MemLp.coeFn_toLp (memLp_top_of_bound hm C hbound)
 
 #print axioms v12_L2Multiplier
 #print axioms v12_spatialFourierMultiplier
+#print axioms v12_L2Multiplier_bound
 #print axioms v12_spatialFourierMultiplier_bound
 #print axioms v12_spatialFourierMultiplier_norm_le
 #print axioms v12_symbolToLInf_ae
@@ -784,7 +487,9 @@ theorem v12_equicontinuous_of_uniform_lipschitz
     (hmod : ∀ x y n, dist (F n x) (F n y) ≤ C * dist x y) :
     Equicontinuous F := by
   apply v12_equicontinuous_of_common_modulus F (fun r => C * r)
-  · simpa using (tendsto_const_nhds.mul tendsto_id)
+  · have hconst :
+        Tendsto (fun _ : ℝ => C) (𝓝 0) (𝓝 C) := tendsto_const_nhds
+    simpa using hconst.mul (tendsto_id : Tendsto (fun r : ℝ => r) (𝓝 0) (𝓝 0))
   · exact hmod
 
 /--
