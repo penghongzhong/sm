@@ -37,6 +37,45 @@ theorem v12_ascoli_compact_closure
     simp only [Metric.mem_closedBall, dist_zero_left]
     exact hBound f hf x
 
+
+theorem v12_ascoli_L2_compact_closure
+    {X : Type*} [MetricSpace X] [CompactSpace X]
+    [MeasurableSpace X] [BorelSpace X]
+    (μ : Measure X) [IsFiniteMeasure μ]
+    (F : ℕ → C(X, V12Field))
+    (M : ℝ) (hM : 0 ≤ M)
+    (hEq :
+      Equicontinuous
+        ((↑) : Set.range F → X → V12Field))
+    (hBound : ∀ n x, ‖F n x‖ ≤ M) :
+    IsCompact
+      (closure
+        (Set.range
+          (fun n =>
+            ContinuousMap.toLp 2 μ ℂ (F n)))) := by
+  let S : Set C(X, V12Field) := Set.range F
+  have hScompact : IsCompact (closure S) := by
+    apply v12_ascoli_compact_closure S M hM hEq
+    intro f hf x
+    obtain ⟨n, rfl⟩ := hf
+    exact hBound n x
+  let T : C(X, V12Field) →L[ℂ] Lp V12Field 2 μ :=
+    ContinuousMap.toLp 2 μ ℂ
+  have hImageCompact : IsCompact (T '' closure S) :=
+    hScompact.image T.continuous
+  have hImageClosed : IsClosed (T '' closure S) :=
+    hImageCompact.isClosed
+  have hRangeSubset : Set.range (fun n => T (F n)) ⊆ T '' closure S := by
+    intro y hy
+    obtain ⟨n, rfl⟩ := hy
+    exact ⟨F n, subset_closure (Set.mem_range_self n), rfl⟩
+  have hClosureSubset :
+      closure (Set.range (fun n => T (F n))) ⊆ T '' closure S :=
+    closure_minimal hRangeSubset hImageClosed
+  exact hImageCompact.of_isClosed_subset isClosed_closure hClosureSubset
+
+#print axioms v12_ascoli_L2_compact_closure
+
 #print axioms v12_ascoli_compact_closure
 
 end SMScattering.W20Full
