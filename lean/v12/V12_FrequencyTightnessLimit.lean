@@ -140,14 +140,16 @@ theorem v12_localize_dist_le (a b : ℝ) (R : ℕ) (f g : V12SlabL2 a b) :
 /--
 Concrete Bochner L2 bridge for v12:thm:tightness.
 
-Inputs still to discharge for the PDE: P is the concrete spatial Fourier
-cutoff, Q is the actual field as an Lp element, hTail is its global tail
-bound, and hCompact is fixed-cutoff local compactness from space/time bounds.
+Inputs still to discharge for the PDE: P is now required to be an actual
+continuous linear operator family on slab L2 and must be instantiated by the
+manuscript's spatial Fourier cutoff. Q is the actual field as an Lp element;
+hTail is its global tail bound and hCompact is fixed-cutoff local compactness
+from the manuscript's space/time bounds.
 No common subsequence and no target Cauchyness/convergence is an input.
 -/
 theorem v12_spacetime_L2_common_subsequence
     (a b : ℝ) (Q : ℕ → V12SlabL2 a b)
-    (P : ℕ → V12SlabL2 a b → V12SlabL2 a b)
+    (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
     (err : ℕ → ℝ) (hErr : Tendsto err atTop (𝓝 0))
     (hTail : ∀ k n, ‖Q n - P k (Q n)‖ ≤ err k)
     (hCompact : ∀ R k, IsCompact
