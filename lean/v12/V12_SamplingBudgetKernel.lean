@@ -34,8 +34,8 @@ theorem v12_sampling_budget_kernel
   calc
     ell * sampleSq
         ≤ 2 * normSq + 2 * (ell ^ 2 * derivSq) := htrace
-    _ ≤ 2 * normSq + 2 * (C0 ^ 2 * normSq) :=
-      add_le_add_left hband2 (2 * normSq)
+    _ ≤ 2 * normSq + 2 * (C0 ^ 2 * normSq) := by
+      linarith
     _ = 2 * (1 + C0 ^ 2) * normSq := by ring
 
 #print axioms v12_sampling_budget_kernel
