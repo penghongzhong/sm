@@ -110,6 +110,42 @@ theorem v19_unit_phase_convergent_subsequence
 
 #print axioms v19_unit_phase_convergent_subsequence
 
+
+/--
+Quantifier-closed version of the final part of v19:lem:phase-profile-constant.
+
+One unit phase sequence c_n is fixed before the test vector.  Strong convergence
+on a dense class extends to every f in H, and then compactness of S^1 gives a
+single further subsequence on which the phases converge while the same strong
+operator convergence remains valid for every f.
+-/
+theorem v19_phase_profile_quantifier_bridge
+    {D H : Type*}
+    [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (j : D → H) (hj : DenseRange j)
+    (A : ℕ → H →L[ℂ] H) (c : ℕ → ℂ)
+    (hA : ∀ n, ‖A n‖ ≤ 1)
+    (hc : ∀ n, ‖c n‖ = 1)
+    (hTest : ∀ d,
+      Tendsto (fun n => A n (j d) - c n • j d) atTop (𝓝 0)) :
+    ∃ (c∞ : ℂ) (σ : ℕ → ℕ),
+      ‖c∞‖ = 1
+        ∧ StrictMono σ
+        ∧ Tendsto (fun n => c (σ n)) atTop (𝓝 c∞)
+        ∧ ∀ f : H,
+          Tendsto
+            (fun n => A (σ n) f - c (σ n) • f)
+            atTop (𝓝 0) := by
+  have hAll :=
+    v19_dense_strong_operator_extension j hj A c hA hc hTest
+  obtain ⟨c∞, hc∞, σ, hσ, hcLim⟩ :=
+    v19_unit_phase_convergent_subsequence c hc
+  refine ⟨c∞, σ, hc∞, hσ, hcLim, ?_⟩
+  intro f
+  exact (hAll f).comp hσ.tendsto_atTop
+
+#print axioms v19_phase_profile_quantifier_bridge
+
 #print axioms v19_dense_strong_operator_extension
 #print axioms v19_isometric_dense_extension
 
