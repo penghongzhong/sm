@@ -25,8 +25,7 @@ theorem temporal_coulomb_symbol
     A0 * r2 = r2 * A0 := by ring
     _ = 4 * quadS - 2 * r2 * mass := hpoisson
     _ = (4 * (quadS / r2) - 2 * mass) * r2 := by
-      field_simp [hr]
-      ring
+      field_simp [hr] <;> ring
 
 #print axioms temporal_coulomb_symbol
 
