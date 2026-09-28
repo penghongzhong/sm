@@ -26,4 +26,4 @@ The following paper-specific components are already Lean-kernel checked at the s
 - coefficient constant `C_coeff`;
 - Mathlib `L^2` Plancherel registration.
 
-Therefore, under the user's declared verification foundation (standard analysis + exact published external theorems), Section 2 has **no remaining internal mathematical red point**. Public CI rerun is still operationally pending, but the identical source files compiled successfully in the private source CI.
+Therefore, under the user's declared verification foundation (standard analysis + exact published external theorems), Section 2 has **no remaining internal mathematical red point**.  The historical dedicated Section 2 CI did, however, fail on a redundant Lean tactic in `S2_Q0CompatibilityKernel.lean` (`field_simp` had already closed the goal before a trailing `ring`).  That implementation defect has now been repaired identically in the private source branch and public `whole-paper-lean` branch.  Fresh dedicated CI is required before machine-PASS promotion.
