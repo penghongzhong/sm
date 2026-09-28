@@ -287,4 +287,80 @@ theorem v19_phase_profile_quantifier_bridge
 #print axioms v19_unit_phase_convergent_subsequence
 #print axioms v19_phase_profile_quantifier_bridge
 
+
+/--
+The normalization estimate used after Poincare on a fixed ball.
+
+Here d_n is the L2 error to the complex mean, r_n is the modulus of that
+mean, and area is |B_R|.  The exact variance identity
+  r_n^2 + d_n^2/area = 1
+together with d_n -> 0 implies that the normalized unit phase has vanishing
+local error whenever the manuscript triangle bound is available.
+-/
+theorem v19_anchor_normalization_from_variance
+    (area : ℝ) (harea : 0 < area)
+    (d r e : ℕ → ℝ)
+    (hd0 : ∀ n, 0 ≤ d n)
+    (hr0 : ∀ n, 0 ≤ r n)
+    (he0 : ∀ n, 0 ≤ e n)
+    (hvar : ∀ n, r n ^ 2 + (d n) ^ 2 / area = 1)
+    (htri : ∀ n,
+      e n ≤ d n + Real.sqrt area * (1 - r n))
+    (hd : Tendsto d atTop (𝓝 0)) :
+    Tendsto e atTop (𝓝 0) := by
+  let v : ℕ → ℝ := fun n => (d n) ^ 2 / area
+  have hv0 : ∀ n, 0 ≤ v n := by
+    intro n
+    exact div_nonneg (sq_nonneg _) harea.le
+  have hv : Tendsto v atTop (𝓝 0) := by
+    have hsquare : Tendsto (fun n => (d n) ^ 2) atTop (𝓝 0) := by
+      simpa using hd.pow 2
+    simpa [v] using hsquare.div_const area
+  have hr1 : ∀ n, 1 - r n ≤ v n := by
+    intro n
+    exact (v19_variance_controls_mean_modulus
+      (r n) (v n) (hr0 n) (hv0 n) (hvar n)).2
+  have hupper : ∀ n,
+      e n ≤ d n + Real.sqrt area * v n := by
+    intro n
+    exact (htri n).trans <|
+      add_le_add_left
+        (mul_le_mul_of_nonneg_left (hr1 n) (Real.sqrt_nonneg area))
+        (d n)
+  have hzero :
+      Tendsto (fun n => d n + Real.sqrt area * v n) atTop (𝓝 0) := by
+    have hc :
+        Tendsto (fun _ : ℕ => Real.sqrt area) atTop
+          (𝓝 (Real.sqrt area)) := tendsto_const_nhds
+    simpa using hd.add (hc.mul hv)
+  exact squeeze_zero he0 hupper hzero
+
+/--
+One unit-ball anchor controls every larger fixed ball.
+
+The overlap estimate gives convergence of the radius-R phase to the fixed
+unit-ball phase.  The local triangle estimate then transfers the radius-R
+Poincare error to the same anchor sequence.
+-/
+theorem v19_fixed_anchor_all_ball_limit
+    (c anchorR : ℕ → ℂ)
+    (e1 eR localErr : ℕ → ℝ)
+    (a b : ℝ)
+    (ha : 0 < a)
+    (hLocal0 : ∀ n, 0 ≤ localErr n)
+    (hOverlap : ∀ n,
+      a * ‖c n - anchorR n‖ ≤ e1 n + eR n)
+    (hLocal : ∀ n,
+      localErr n ≤ eR n + b * ‖c n - anchorR n‖)
+    (h1 : Tendsto e1 atTop (𝓝 0))
+    (hR : Tendsto eR atTop (𝓝 0)) :
+    Tendsto localErr atTop (𝓝 0) := by
+  have hPhase :=
+    v19_anchor_phase_agreement c anchorR e1 eR a ha hOverlap h1 hR
+  exact v19_anchor_local_error_limit
+    c anchorR localErr eR b hLocal0 hLocal hR hPhase
+
+#print axioms v19_anchor_normalization_from_variance
+#print axioms v19_fixed_anchor_all_ball_limit
+
 end SMScattering.W20Full
