@@ -1666,7 +1666,6 @@ theorem v13_lem_beta_finite_core
                 (Finset.sum (Finset.range (n + 1)) (fun i =>
                   C2 * (α (i + 1)) ^ 2)) := by
                   rw [Finset.sum_range_succ]
-                  rfl
 
   have hsumEq :
       ∀ n : ℕ,
