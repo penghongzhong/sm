@@ -57,9 +57,92 @@ theorem v19_anchor_local_error_limit
     simpa using hNear.add (hconst.mul hPhase)
   exact squeeze_zero hNonneg hBound hzero
 
+
+/--
+Abstract density-extension inequality behind the last step of
+v19:lem:phase-profile-constant.
+
+A n is the conjugated unitary operator and c n is a unit scalar.
+If fj approximates f, the error at f is bounded by twice the
+approximation error plus the already controlled error at fj.
+-/
+theorem v19_density_extension_inequality
+    {H : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (A : ℕ → H →L[ℂ] H) (c : ℕ → ℂ)
+    (f fj : H) (n : ℕ)
+    (hA : ‖A n‖ ≤ 1)
+    (hc : ‖c n‖ = 1) :
+    ‖A n f - c n • f‖
+      ≤ 2 * ‖f - fj‖ + ‖A n fj - c n • fj‖ := by
+  have hAerr : ‖A n (f - fj)‖ ≤ ‖f - fj‖ := by
+    calc
+      ‖A n (f - fj)‖ ≤ ‖A n‖ * ‖f - fj‖ :=
+        ContinuousLinearMap.le_opNorm _ _
+      _ ≤ 1 * ‖f - fj‖ := by
+        exact mul_le_mul_of_nonneg_right hA (norm_nonneg _)
+      _ = ‖f - fj‖ := one_mul _
+  have hcerr : ‖c n • (f - fj)‖ = ‖f - fj‖ := by
+    rw [norm_smul, hc, one_mul]
+  have hid :
+      A n f - c n • f =
+        A n (f - fj) + (A n fj - c n • fj) - c n • (f - fj) := by
+    rw [map_sub, smul_sub]
+    abel
+  calc
+    ‖A n f - c n • f‖
+        = ‖A n (f - fj) + (A n fj - c n • fj) - c n • (f - fj)‖ := by
+            rw [hid]
+    _ ≤ ‖A n (f - fj) + (A n fj - c n • fj)‖
+          + ‖c n • (f - fj)‖ := norm_sub_le _ _
+    _ ≤ (‖A n (f - fj)‖ + ‖A n fj - c n • fj‖)
+          + ‖c n • (f - fj)‖ := by
+            gcongr
+            exact norm_add_le _ _
+    _ ≤ (‖f - fj‖ + ‖A n fj - c n • fj‖) + ‖f - fj‖ := by
+            rw [hcerr]
+            gcongr
+    _ = 2 * ‖f - fj‖ + ‖A n fj - c n • fj‖ := by ring
+
+/--
+Sequential density extension with one phase sequence chosen independently
+of the approximating vector.
+-/
+theorem v19_density_extension_limit
+    {H : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (A : ℕ → H →L[ℂ] H) (c : ℕ → ℂ)
+    (f : H) (fj : ℕ → H)
+    (hfj : Tendsto fj atTop (𝓝 f))
+    (hA : ∀ n, ‖A n‖ ≤ 1)
+    (hc : ∀ n, ‖c n‖ = 1)
+    (hDense : ∀ j,
+      Tendsto (fun n => ‖A n (fj j) - c n • (fj j)‖)
+        atTop (𝓝 0)) :
+    Tendsto (fun n => ‖A n f - c n • f‖) atTop (𝓝 0) := by
+  apply Metric.tendsto_atTop.mpr
+  intro ε hε
+  obtain ⟨J, hJ⟩ :=
+    Metric.tendsto_atTop.mp hfj (ε / 6) (by linarith)
+  have hfjJ : ‖f - fj J‖ < ε / 6 := by
+    have hj := hJ J le_rfl
+    simpa [dist_eq_norm, norm_sub_rev] using hj
+  obtain ⟨N, hN⟩ :=
+    Metric.tendsto_atTop.mp (hDense J) (ε / 3) (by linarith)
+  refine ⟨N, ?_⟩
+  intro n hn
+  have hcore := hN n hn
+  have hcore' : ‖A n (fj J) - c n • (fj J)‖ < ε / 3 := by
+    simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using hcore
+  have hbound :=
+    v19_density_extension_inequality A c f (fj J) n (hA n) (hc n)
+  have herr : ‖A n f - c n • f‖ < ε := by
+    linarith
+  simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using herr
+
 #print axioms v19_unit_phase_norm
 #print axioms v19_variance_controls_mean_modulus
 #print axioms v19_anchor_phase_agreement
 #print axioms v19_anchor_local_error_limit
+#print axioms v19_density_extension_inequality
+#print axioms v19_density_extension_limit
 
 end SMScattering.W20Full
