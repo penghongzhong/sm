@@ -314,6 +314,156 @@ theorem v12_tightness_common_subsequence_from_tail
 
 #print axioms v12_tightness_common_subsequence_from_tail
 
+
+/-! ===== nested local L2 compatibility without measure transport ===== -/
+
+theorem v12_spatial_cylinder_mono_direct {R S : ℕ} (hRS : R ≤ S) :
+    v12_spatial_cylinder R ⊆ v12_spatial_cylinder S := by
+  intro z hz
+  simp only [v12_spatial_cylinder, Set.mem_setOf_eq] at hz ⊢
+  have hnat : (R : ℝ) ≤ (S : ℝ) := by exact_mod_cast hRS
+  linarith
+
+theorem v12_nested_measure_le
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
+    (v12_slab_measure a b).restrict (v12_spatial_cylinder R)
+      ≤
+    (v12_slab_measure a b).restrict (v12_spatial_cylinder S) := by
+  exact (v12_slab_measure a b).restrict_mono_set
+    (v12_spatial_cylinder_mono_direct hRS)
+
+theorem v12_nested_memLp
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
+    (f : V12CylinderL2 a b S) :
+    MemLp (fun z => f z) 2
+      ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)) := by
+  rw [memLp_iff]
+  exact
+    (eLpNorm_mono_measure (fun z => f z)
+      (v12_nested_measure_le a b hRS)).trans_lt
+      (Lp.memLp f)
+
+noncomputable def v12_nested_localize_raw
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
+    (f : V12CylinderL2 a b S) :
+    V12CylinderL2 a b R :=
+  (v12_nested_memLp a b hRS f).toLp f
+
+theorem v12_nested_localize_raw_coeFn
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
+    (f : V12CylinderL2 a b S) :
+    (v12_nested_localize_raw a b hRS f : V12Spacetime → V12Field)
+      =ᵐ[(v12_slab_measure a b).restrict (v12_spatial_cylinder R)] f := by
+  exact MemLp.coeFn_toLp (v12_nested_memLp a b hRS f)
+
+theorem v12_nested_localize_raw_add
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
+    (f g : V12CylinderL2 a b S) :
+    v12_nested_localize_raw a b hRS (f + g)
+      =
+    v12_nested_localize_raw a b hRS f
+      + v12_nested_localize_raw a b hRS g := by
+  apply Lp.ext
+  have hμ := v12_nested_measure_le a b hRS
+  filter_upwards
+    [v12_nested_localize_raw_coeFn a b hRS (f + g),
+     v12_nested_localize_raw_coeFn a b hRS f,
+     v12_nested_localize_raw_coeFn a b hRS g,
+     ae_mono hμ (Lp.coeFn_add f g)]
+    with z hsum hf hg hadd
+  rw [hsum, hadd, hf, hg, Pi.add_apply]
+
+theorem v12_nested_localize_raw_smul
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
+    (c : ℂ) (f : V12CylinderL2 a b S) :
+    v12_nested_localize_raw a b hRS (c • f)
+      =
+    c • v12_nested_localize_raw a b hRS f := by
+  apply Lp.ext
+  have hμ := v12_nested_measure_le a b hRS
+  filter_upwards
+    [v12_nested_localize_raw_coeFn a b hRS (c • f),
+     v12_nested_localize_raw_coeFn a b hRS f,
+     ae_mono hμ (Lp.coeFn_smul c f)]
+    with z hsum hf hsmul
+  rw [hsum, hsmul, hf, Pi.smul_apply]
+
+theorem v12_nested_localize_raw_norm_le
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
+    (f : V12CylinderL2 a b S) :
+    ‖v12_nested_localize_raw a b hRS f‖ ≤ ‖f‖ := by
+  rw [Lp.norm_def, Lp.norm_def,
+    eLpNorm_congr_ae
+      (v12_nested_localize_raw_coeFn a b hRS f)]
+  refine ENNReal.toReal_mono (Lp.eLpNorm_ne_top _) ?_
+  exact eLpNorm_mono_measure _ (v12_nested_measure_le a b hRS)
+
+noncomputable def v12_nested_localize
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
+    V12CylinderL2 a b S →L[ℂ] V12CylinderL2 a b R :=
+  LinearMap.mkContinuous
+    { toFun := v12_nested_localize_raw a b hRS
+      map_add' := v12_nested_localize_raw_add a b hRS
+      map_smul' := v12_nested_localize_raw_smul a b hRS }
+    1
+    (by
+      intro f
+      rw [one_mul]
+      exact v12_nested_localize_raw_norm_le a b hRS f)
+
+theorem v12_nested_localize_direct
+    (a b : ℝ) {R S : ℕ} (hRS : R ≤ S)
+    (f : V12SlabL2 a b) :
+    v12_nested_localize a b hRS (v12_localize a b S f)
+      =
+    v12_localize a b R f := by
+  apply Lp.ext
+  have hμR :
+      (v12_slab_measure a b).restrict (v12_spatial_cylinder R)
+        ≤ v12_slab_measure a b :=
+    Measure.restrict_le_self
+  filter_upwards
+    [v12_nested_localize_raw_coeFn a b hRS (v12_localize a b S f),
+     v12_localize_coeFn a b R f,
+     ae_mono hμR (v12_localize_coeFn a b S f)]
+    with z hnested hR hS
+  rw [hnested, hS, hR]
+
+theorem v12_common_subsequence_local_compatibility_direct
+    (a b : ℝ) (Q : ℕ → V12SlabL2 a b)
+    (σ : ℕ → ℕ)
+    (q : ∀ R, V12CylinderL2 a b R)
+    (hconv : ∀ R,
+      Tendsto (fun n => v12_localize a b R (Q (σ n)))
+        atTop (𝓝 (q R))) :
+    ∀ {R S : ℕ} (hRS : R ≤ S),
+      v12_nested_localize a b hRS (q S) = q R := by
+  intro R S hRS
+  have hmap :
+      Tendsto
+        (fun n =>
+          v12_nested_localize a b hRS
+            (v12_localize a b S (Q (σ n))))
+        atTop
+        (𝓝 (v12_nested_localize a b hRS (q S))) :=
+    (v12_nested_localize a b hRS).continuous.tendsto (q S) |>.comp (hconv S)
+  have hsame :
+      (fun n =>
+          v12_nested_localize a b hRS
+            (v12_localize a b S (Q (σ n))))
+        =
+      (fun n => v12_localize a b R (Q (σ n))) := by
+    funext n
+    exact v12_nested_localize_direct a b hRS (Q (σ n))
+  rw [hsame] at hmap
+  exact tendsto_nhds_unique hmap (hconv R)
+
+#print axioms v12_nested_memLp
+#print axioms v12_nested_localize_raw_norm_le
+#print axioms v12_nested_localize_direct
+#print axioms v12_common_subsequence_local_compatibility_direct
+
+
 /-! ===== merged from lean/v12/V12_FiniteSlabEnergy.lean ===== -/
 
 open MeasureTheory Filter
