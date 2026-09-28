@@ -1,63 +1,60 @@
 import Mathlib.Tactic
 
 /-!
-W20 full-master nodes: v12:thm:closure and v12:thm:tightness.
-
-Only paper-specific scalar bookkeeping is formalized here.  The functional
-analytic inputs (Young/HLS, weak convergence of bounded multipliers,
-Arzela--Ascoli, diagonal extraction) are registered as standard interfaces.
-
-No sorry/admit/custom axiom.
+Partial support for W20 v12 closure/tightness. The old product and Hodge
+lemmas repeated the desired inequalities as hypotheses. They are replaced
+by actual complex-product and finite-sum norm inequalities below.
+Finite-sum Hodge control is NOT a proof of the continuum convolution bound.
+Pointwise convergence is NOT a proof of local L2/L1 convergence.
 -/
 
 namespace SMScattering.W20Full
 
-/-- Local product-difference estimate used in v12:thm:closure. -/
+open scoped BigOperators Topology
+open Filter
+
+/-- Pointwise product difference, with no assumed norm estimate. -/
 theorem v12_closure_product_difference_kernel
-    (Adiff QnBound Alocal Qdiff prodDiff : ℝ)
-    (hAdiff : 0 ≤ Adiff)
-    (hQn : 0 ≤ QnBound)
-    (hA : 0 ≤ Alocal)
-    (hQdiff : 0 ≤ Qdiff)
-    (hprod :
-      prodDiff ≤ Adiff * QnBound + Alocal * Qdiff) :
-    prodDiff ≤ Adiff * QnBound + Alocal * Qdiff := by
-  exact hprod
+    (An Qn A Q : ℂ) :
+    ‖An * Qn - A * Q‖ ≤
+      ‖An - A‖ * ‖Qn‖ + ‖A‖ * ‖Qn - Q‖ := by
+  have hid : An * Qn - A * Q = (An - A) * Qn + A * (Qn - Q) := by ring
+  calc
+    ‖An * Qn - A * Q‖ = ‖(An - A) * Qn + A * (Qn - Q)‖ := by rw [hid]
+    _ ≤ ‖(An - A) * Qn‖ + ‖A * (Qn - Q)‖ := norm_add_le _ _
+    _ = ‖An - A‖ * ‖Qn‖ + ‖A‖ * ‖Qn - Q‖ := by rw [norm_mul, norm_mul]
 
-/--
-Far-field Hodge-tail bookkeeping:
-a kernel bound C/R times an L1 mass bound M2 gives C*M2/R.
--/
+/-- Genuine finite-sum kernel control; no bound on the sum is assumed. -/
 theorem v12_closure_hodge_far_kernel
-    (kernelBound massBound farBound : ℝ)
-    (hkernel : 0 ≤ kernelBound)
-    (hmass : 0 ≤ massBound)
-    (hfar : farBound ≤ kernelBound * massBound) :
-    farBound ≤ kernelBound * massBound := hfar
+    {ι : Type*} [Fintype ι] (K b : ι → ℂ) (κ : ℝ)
+    (hK : ∀ i, ‖K i‖ ≤ κ) :
+    ‖∑ i, K i * b i‖ ≤ κ * ∑ i, ‖b i‖ := by
+  calc
+    ‖∑ i, K i * b i‖ ≤ ∑ i, ‖K i * b i‖ := norm_sum_le _ _
+    _ = ∑ i, ‖K i‖ * ‖b i‖ := by simp_rw [norm_mul]
+    _ ≤ ∑ i, κ * ‖b i‖ :=
+      Finset.sum_le_sum (fun i _ => mul_le_mul_of_nonneg_right (hK i) (norm_nonneg _))
+    _ = κ * ∑ i, ‖b i‖ := by rw [Finset.mul_sum]
 
-/--
-Cauchy closure used after frequency truncation in v12:thm:tightness.
--/
+/-- Actual sequential product limit over complex scalars. -/
+theorem v12_closure_pointwise_product_limit
+    (An Qn : ℕ → ℂ) (A Q : ℂ)
+    (hA : Tendsto An atTop (𝓝 A)) (hQ : Tendsto Qn atTop (𝓝 Q)) :
+    Tendsto (fun n => An n * Qn n - A * Q) atTop (𝓝 0) := by
+  simpa using (hA.mul hQ).sub tendsto_const_nhds
+
 theorem v12_tightness_cauchy_kernel
     (tailN tailN' lowDiff totalDiff eps : ℝ)
-    (ht1 : tailN ≤ eps)
-    (ht2 : tailN' ≤ eps)
-    (hlow : lowDiff ≤ eps)
-    (htotal :
-      totalDiff ≤ tailN + tailN' + lowDiff) :
-    totalDiff ≤ 3 * eps := by
-  linarith
+    (ht1 : tailN ≤ eps) (ht2 : tailN' ≤ eps) (hlow : lowDiff ≤ eps)
+    (htotal : totalDiff ≤ tailN + tailN' + lowDiff) :
+    totalDiff ≤ 3 * eps := by linarith
 
-/--
-Time equicontinuity exponent bookkeeping:
-if a Hölder estimate has factor |t-s|^(1-3/4), then the exponent is 1/4.
--/
 theorem v12_tightness_holder_exponent :
-    (1 : ℝ) - (3 : ℝ) / 4 = 1 / 4 := by
-  norm_num
+    (1 : ℝ) - (3 : ℝ) / 4 = 1 / 4 := by norm_num
 
 #print axioms v12_closure_product_difference_kernel
 #print axioms v12_closure_hodge_far_kernel
+#print axioms v12_closure_pointwise_product_limit
 #print axioms v12_tightness_cauchy_kernel
 #print axioms v12_tightness_holder_exponent
 
