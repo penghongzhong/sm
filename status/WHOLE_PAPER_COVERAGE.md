@@ -1,48 +1,76 @@
 # Whole-paper Lean coverage ledger
 
-Verification target: `SM_Lean_Min_v4_SYNC_T025_T027_20260918` (36 pages).
+## Mathematical authority
 
-Goal: verify the full short-paper scattering chain relative only to explicitly registered standard analysis results and published external theorems. A node is **PASS** only when its Lean statement matches the synchronized short manuscript and compiles without `sorry`, `admit`, custom `axiom`, or an internal paper conclusion smuggled in as a hypothesis.
+`SM_Q_threshold_scattering_theorem_chain_repaired_cn` — 18 pages.
 
-## Theorem inventory
+Main target:
+[
+E(z_0)<E_{car}=|Q|_2^2<4pi
+quadLongrightarrowquad
+	ext{global two-sided scattering}.
+]
 
-The theorem-by-theorem manual inventory contains **94 proof-bearing nodes**:
+The 36-page Lean-min and 133-page W20 files are support sources only.
 
-- T001: coefficient budget;
-- T002–T003: Smith spaces and exact published-input whitelist;
-- T004–T028: weak forcing, causal envelopes, Volterra, short/long stability;
-- T029–T057: compactness, realization, wave operator, peeling, TVAN, Palais–Smale, rigidity, finite-S scattering, Wilson/REL-REAL;
-- T058–T078: RFCE static / projected-torsion block;
-- T079–T092: RFCE dynamic / principal magnetic block;
-- T093: Lean-min RFCE closure;
-- T094: Lean-min main scattering chain.
+## Foundation boundary
 
-Current imported mega-batch: N001–N033 only. N034–N094 still require migration/splitting and exact synchronization.
+The verification may use:
 
-## Current status
+- Lean/Mathlib foundations and standard analysis;
+- exact theorems already published in the literature.
 
-| Range | Meaning | Status |
-|---|---|---|
-| T001 | coefficient budget | finite algebra compiled previously; full exact analytic interface recheck pending |
-| T002–T003 | resolution definition / external source whitelist | pending promotion |
-| T004–T028 | weak forcing / causal / Volterra / stability | imported partially through N001–N033; theorem-by-theorem recheck pending |
-| T029–T033 | first compactness/realization nodes | imported partially through N001–N033; recheck pending |
-| T034–T057 | remaining compactness/realization/rigidity front end | not yet migrated to public verified files |
-| T058–T078 | RFCE static | not yet migrated |
-| T079–T092 | RFCE dynamic | not yet migrated |
-| T093 | RFCE closure | not yet migrated |
-| T094 | final main theorem | not yet migrated |
+It may **not** use an internal result of this manuscript as an axiom.
 
-## External-foundation boundary
+The short manuscript's compressed `Hgeo` module must therefore be expanded from the private proof source and verified as an internal dependency. The `Hstd` package must be split into exact source-audited published interfaces; any component not justified by a published theorem becomes an internal obligation.
 
-Allowed foundations are the standard-analysis list stated in the short manuscript plus the exact published Smith results registered in T003. Internal nodes bearing v*/w* source labels are never external axioms.
+## Closed-manuscript theorem chain
 
-## Full-paper completion criterion
+| ID | Manuscript label | Role | Lean status |
+|---|---|---|---|
+| C00 | `def:Hstd` | standard critical analytic package | SOURCE AUDIT REQUIRED |
+| C01 | `hyp:Hgeo` | proved balanced geometry / finite-time rigidity / observer ledger | INTERNAL EXPANSION REQUIRED |
+| C02 | `thm:carrier` | carrier scalarization + energy compression + subthreshold NLS scattering | pending |
+| C03 | `thm:carrier-shadow` | full-time true-map shadowing of strict-subthreshold carrier | pending |
+| C04 | `thm:wilson` | Wilson conjugation + energy barrier + threshold preservation | pending |
+| C05 | `thm:superposition` | finite Wilson-renormalized nonlinear-profile superposition | pending |
+| C06 | `thm:stability` | finite-control stability + energy-space closure | pending |
+| C07 | `thm:covcoer` | actual covariance + carrier-center removal + NLS coercivity | pending |
+| C08 | `thm:cluster` | finite-carrier cluster normal form + nonresonant quadratic structure | pending |
+| C09 | `thm:packing` | packet covariance packing + IMS + LCA no-reuse | pending |
+| C10 | `thm:rpsum` | rough phase-space packet summation | pending |
+| C11 | `thm:profile-lift` | true nonlinear S²-valued lift of linear profiles | pending |
+| C12 | `thm:gforest` | coarse-to-fine relative-frame forest | pending |
+| C13 | `thm:PS` | enhanced balanced/carrier Palais-Smale reduction | pending |
+| C14 | `thm:rigidity` | actual-covariance observer rigidity | pending |
+| C15 | `thm:main` | main scattering theorem | pending |
 
-The verification is complete only when:
+## Dependency spine
 
-1. T001–T094 all have exact synchronized Lean statements;
-2. every internal node is proved rather than postulated;
-3. every allowed external theorem has an exact source/interface record;
-4. the dependency tree reaches T094 with no unverified internal edge;
-5. the final TeX/PDF hashes match `status/MANUSCRIPT_SYNC.md`.
+[
+egin{aligned}
+&C00+C01\
+&Downarrow\
+&C02	o C03	o C04	o C05	o C06,\
+&C07	o C08	o C09	o C10,\
+&C11	o C12,\
+&(C05,C06,C10,C11,C12)	o C13,\
+&(C01,C07,C10)	o C14,\
+&(C13,C14)	o C15.
+end{aligned}
+]
+
+## Migration material
+
+Earlier T001–T094 and N001–N033 files are **not authoritative numbering**. They are proof-mining/formalization material. Each may be reused only after an explicit mapping to one of C00–C15 or to a sublemma in the 18-page authority.
+
+## Full verification completion criterion
+
+Full-paper PASS requires:
+
+1. C00 is reduced entirely to exact published/standard interfaces;
+2. C01 is internally proved/formalized rather than assumed;
+3. C02–C14 compile with exact manuscript statements;
+4. C15 follows from C13+C14 with no hidden internal premise;
+5. no `sorry`, `admit`, or custom internal `axiom`;
+6. the Library TeX/PDF hashes match `status/MANUSCRIPT_SYNC.md`.
