@@ -1,30 +1,17 @@
-# Full W20 theorem inventory and coverage distance
+# Full W20 manuscript inventory — not a coverage certificate
 
-Verification authority:
-\`stereo_scalar_scattering_v20_W20_LeanSync_v2\` (134 pages).
+Current authority: `stereo_scalar_scattering_v20_W20_LeanSync_v3` (134 pages).
+The target remains the full W20 manuscript originally supplied as 133 pages.
+The 36-page Lean-min edition is only an auxiliary reference.
 
-The original 133-page W20 master remains the baseline; LeanSync v2 is its
-current synchronized correction. Pagination increased by one page after the
-v19 unit-modulus Poincare normalization was made explicit.
+## Documentary count
 
-## Exact proof-bearing inventory
+A comment-aware, whitespace-tolerant parse of the actual v3 TeX gives **207**
+labeled theorem/lemma/proposition/corollary environments. The complete ordered
+environment/label list is unchanged from v2. The temporary value 192 missed
+labels placed on a line after their environment opening.
 
-A whitespace-tolerant parse of every
-\`theorem/lemma/proposition/corollary\` environment in LeanSync v2 gives
-**207** labeled proof-bearing environments:
-
-- 89 lemmas;
-- 53 theorems;
-- 31 propositions;
-- 34 corollaries.
-
-The temporary value 192 was a parser error: it missed environments whose
-\`\\label{...}\` begins on the following line.  In particular it missed
-\`v15:prop:mix-reduction\` and the W13/W14 blocks.
-
-Counts by manuscript block:
-
-| Block | Count |
+| Block | Environments |
 |---|---:|
 | v12 | 12 |
 | v13 | 19 |
@@ -52,24 +39,24 @@ Counts by manuscript block:
 | W20 | 4 |
 | **Total** | **207** |
 
-Thus the pre-W blocks v12--v20 contain **81** proof-bearing environments and
-the later W blocks contain **126**.
+The pre-W blocks contain 81 environments; later W blocks contain 126.
+Neither ratio measures proof difficulty, elapsed work, or certified completion.
+Definitions and unlabeled analytic steps also belong to the dependency audit.
 
-## Current verified front
+## Corrected formal-evidence boundary
 
-Machine-green public CI has certified the current Lean corpus through v19.
-Exact full-master audits are present for v12--v19, and v20 is the current
-next block.
+Read `SEMANTIC_VERIFICATION_CORRECTION_20260928.md` and
+`WHOLE_PAPER_COVERAGE.md`. Historical claims that all v12 or v19 statements
+were GREEN are superseded: a compiled scalar kernel and a prose list of
+standard theorems do not instantiate those theorems for the actual PDE
+objects. Three direct goal-as-hypothesis wrappers have been replaced this
+round. Concrete function-space bridges remain to be checked.
 
-A node is GREEN only when every paper-specific step has a compiled kernel or
-exact dependency proof and every remaining analytic step has a
-hypothesis-matched standard/published source registration.
+Kernel construction has reached W1–W3. This is not a continuous fully verified
+prefix of the manuscript. No certified full-statement numerator or completion
+percentage is currently recorded. A statement can be counted only after its
+hypotheses, conclusion, operators, regularity and quantifiers match the actual
+manuscript and all internal dependencies are discharged.
 
-## Distance convention
-
-The denominator is always the 207 exact proof-bearing environments of the
-current synchronized manuscript. Definitions are audited as dependencies but
-are not counted in this denominator.
-
-No claim of "full-paper verified" is made until W1--W20 are also exact-mapped
-and machine-green.
+The allowed foundation remains standard analysis and precise published
+external theorems; the task is not to reconstruct all analysis from zero.
