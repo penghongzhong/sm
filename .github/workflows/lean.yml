@@ -1,0 +1,49 @@
+name: Lean Verification
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: sm-public-lean-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Lean toolchain
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-github-cache: true
+          use-mathlib-cache: false
+
+      - name: Resolve Mathlib dependencies
+        run: lake update
+
+      - name: Fetch Mathlib cache
+        run: lake exe cache get
+
+      - name: Reject proof placeholders and custom axioms
+        run: |
+          if grep -R -nE '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' lean --include='*.lean'; then
+            echo "Forbidden proof placeholder/custom axiom declaration found"
+            exit 1
+          fi
+
+      - name: Compile public Lean files
+        run: |
+          set -e
+          find lean -name '*.lean' -print0 | sort -z | while IFS= read -r -d '' f; do
+            echo "==> $f"
+            lake env lean "$f"
+          done
