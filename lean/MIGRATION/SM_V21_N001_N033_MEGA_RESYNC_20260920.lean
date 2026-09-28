@@ -2978,27 +2978,34 @@ theorem v13_thm_short_stability
       apply Finset.sum_le_sum
       intro i hi
       exact mul_le_mul_of_nonneg_left (hdelay_enlarge i) (hgamma0 i)
+    have hsum1 :
+        0 ≤ (∑ i ∈ Finset.range (n + 1),
+          gamma i * delayedNat (fun j => Atilde j + L j) d1 i) := by
+      apply Finset.sum_nonneg
+      intro i hi
+      unfold delayedNat
+      split_ifs with hdi
+      · exact mul_nonneg (hgamma0 i)
+          (add_nonneg (hA0 (i - d1)) (hL0 (i - d1)))
+      · norm_num
+    have hCEle : CE ≤ Cbase := by
+      dsimp [Cbase]
+      linarith
     have hCEsum :
         CE * (∑ i ∈ Finset.range (n + 1),
           gamma i * delayedNat (fun j => E j + L j) d1 i)
           ≤
         Cbase * (∑ i ∈ Finset.range (n + 1),
           gamma i * delayedNat (fun j => Atilde j + L j) d1 i) := by
-      have h1 := mul_le_mul_of_nonneg_left hsum_le hCE
-      have hsum1 :
-          0 ≤ (∑ i ∈ Finset.range (n + 1),
-            gamma i * delayedNat (fun j => Atilde j + L j) d1 i) := by
-        apply Finset.sum_nonneg
-        intro i hi
-        unfold delayedNat
-        split_ifs with hdi
-        · exact mul_nonneg (hgamma0 i)
-            (add_nonneg (hA0 (i - d1)) (hL0 (i - d1)))
-        · norm_num
-      have hCEle : CE ≤ Cbase := by        dsimp [Cbase]
-        linarith
-      exact le_trans h1
-        (mul_le_mul_of_nonneg_right hCEle hsum1)
+      calc
+        CE * (∑ i ∈ Finset.range (n + 1),
+          gamma i * delayedNat (fun j => E j + L j) d1 i)
+            ≤ CE * (∑ i ∈ Finset.range (n + 1),
+              gamma i * delayedNat (fun j => Atilde j + L j) d1 i) :=
+                mul_le_mul_of_nonneg_left hsum_le hCE
+        _ ≤ Cbase * (∑ i ∈ Finset.range (n + 1),
+              gamma i * delayedNat (fun j => Atilde j + L j) d1 i) :=
+                mul_le_mul_of_nonneg_right hCEle hsum1
     have htail_le : tail ≤ Cbase * Atilde n := by
       have hAle : tail ≤ Atilde n := by
         dsimp [Atilde]
