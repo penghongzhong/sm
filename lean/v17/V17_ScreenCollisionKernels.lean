@@ -23,9 +23,7 @@ theorem v17_collision_scale_algebra
     r ^ 4 * (1 / r ^ 3) = r
       ∧
     r ^ 4 * (1 / r ^ 3) ^ 2 = 1 / r ^ 2 := by
-  constructor
-  · field_simp [hr]
-  · field_simp [hr]
+  constructor <;> field_simp [hr]
 
 /-- The affine change-of-variable Jacobian cancellation on a carrier ray. -/
 theorem v17_ray_jacobian_cancel
