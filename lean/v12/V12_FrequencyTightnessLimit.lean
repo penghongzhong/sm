@@ -372,8 +372,8 @@ noncomputable def v12_time_measure (a b : ℝ) : Measure ℝ :=
 theorem v12_time_measure_finite (a b : ℝ) :
     IsFiniteMeasure (v12_time_measure a b) := by
   unfold v12_time_measure
-  rw [MeasureTheory.isFiniteMeasure_restrict]
-  exact (MeasureTheory.measure_Icc_lt_top).ne
+  exact MeasureTheory.isFiniteMeasure_restrict.mpr
+    (isCompact_Icc.measure_lt_top.ne)
 
 #print axioms v12_memLp_two_of_fiber_energy
 #print axioms v12_time_measure_finite
@@ -392,26 +392,30 @@ Multiplication by a fixed L-infinity scalar symbol is a continuous linear map
 on vector-valued spatial L2.
 -/
 noncomputable def v12_L2Multiplier (m : V12SymbolLInf) :
-    V12SpatialL2 →L[ℂ] V12SpatialL2 :=
-  LinearMap.mkContinuous
-    { toFun := fun f => (m • f : V12SpatialL2)
-      map_add' := by
-        intro f g
-        exact Lp.add_smul m f g
-      map_smul' := by
-        intro c f
-        change (m • (c • f) : V12SpatialL2) = c • (m • f : V12SpatialL2)
-        calc
-          (m • (c • f) : V12SpatialL2) = (c • m) • f := by
-            symm
-            exact Lp.smul_comm c m f
-          _ = c • (m • f : V12SpatialL2) := Lp.smul_assoc c m f }
-    ‖m‖
-    (fun f => Lp.norm_smul_le m f)
+    V12SpatialL2 →L[ℂ] V12SpatialL2 := by
+  let B : ℂ →L[ℂ] V12Field →L[ℂ] V12Field :=
+    ContinuousLinearMap.lsmul ℂ ℂ
+  exact (B.holderL (volume : Measure V12Spatial) ∞ 2 2) m
 
-@[simp]
-theorem v12_L2Multiplier_apply (m : V12SymbolLInf) (f : V12SpatialL2) :
-    v12_L2Multiplier m f = m • f := rfl
+theorem v12_L2Multiplier_bound
+    (m : V12SymbolLInf) (f : V12SpatialL2) :
+    ‖v12_L2Multiplier m f‖ ≤ ‖m‖ * ‖f‖ := by
+  let B : ℂ →L[ℂ] V12Field →L[ℂ] V12Field :=
+    ContinuousLinearMap.lsmul ℂ ℂ
+  have hholder :
+      ‖(B.holderL (volume : Measure V12Spatial) ∞ 2 2) m f‖
+        ≤ ‖B‖ * ‖m‖ * ‖f‖ :=
+    B.norm_holder_apply_apply_le m f
+  have hB : ‖B‖ ≤ 1 := by
+    dsimp [B]
+    exact ContinuousLinearMap.opNorm_lsmul_le
+  change ‖(B.holderL (volume : Measure V12Spatial) ∞ 2 2) m f‖
+      ≤ ‖m‖ * ‖f‖
+  calc
+    _ ≤ ‖B‖ * ‖m‖ * ‖f‖ := hholder
+    _ ≤ 1 * ‖m‖ * ‖f‖ := by
+      gcongr
+    _ = ‖m‖ * ‖f‖ := by ring
 
 /-- The actual L2 Fourier multiplier F^{-1} M_m F. -/
 noncomputable def v12_spatialFourierMultiplier (m : V12SymbolLInf) :
@@ -423,7 +427,8 @@ noncomputable def v12_spatialFourierMultiplier (m : V12SymbolLInf) :
 @[simp]
 theorem v12_spatialFourierMultiplier_apply
     (m : V12SymbolLInf) (f : V12SpatialL2) :
-    v12_spatialFourierMultiplier m f = 𝓕⁻ (m • 𝓕 f) := rfl
+    v12_spatialFourierMultiplier m f =
+      𝓕⁻ (v12_L2Multiplier m (𝓕 f)) := rfl
 
 theorem v12_norm_fourierInv_eq (g : V12SpatialL2) :
     ‖𝓕⁻ g‖ = ‖g‖ := by
@@ -434,7 +439,8 @@ theorem v12_spatialFourierMultiplier_bound
     ‖v12_spatialFourierMultiplier m f‖ ≤ ‖m‖ * ‖f‖ := by
   rw [v12_spatialFourierMultiplier_apply, v12_norm_fourierInv_eq]
   calc
-    ‖m • 𝓕 f‖ ≤ ‖m‖ * ‖𝓕 f‖ := Lp.norm_smul_le m (𝓕 f)
+    ‖v12_L2Multiplier m (𝓕 f)‖
+        ≤ ‖m‖ * ‖𝓕 f‖ := v12_L2Multiplier_bound m (𝓕 f)
     _ = ‖m‖ * ‖f‖ := by rw [Lp.norm_fourier_eq]
 
 theorem v12_spatialFourierMultiplier_norm_le
@@ -456,7 +462,7 @@ theorem v12_symbolToLInf_ae
     (v12_symbolToLInf m : V12Spatial → ℂ) =ᵐ[volume] m := by
   exact MemLp.coeFn_toLp (BoundedContinuousFunction.memLp_top m)
 
-#print axioms v12_L2Multiplier
+#print axioms v12_L2Multiplier_bound
 #print axioms v12_spatialFourierMultiplier
 #print axioms v12_spatialFourierMultiplier_bound
 #print axioms v12_spatialFourierMultiplier_norm_le
