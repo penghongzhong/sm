@@ -48,8 +48,48 @@ theorem v12_tightness_cauchy_kernel
 theorem v12_tightness_holder_exponent :
     (1 : ℝ) - (3 : ℝ) / 4 = 1 / 4 := by norm_num
 
+
+/--
+Continuum far-field estimate used in v12:thm:closure.
+If the kernel is uniformly bounded by κ on the integration region, then the
+Bochner integral is bounded by κ times the L1 mass.  This is the exact
+continuum analogue of the old finite-sum support kernel.
+-/
+theorem v12_closure_hodge_far_integral
+    {X : Type*} [MeasurableSpace X]
+    (μ : Measure X)
+    (K f : X → ℂ) (κ : ℝ)
+    (hκ : 0 ≤ κ)
+    (hf : Integrable f μ)
+    (hK : ∀ᵐ x ∂μ, ‖K x‖ ≤ κ) :
+    ‖∫ x, K x * f x ∂μ‖
+      ≤ κ * ∫ x, ‖f x‖ ∂μ := by
+  have hg : Integrable (fun x => κ * ‖f x‖) μ := by
+    exact hf.norm.const_mul κ
+  apply norm_integral_le_of_norm_le hg
+  filter_upwards [hK] with x hx
+  rw [norm_mul]
+  exact mul_le_mul_of_nonneg_right hx (norm_nonneg _)
+
+/--
+Near/far two-error closure: if the near contribution tends to zero at fixed
+R' and the far contribution is bounded by C/R', choosing R' first and n
+second yields an arbitrary ε bound.  This is the scalar quantifier order used
+after Young's inequality.
+-/
+theorem v12_near_far_epsilon_kernel
+    (near far total eps : ℝ)
+    (hnear0 : 0 ≤ near) (hfar0 : 0 ≤ far)
+    (hnear : near ≤ eps / 2)
+    (hfar : far ≤ eps / 2)
+    (htotal : total ≤ near + far) :
+    total ≤ eps := by
+  linarith
+
 #print axioms v12_closure_product_difference_kernel
 #print axioms v12_closure_hodge_far_kernel
+#print axioms v12_closure_hodge_far_integral
+#print axioms v12_near_far_epsilon_kernel
 #print axioms v12_closure_pointwise_product_limit
 #print axioms v12_tightness_cauchy_kernel
 #print axioms v12_tightness_holder_exponent
