@@ -90,6 +90,26 @@ theorem v19_isometric_dense_extension
       Tendsto (fun n => A n f - c n • f) atTop (𝓝 0) := by
   exact v19_dense_strong_operator_extension j hj A c hOp hc hTest
 
+
+/--
+Any unit-modulus phase sequence has a convergent subsequence in the unit
+circle.  This is the final compactness step of v19:lem:phase-profile-constant.
+-/
+theorem v19_unit_phase_convergent_subsequence
+    (c : ℕ → ℂ) (hc : ∀ n, ‖c n‖ = 1) :
+    ∃ c∞ : ℂ, ‖c∞‖ = 1 ∧
+      ∃ σ : ℕ → ℕ, StrictMono σ ∧
+        Tendsto (fun n => c (σ n)) atTop (𝓝 c∞) := by
+  have hmem : ∀ n, c n ∈ Metric.sphere (0 : ℂ) 1 := by
+    intro n
+    simpa [Metric.mem_sphere, dist_zero_left] using hc n
+  obtain ⟨c∞, hc∞, σ, hσ, hlim⟩ :=
+    (isCompact_sphere (0 : ℂ) 1).tendsto_subseq hmem
+  refine ⟨c∞, ?_, σ, hσ, hlim⟩
+  simpa [Metric.mem_sphere, dist_zero_left] using hc∞
+
+#print axioms v19_unit_phase_convergent_subsequence
+
 #print axioms v19_dense_strong_operator_extension
 #print axioms v19_isometric_dense_extension
 
