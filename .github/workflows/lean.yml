@@ -2,7 +2,7 @@ name: Lean Verification
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "whole-paper-lean"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
