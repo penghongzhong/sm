@@ -1,25 +1,32 @@
 # Schrödinger Maps — Lean Verification
 
-Public Lean verification workspace for the **closed sub-`4π` Schrödinger-map scattering manuscript**.
+Public Lean verification workspace for the 2D stereographic complex-scalar Schrödinger-map subthreshold scattering project.
 
-## Verification authority
+## Mathematical authority
 
-The manuscript being verified is:
+The manuscript being verified is the synchronized W20 working manuscript:
 
-- `SM_Q_threshold_scattering_theorem_chain_repaired_cn`
-- 18 pages
-- title: `二维球面 Schrödinger 映射在载波基态阈值以下的散射`
-- subtitle: `只保留服务于主定理的定理链与公式化证明`
-- proof status stated by the manuscript: closed relative to the standard critical analytic package and the proved balanced-rigidity module
-- threshold: `E < E_car = ||Q||_2^2 < 4π`
+- ChatGPT-Library TeX: `stereo_scalar_scattering_v20_W20_LeanSync_v1.tex`
+- ChatGPT-Library PDF: `stereo_scalar_scattering_v20_W20_LeanSync_v1.pdf`
+- PDF pages: 133
+- long human-proof authority: `stereo_scalar_scattering_v20_W20`
+- Lean-min reference: `SM_Lean_Min_v4_SYNC_T025_T027_20260918`
+- current migration batch: `SM_V21_N001_N033_MEGA_RESYNC_20260920.lean`
 
-The 36-page `SM_Lean_Min_v4_SYNC_T025_T027_20260918` file is **not** the mathematical authority. It is only a Lean-oriented compression/migration source.
+The shorter 18-page and 36-page theorem-chain/Lean-min manuscripts are auxiliary compression references only. They are not the manuscript being certified.
 
-The 133-page `stereo_scalar_scattering_v20_W20` file is also **not** the verification target. It is a private long proof-mining source used only when the short closed manuscript needs a derivation expanded.
+## Verification goal
+
+Verify the whole 133-page scattering proof relative only to:
+
+1. Lean/Mathlib foundations and standard analysis;
+2. explicitly source-audited published theorems used by the manuscript.
+
+Internal proof-bearing nodes must be proved, not postulated.
 
 ## Public-repository scope
 
-This repository contains only:
+This repository intentionally contains only:
 
 - Lean verification code;
 - Lean/Lake configuration;
@@ -28,15 +35,22 @@ This repository contains only:
 
 It contains **no manuscript TeX and no manuscript PDF**.
 
-## Verification standard
+## Verification rule
 
-The target is full-paper coverage of the closed 18-page manuscript, relative only to:
+1. No `sorry`, `admit`, or custom `axiom` declarations for internal nodes.
+2. Published/standard external interfaces must be explicitly whitelisted.
+3. If Lean exposes a genuine missing argument, repair the ChatGPT-Library TeX/PDF first, then update Lean.
+4. A finite algebra kernel PASS does not imply the surrounding PDE theorem is fully formalized.
+5. Final completion requires full dependency coverage through the scattering theorem.
 
-1. Lean/Mathlib foundations and standard analysis;
-2. exact, source-audited theorems already published in the literature.
+## Current cut-set
 
-Internal manuscript results may not be promoted to axioms merely to make Lean compile.
+Section 2 is formula/definition closed and several finite algebra kernels compile. The current unresolved analytic layer is:
 
-Every imported T/N-numbered Lean node from earlier work is migration material only until it is mapped to an exact theorem/equation in the 18-page authority.
+- function-level stereographic derivative bridge;
+- Hodge reconstruction in the exact function/distribution class;
+- covariant product-rule derivative bridge;
+- Plancherel/Fourier-multiplier connection;
+- exact HLS connection to the manuscript norm objects.
 
-Final PASS means the main scattering theorem is reached through a complete verified dependency tree with no unverified internal edge.
+After this cut-set is closed, verification proceeds through v13–v20 and W1–W20 to the final scattering theorem.
