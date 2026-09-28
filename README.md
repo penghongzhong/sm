@@ -1,45 +1,42 @@
 # Schrödinger Maps — Lean Verification
 
-Public Lean verification workspace for the short sub-`4π` Schrödinger-map scattering manuscript.
+Public Lean verification workspace for the **closed sub-`4π` Schrödinger-map scattering manuscript**.
 
-## Verification target
+## Verification authority
 
-The manuscript being verified is **not** the 133-page W20 research master.
+The manuscript being verified is:
 
-Current target:
+- `SM_Q_threshold_scattering_theorem_chain_repaired_cn`
+- 18 pages
+- title: `二维球面 Schrödinger 映射在载波基态阈值以下的散射`
+- subtitle: `只保留服务于主定理的定理链与公式化证明`
+- proof status stated by the manuscript: closed relative to the standard critical analytic package and the proved balanced-rigidity module
+- threshold: `E < E_car = ||Q||_2^2 < 4π`
 
-- `SM_Lean_Min_v4_SYNC_T025_T027_20260918`
-- 36 pages
-- main threshold: `E < E_car = ||Q_gs||_2^2 < 4π`
-- target conclusion: two-sided free Schrödinger scattering of the normalized Coulomb derivative field
-- theorem inventory: T001–T094
+The 36-page `SM_Lean_Min_v4_SYNC_T025_T027_20260918` file is **not** the mathematical authority. It is only a Lean-oriented compression/migration source.
 
-The long `stereo_scalar_scattering_v20_W20` manuscript is used only as a private proof-mining source when an abbreviated Lean-min node needs expansion.
+The 133-page `stereo_scalar_scattering_v20_W20` file is also **not** the verification target. It is a private long proof-mining source used only when the short closed manuscript needs a derivation expanded.
 
-## Scope of this public repository
+## Public-repository scope
 
-This repository intentionally contains only:
+This repository contains only:
 
 - Lean verification code;
 - Lean/Lake configuration;
 - CI configuration;
 - verification/status ledgers.
 
-It intentionally contains **no manuscript TeX, no manuscript PDF, and no unpublished proof source**.
+It contains **no manuscript TeX and no manuscript PDF**.
 
-## Verification policy
+## Verification standard
 
-- no `sorry`;
-- no `admit`;
-- no custom `axiom` declarations for internal paper nodes;
-- standard analysis / published external results must be explicitly registered;
-- internal v*/w* nodes must be proved, not postulated;
-- a node is PASS only when its Lean statement matches the synchronized 36-page manuscript.
+The target is full-paper coverage of the closed 18-page manuscript, relative only to:
 
-## Current migration state
+1. Lean/Mathlib foundations and standard analysis;
+2. exact, source-audited theorems already published in the literature.
 
-- imported migration batch: `SM_V21_N001_N033_MEGA_RESYNC_20260920.lean`;
-- current public split files include T001 and Section-2/analytic kernels;
-- remaining theorem-by-theorem work continues through T094.
+Internal manuscript results may not be promoted to axioms merely to make Lean compile.
 
-The manuscript itself remains in the user's ChatGPT Library and is synchronized to this repository by filename/hash records only.
+Every imported T/N-numbered Lean node from earlier work is migration material only until it is mapped to an exact theorem/equation in the 18-page authority.
+
+Final PASS means the main scattering theorem is reached through a complete verified dependency tree with no unverified internal edge.
