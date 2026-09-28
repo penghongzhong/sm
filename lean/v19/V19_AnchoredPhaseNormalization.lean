@@ -198,4 +198,93 @@ theorem v19_moving_vector_extension_limit
 #print axioms v19_moving_vector_extension_inequality
 #print axioms v19_moving_vector_extension_limit
 
+
+/--
+Strong convergence with one phase sequence chosen before the test vector.
+
+If the conjugated operators are uniformly contractive, |c_n|=1, and
+A_n(j d)-c_n j d -> 0 on one dense test class j(D), then the same fixed
+sequence c_n works for every f in H.
+-/
+theorem v19_fixed_phase_dense_class_extension
+    {D H : Type*}
+    [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (j : D → H) (hj : DenseRange j)
+    (A : ℕ → H →L[ℂ] H) (c : ℕ → ℂ)
+    (hA : ∀ n, ‖A n‖ ≤ 1)
+    (hc : ∀ n, ‖c n‖ = 1)
+    (hTest : ∀ d,
+      Tendsto (fun n => A n (j d) - c n • j d) atTop (𝓝 0)) :
+    ∀ f : H,
+      Tendsto (fun n => A n f - c n • f) atTop (𝓝 0) := by
+  intro f
+  apply tendsto_zero_iff_norm_tendsto_zero.mpr
+  apply Metric.tendsto_atTop.mpr
+  intro ε hε
+  have hquarter : 0 < ε / 4 := by linarith
+  obtain ⟨d, hd⟩ := hj.exists_dist_lt f hquarter
+  have hfd : ‖f - j d‖ < ε / 4 := by
+    simpa [dist_eq_norm] using hd
+  have hTestNorm :
+      Tendsto (fun n => ‖A n (j d) - c n • j d‖) atTop (𝓝 0) :=
+    tendsto_zero_iff_norm_tendsto_zero.mp (hTest d)
+  obtain ⟨N, hN⟩ :=
+    Metric.tendsto_atTop.mp hTestNorm (ε / 4) hquarter
+  refine ⟨N, ?_⟩
+  intro n hn
+  have hcore : ‖A n (j d) - c n • j d‖ < ε / 4 := hN n hn
+  have hbound :=
+    v19_density_extension_inequality A c f (j d) n (hA n) (hc n)
+  have herr : ‖A n f - c n • f‖ < ε := by
+    linarith
+  simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using herr
+
+/-- Unit phases admit a convergent subsequence on the compact unit circle. -/
+theorem v19_unit_phase_convergent_subsequence
+    (c : ℕ → ℂ) (hc : ∀ n, ‖c n‖ = 1) :
+    ∃ c∞ : ℂ, ‖c∞‖ = 1 ∧
+      ∃ σ : ℕ → ℕ, StrictMono σ ∧
+        Tendsto (fun n => c (σ n)) atTop (𝓝 c∞) := by
+  have hmem : ∀ n, c n ∈ Metric.sphere (0 : ℂ) 1 := by
+    intro n
+    simpa [Metric.mem_sphere, dist_zero_left] using hc n
+  obtain ⟨c∞, hc∞, σ, hσ, hlim⟩ :=
+    (isCompact_sphere (0 : ℂ) 1).tendsto_subseq hmem
+  refine ⟨c∞, ?_, σ, hσ, hlim⟩
+  simpa [Metric.mem_sphere, dist_zero_left] using hc∞
+
+/--
+Quantifier-closed terminal bridge for v19:lem:phase-profile-constant:
+one c_n is fixed before f; it works for all f; then one further subsequence
+makes c_n converge without destroying any of those strong limits.
+-/
+theorem v19_phase_profile_quantifier_bridge
+    {D H : Type*}
+    [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (j : D → H) (hj : DenseRange j)
+    (A : ℕ → H →L[ℂ] H) (c : ℕ → ℂ)
+    (hA : ∀ n, ‖A n‖ ≤ 1)
+    (hc : ∀ n, ‖c n‖ = 1)
+    (hTest : ∀ d,
+      Tendsto (fun n => A n (j d) - c n • j d) atTop (𝓝 0)) :
+    ∃ (c∞ : ℂ) (σ : ℕ → ℕ),
+      ‖c∞‖ = 1
+        ∧ StrictMono σ
+        ∧ Tendsto (fun n => c (σ n)) atTop (𝓝 c∞)
+        ∧ ∀ f : H,
+          Tendsto
+            (fun n => A (σ n) f - c (σ n) • f)
+            atTop (𝓝 0) := by
+  have hAll :=
+    v19_fixed_phase_dense_class_extension j hj A c hA hc hTest
+  obtain ⟨c∞, hc∞, σ, hσ, hcLim⟩ :=
+    v19_unit_phase_convergent_subsequence c hc
+  refine ⟨c∞, σ, hc∞, hσ, hcLim, ?_⟩
+  intro f
+  exact (hAll f).comp hσ.tendsto_atTop
+
+#print axioms v19_fixed_phase_dense_class_extension
+#print axioms v19_unit_phase_convergent_subsequence
+#print axioms v19_phase_profile_quantifier_bridge
+
 end SMScattering.W20Full
