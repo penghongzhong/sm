@@ -1,76 +1,31 @@
 # Whole-paper Lean coverage ledger
 
-## Mathematical authority
+Goal: verify the full 133-page W20 scattering proof relative only to explicitly registered standard analysis results and published external theorems.
 
-`SM_Q_threshold_scattering_theorem_chain_repaired_cn` — 18 pages.
+A row is **PASS** only when the Lean statement matches the synchronized W20 manuscript claim and compiles without `sorry`, `admit`, custom `axiom`, or a paper conclusion smuggled in as a hypothesis.
 
-Main target:
-[
-E(z_0)<E_{car}=|Q|_2^2<4pi
-quadLongrightarrowquad
-	ext{global two-sided scattering}.
-]
+| Layer | Manuscript nodes | Public Lean status |
+|---|---|---|
+| Section 2 coefficient algebra | `v12:lem:coeff` | T001 finite/registered analytic kernel PASS; full analytic layer pending |
+| Section 2 stereographic curvature | chart curvature identity | jet algebra PASS; function/derivative bridge pending |
+| Section 2 Hodge reconstruction | Hodge uniqueness + kernel | Fourier-symbol uniqueness PASS; distribution/function-space bridge pending |
+| Section 2 electric curvature | `v12:lem:electric` | finite product-rule algebra PASS; analytic derivative bridge pending |
+| Section 2 low-frequency budget | low-curvature Plancherel/multiplier/HLS step | finite constants + Plancherel interface PASS; exact multiplier/HLS connection pending |
+| v13-v14 analysis | Smith whitelist, HHL, weak forcing, Volterra, stability | migration N001-N033 imported; theorem-by-theorem promotion pending |
+| v15 profile front end | mixed reduction / screening / minimal profile | pending |
+| v16-v20 realization and finite-S scattering | realization, rough flow, peeling, finite-S scattering | pending |
+| W1-W5 terminal radiation/profile reduction | wave operator, coherent propagation, TVAN -> PS, finite rigidity | pending |
+| W7-W10 NLS shadow / observer / rigidity / REL-REAL | carrier shadow, covariance, observer, global rigidity, screen deletion | pending |
+| W11-W14 RFCE reduction | affine freeze, projected torsion, grouped/Jacobian reductions | pending |
+| W19-W20 RFCE closure | T1, T2, principal forest repair | pending |
+| Final main chain | RFCE -> REL-REAL -> TVAN -> Palais-Smale -> Rigidity -> Ec=Ecar -> two-sided scattering | pending |
 
-The 36-page Lean-min and 133-page W20 files are support sources only.
+## Current first cut-set
 
-## Foundation boundary
+1. function-level stereographic derivative bridge;
+2. Hodge reconstruction at the exact function/distribution level used by the paper;
+3. covariant product-rule derivative bridge;
+4. Plancherel + Fourier multiplier connection for the low-frequency estimates;
+5. exact HLS instance connection to the paper norm objects.
 
-The verification may use:
-
-- Lean/Mathlib foundations and standard analysis;
-- exact theorems already published in the literature.
-
-It may **not** use an internal result of this manuscript as an axiom.
-
-The short manuscript's compressed `Hgeo` module must therefore be expanded from the private proof source and verified as an internal dependency. The `Hstd` package must be split into exact source-audited published interfaces; any component not justified by a published theorem becomes an internal obligation.
-
-## Closed-manuscript theorem chain
-
-| ID | Manuscript label | Role | Lean status |
-|---|---|---|---|
-| C00 | `def:Hstd` | standard critical analytic package | SOURCE AUDIT REQUIRED |
-| C01 | `hyp:Hgeo` | proved balanced geometry / finite-time rigidity / observer ledger | INTERNAL EXPANSION REQUIRED |
-| C02 | `thm:carrier` | carrier scalarization + energy compression + subthreshold NLS scattering | pending |
-| C03 | `thm:carrier-shadow` | full-time true-map shadowing of strict-subthreshold carrier | pending |
-| C04 | `thm:wilson` | Wilson conjugation + energy barrier + threshold preservation | pending |
-| C05 | `thm:superposition` | finite Wilson-renormalized nonlinear-profile superposition | pending |
-| C06 | `thm:stability` | finite-control stability + energy-space closure | pending |
-| C07 | `thm:covcoer` | actual covariance + carrier-center removal + NLS coercivity | pending |
-| C08 | `thm:cluster` | finite-carrier cluster normal form + nonresonant quadratic structure | pending |
-| C09 | `thm:packing` | packet covariance packing + IMS + LCA no-reuse | pending |
-| C10 | `thm:rpsum` | rough phase-space packet summation | pending |
-| C11 | `thm:profile-lift` | true nonlinear S²-valued lift of linear profiles | pending |
-| C12 | `thm:gforest` | coarse-to-fine relative-frame forest | pending |
-| C13 | `thm:PS` | enhanced balanced/carrier Palais-Smale reduction | pending |
-| C14 | `thm:rigidity` | actual-covariance observer rigidity | pending |
-| C15 | `thm:main` | main scattering theorem | pending |
-
-## Dependency spine
-
-[
-egin{aligned}
-&C00+C01\
-&Downarrow\
-&C02	o C03	o C04	o C05	o C06,\
-&C07	o C08	o C09	o C10,\
-&C11	o C12,\
-&(C05,C06,C10,C11,C12)	o C13,\
-&(C01,C07,C10)	o C14,\
-&(C13,C14)	o C15.
-end{aligned}
-]
-
-## Migration material
-
-Earlier T001–T094 and N001–N033 files are **not authoritative numbering**. They are proof-mining/formalization material. Each may be reused only after an explicit mapping to one of C00–C15 or to a sublemma in the 18-page authority.
-
-## Full verification completion criterion
-
-Full-paper PASS requires:
-
-1. C00 is reduced entirely to exact published/standard interfaces;
-2. C01 is internally proved/formalized rather than assumed;
-3. C02–C14 compile with exact manuscript statements;
-4. C15 follows from C13+C14 with no hidden internal premise;
-5. no `sorry`, `admit`, or custom internal `axiom`;
-6. the Library TeX/PDF hashes match `status/MANUSCRIPT_SYNC.md`.
+Only after these are closed is Section 2 promoted from finite-kernel PASS to full analytic PASS.
