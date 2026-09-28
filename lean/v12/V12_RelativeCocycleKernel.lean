@@ -12,6 +12,8 @@ No sorry/admit/custom axiom.
 
 namespace SMScattering.W20Full
 
+noncomputable section
+
 open Complex
 
 def phase (x : ℂ) : ℂ := Complex.exp (Complex.I * x)
