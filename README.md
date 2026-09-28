@@ -1,22 +1,45 @@
 # Schrödinger Maps — Lean Verification
 
-Public Lean verification workspace for selected proof-bearing components of a Schrödinger maps scattering project.
+Public Lean verification workspace for the short sub-`4π` Schrödinger-map scattering manuscript.
 
-## Scope
+## Verification target
 
-This repository intentionally contains **Lean verification code only** together with the minimal Lean/Lake/CI configuration needed to compile it.
+The manuscript being verified is **not** the 133-page W20 research master.
 
-It does **not** contain the research manuscript, TeX source, PDF, or unpublished proof notes.
+Current target:
+
+- `SM_Lean_Min_v4_SYNC_T025_T027_20260918`
+- 36 pages
+- main threshold: `E < E_car = ||Q_gs||_2^2 < 4π`
+- target conclusion: two-sided free Schrödinger scattering of the normalized Coulomb derivative field
+- theorem inventory: T001–T094
+
+The long `stereo_scalar_scattering_v20_W20` manuscript is used only as a private proof-mining source when an abbreviated Lean-min node needs expansion.
+
+## Scope of this public repository
+
+This repository intentionally contains only:
+
+- Lean verification code;
+- Lean/Lake configuration;
+- CI configuration;
+- verification/status ledgers.
+
+It intentionally contains **no manuscript TeX, no manuscript PDF, and no unpublished proof source**.
 
 ## Verification policy
 
-- No `sorry`, `admit`, or custom `axiom` declarations.
-- Published/standard external interfaces must be explicitly identified in the Lean sources.
-- Internal proof-bearing nodes are intended to be proved rather than postulated.
-- GitHub Actions recompiles the public Lean verification files.
+- no `sorry`;
+- no `admit`;
+- no custom `axiom` declarations for internal paper nodes;
+- standard analysis / published external results must be explicitly registered;
+- internal v*/w* nodes must be proved, not postulated;
+- a node is PASS only when its Lean statement matches the synchronized 36-page manuscript.
 
-## Current public snapshot
+## Current migration state
 
-Source verification snapshot: private working branch `section2-strict-sync`, commit `0681282c197012f204785bccabcd5057668bfd95`.
+- imported migration batch: `SM_V21_N001_N033_MEGA_RESYNC_20260920.lean`;
+- current public split files include T001 and Section-2/analytic kernels;
+- remaining theorem-by-theorem work continues through T094.
 
-The public repository is a verification mirror only; the manuscript remains separate and private.
+The manuscript itself remains in the user's ChatGPT Library and is synchronized to this repository by filename/hash records only.
