@@ -3383,7 +3383,7 @@ theorem v15_thm_fullN_stability
     dsimp [ε]
     calc
       C * (gap / (2 * (C + 1)))
-          = (gap / 2) * (C / (C + 1)) := by field_simp; ring
+          = (gap / 2) * (C / (C + 1)) := by field_simp
       _ < (gap / 2) * 1 :=
         mul_lt_mul_of_pos_left hratio hg2
       _ = gap / 2 := by ring
@@ -3399,7 +3399,7 @@ theorem v15_thm_fullN_stability
 
 #print axioms v15_thm_fullN_stability
 
-
+end
 
 end SMLeanMinV1
 
@@ -3415,7 +3415,6 @@ theorem v21_N025_mix_first_order_core
   rw [Finset.sum_mul]
   simp_rw [mul_sub]
   rw [Finset.sum_sub_distrib]
-  ring
 #print axioms v21_N025_mix_first_order_core
 end SMLeanMinV1
 
@@ -3994,7 +3993,8 @@ theorem helper_v17_Coulomb_unique_gradient_zero
   have hg := hgauge x
   rw [hcanonical x, sub_self] at hg
   have hp : (-Complex.I * star (h x)) * dh x = 0 := by
-    simpa [mul_assoc] using hg.symm  exact (mul_eq_zero.mp hp).resolve_left hfac_ne
+    simpa [mul_assoc] using hg.symm
+  exact (mul_eq_zero.mp hp).resolve_left hfac_ne
 
 #print axioms helper_v17_Coulomb_unique_gradient_zero
 
