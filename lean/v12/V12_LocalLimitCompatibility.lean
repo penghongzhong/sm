@@ -1,5 +1,5 @@
 import Mathlib
-import «V12_FrequencyTightnessLimit»
+import «lean.v12.V12_FrequencyTightnessLimit»
 
 namespace SMScattering.W20Full
 
