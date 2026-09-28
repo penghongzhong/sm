@@ -20,11 +20,16 @@ theorem temporal_coulomb_symbol
     (hpoisson : r2 * A0 = divF) :
     A0 = 4 * (quadS / r2) - 2 * mass := by
   rw [hdiv] at hpoisson
-  apply (eq_div_iff hr).2
+  have hmul : A0 * r2 = 4 * quadS - 2 * mass * r2 := by
+    calc
+      A0 * r2 = r2 * A0 := by ring
+      _ = 4 * quadS - 2 * r2 * mass := hpoisson
+      _ = 4 * quadS - 2 * mass * r2 := by ring
   calc
-    A0 * r2 = r2 * A0 := by ring
-    _ = 4 * quadS - 2 * r2 * mass := hpoisson
-    _ = (4 * (quadS / r2) - 2 * mass) * r2 := by
+    A0 = (A0 * r2) / r2 := by
+      field_simp [hr]
+    _ = (4 * quadS - 2 * mass * r2) / r2 := by rw [hmul]
+    _ = 4 * (quadS / r2) - 2 * mass := by
       field_simp [hr] <;> ring
 
 #print axioms temporal_coulomb_symbol
