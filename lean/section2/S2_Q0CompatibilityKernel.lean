@@ -16,7 +16,7 @@ theorem q0_compatibility_numerator
     lap / g - 2 * zbar * sigma / g^2
       =
     (lap - 2 * zbar * sigma / g) / g := by
-  field_simp [hg]
+  field_simp [hg] <;> ring
 
 /-- Pure numerator identity used after expanding ∂_j g and i a_j. -/
 theorem q0_spatial_numerator
