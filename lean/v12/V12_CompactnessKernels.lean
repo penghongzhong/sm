@@ -86,10 +86,45 @@ theorem v12_near_far_epsilon_kernel
     total ≤ eps := by
   linarith
 
+
+/--
+Actual L2 x L2 -> L1 bilinear difference estimate.
+This is the continuum Hölder bridge behind the tensor, mass and connection
+product convergence in v12:thm:closure.
+-/
+theorem v12_L2_bilinear_to_L1_difference
+    {X E F G : Type*} [MeasurableSpace X]
+    [NormedAddCommGroup E] [NormedSpace ℂ E]
+    [NormedAddCommGroup F] [NormedSpace ℂ F]
+    [NormedAddCommGroup G] [NormedSpace ℂ G]
+    (μ : Measure X)
+    (B : E →L[ℂ] F →L[ℂ] G)
+    (fn f : Lp E 2 μ) (gn g : Lp F 2 μ) :
+    ‖(B.holderL μ 2 2 1) fn gn - (B.holderL μ 2 2 1) f g‖
+      ≤ ‖B‖ * ‖fn - f‖ * ‖gn‖
+        + ‖B‖ * ‖f‖ * ‖gn - g‖ := by
+  let H := B.holderL μ 2 2 1
+  have hid :
+      H fn gn - H f g =
+        H (fn - f) gn + H f (gn - g) := by
+    dsimp [H]
+    simp only [map_sub]
+    abel
+  rw [hid]
+  calc
+    ‖H (fn - f) gn + H f (gn - g)‖
+        ≤ ‖H (fn - f) gn‖ + ‖H f (gn - g)‖ := norm_add_le _ _
+    _ ≤ (‖B‖ * ‖fn - f‖ * ‖gn‖)
+        + (‖B‖ * ‖f‖ * ‖gn - g‖) := by
+          exact add_le_add
+            (B.norm_holder_apply_apply_le (fn - f) gn)
+            (B.norm_holder_apply_apply_le f (gn - g))
+
 #print axioms v12_closure_product_difference_kernel
 #print axioms v12_closure_hodge_far_kernel
 #print axioms v12_closure_hodge_far_integral
 #print axioms v12_near_far_epsilon_kernel
+#print axioms v12_L2_bilinear_to_L1_difference
 #print axioms v12_closure_pointwise_product_limit
 #print axioms v12_tightness_cauchy_kernel
 #print axioms v12_tightness_holder_exponent
