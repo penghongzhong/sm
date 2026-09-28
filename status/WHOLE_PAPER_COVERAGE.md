@@ -1,31 +1,48 @@
 # Whole-paper Lean coverage ledger
 
-Goal: verify the full scattering proof relative only to explicitly registered standard analysis results and published external theorems. A row is **PASS** only when the Lean statement matches the synchronized manuscript claim and CI compiles it without `sorry`, `admit`, custom `axiom`, or a paper conclusion smuggled in as a hypothesis.
+Verification target: `SM_Lean_Min_v4_SYNC_T025_T027_20260918` (36 pages).
 
-| Layer | Manuscript nodes | Public Lean status |
+Goal: verify the full short-paper scattering chain relative only to explicitly registered standard analysis results and published external theorems. A node is **PASS** only when its Lean statement matches the synchronized short manuscript and compiles without `sorry`, `admit`, custom `axiom`, or an internal paper conclusion smuggled in as a hypothesis.
+
+## Theorem inventory
+
+The theorem-by-theorem manual inventory contains **94 proof-bearing nodes**:
+
+- T001: coefficient budget;
+- T002–T003: Smith spaces and exact published-input whitelist;
+- T004–T028: weak forcing, causal envelopes, Volterra, short/long stability;
+- T029–T057: compactness, realization, wave operator, peeling, TVAN, Palais–Smale, rigidity, finite-S scattering, Wilson/REL-REAL;
+- T058–T078: RFCE static / projected-torsion block;
+- T079–T092: RFCE dynamic / principal magnetic block;
+- T093: Lean-min RFCE closure;
+- T094: Lean-min main scattering chain.
+
+Current imported mega-batch: N001–N033 only. N034–N094 still require migration/splitting and exact synchronization.
+
+## Current status
+
+| Range | Meaning | Status |
 |---|---|---|
-| Section 2 coefficient algebra | `v12:lem:coeff` | T001 finite/registered analytic kernel PASS; full analytic layer pending |
-| Section 2 stereographic curvature | chart curvature identity | jet algebra PASS; function/derivative bridge pending |
-| Section 2 Hodge reconstruction | Hodge uniqueness + kernel | Fourier-symbol uniqueness PASS; distribution/function-space bridge pending |
-| Section 2 electric curvature | `v12:lem:electric` | finite product-rule algebra PASS; analytic derivative bridge pending |
-| Section 2 low-frequency budget | low-curvature Plancherel/multiplier/HLS step | finite constants + Plancherel interface PASS; exact multiplier/HLS connection pending |
-| v13-v14 analysis | Smith whitelist, HHL, weak forcing, Volterra, stability | migration N001-N033 imported; theorem-by-theorem promotion pending |
-| v15 profile front end | mixed reduction / screening / minimal profile | pending |
-| v16-v20 realization and finite-S scattering | realization, rough flow, peeling, finite-S scattering | pending |
-| W1-W5 terminal radiation/profile reduction | wave operator, coherent propagation, TVAN -> PS, finite rigidity | pending |
-| W7-W10 NLS shadow / observer / rigidity / REL-REAL | carrier shadow, covariance, observer, global rigidity, screen deletion | pending |
-| W11-W14 RFCE reduction | affine freeze, projected torsion, grouped/Jacobian reductions | pending |
-| W19-W20 RFCE closure | T1, T2, principal forest repair | pending |
-| Final main chain | RFCE -> REL-REAL -> TVAN -> Palais-Smale -> Rigidity -> Ec=Ecar -> two-sided scattering | pending |
+| T001 | coefficient budget | finite algebra compiled previously; full exact analytic interface recheck pending |
+| T002–T003 | resolution definition / external source whitelist | pending promotion |
+| T004–T028 | weak forcing / causal / Volterra / stability | imported partially through N001–N033; theorem-by-theorem recheck pending |
+| T029–T033 | first compactness/realization nodes | imported partially through N001–N033; recheck pending |
+| T034–T057 | remaining compactness/realization/rigidity front end | not yet migrated to public verified files |
+| T058–T078 | RFCE static | not yet migrated |
+| T079–T092 | RFCE dynamic | not yet migrated |
+| T093 | RFCE closure | not yet migrated |
+| T094 | final main theorem | not yet migrated |
 
-## Current first cut-set
+## External-foundation boundary
 
-The earliest unresolved analytic obligations are:
+Allowed foundations are the standard-analysis list stated in the short manuscript plus the exact published Smith results registered in T003. Internal nodes bearing v*/w* source labels are never external axioms.
 
-1. function-level stereographic derivative bridge;
-2. Hodge reconstruction at the exact function/distribution level used by the paper;
-3. covariant product-rule derivative bridge;
-4. Plancherel + Fourier multiplier connection for the low-frequency estimates;
-5. exact HLS instance connection to the paper norm objects.
+## Full-paper completion criterion
 
-Only after these are closed is Section 2 promoted from finite-kernel PASS to full analytic PASS.
+The verification is complete only when:
+
+1. T001–T094 all have exact synchronized Lean statements;
+2. every internal node is proved rather than postulated;
+3. every allowed external theorem has an exact source/interface record;
+4. the dependency tree reaches T094 with no unverified internal edge;
+5. the final TeX/PDF hashes match `status/MANUSCRIPT_SYNC.md`.
