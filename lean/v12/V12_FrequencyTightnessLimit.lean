@@ -463,6 +463,43 @@ theorem v12_common_subsequence_local_compatibility_direct
 #print axioms v12_nested_localize_direct
 #print axioms v12_common_subsequence_local_compatibility_direct
 
+/--
+The manuscript tail plus fixed-cutoff compactness now yields a single
+subsequence, local L2 limits on every cylinder, and compatibility of all those
+limits under nested restriction.
+-/
+theorem v12_tightness_compatible_from_tail
+    (a b M : ℝ)
+    (Q : ℕ → V12SlabL2 a b)
+    (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
+    (hM : 0 ≤ M)
+    (hQ : ∀ n, ‖Q n‖ ≤ M)
+    (hP : ∀ k, ‖P k‖ ≤ 1)
+    (hFreqTight :
+      Tendsto (fun k => v12_tailSup a b Q P k) atTop (𝓝 0))
+    (hCompact : ∀ R k, IsCompact
+      (closure (Set.range (fun n => v12_localize a b R (P k (Q n)))))) :
+    ∃ (σ : ℕ → ℕ) (q : ∀ R, V12CylinderL2 a b R),
+      StrictMono σ
+        ∧
+      (∀ R,
+        Tendsto (fun n => v12_localize a b R (Q (σ n)))
+          atTop (𝓝 (q R)))
+        ∧
+      (∀ {R S : ℕ} (hRS : R ≤ S),
+        v12_nested_localize a b hRS (q S) = q R) := by
+  obtain ⟨σ, hσ, hlim⟩ :=
+    v12_tightness_common_subsequence_from_tail
+      a b M Q P hM hQ hP hFreqTight hCompact
+  choose q hq using hlim
+  refine ⟨σ, q, hσ, hq, ?_⟩
+  intro R S hRS
+  exact v12_common_subsequence_local_compatibility_direct
+    a b Q σ q hq hRS
+
+#print axioms v12_tightness_compatible_from_tail
+
+
 
 /-! ===== merged from lean/v12/V12_FiniteSlabEnergy.lean ===== -/
 
