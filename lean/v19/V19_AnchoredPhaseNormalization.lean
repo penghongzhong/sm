@@ -138,11 +138,64 @@ theorem v19_density_extension_limit
     linarith
   simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using herr
 
+
+/--
+Moving-vector version used in both the bounded-time and pseudo-conformal
+branches: uniform operator norm one plus a unit scalar lets convergence on the
+limit vector transfer to a convergent sequence of test vectors.
+-/
+theorem v19_moving_vector_extension_inequality
+    {H : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (A : ℕ → H →L[ℂ] H) (c : ℕ → ℂ)
+    (v : ℕ → H) (vstar : H) (n : ℕ)
+    (hA : ‖A n‖ ≤ 1)
+    (hc : ‖c n‖ = 1) :
+    ‖A n (v n) - c n • v n‖
+      ≤ 2 * ‖v n - vstar‖
+        + ‖A n vstar - c n • vstar‖ := by
+  exact v19_density_extension_inequality
+    A c (v n) vstar n hA hc
+
+theorem v19_moving_vector_extension_limit
+    {H : Type*} [NormedAddCommGroup H] [NormedSpace ℂ H]
+    (A : ℕ → H →L[ℂ] H) (c : ℕ → ℂ)
+    (v : ℕ → H) (vstar : H)
+    (hv : Tendsto v atTop (𝓝 vstar))
+    (hA : ∀ n, ‖A n‖ ≤ 1)
+    (hc : ∀ n, ‖c n‖ = 1)
+    (hstar :
+      Tendsto (fun n => ‖A n vstar - c n • vstar‖)
+        atTop (𝓝 0)) :
+    Tendsto (fun n => ‖A n (v n) - c n • v n‖)
+      atTop (𝓝 0) := by
+  apply Metric.tendsto_atTop.mpr
+  intro ε hε
+  obtain ⟨N1, hN1⟩ :=
+    Metric.tendsto_atTop.mp hv (ε / 6) (by linarith)
+  obtain ⟨N2, hN2⟩ :=
+    Metric.tendsto_atTop.mp hstar (ε / 3) (by linarith)
+  refine ⟨max N1 N2, ?_⟩
+  intro n hn
+  have hvn := hN1 n (le_trans (Nat.le_max_left _ _) hn)
+  have hsn := hN2 n (le_trans (Nat.le_max_right _ _) hn)
+  have hvn' : ‖v n - vstar‖ < ε / 6 := by
+    simpa [dist_eq_norm] using hvn
+  have hsn' : ‖A n vstar - c n • vstar‖ < ε / 3 := by
+    simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using hsn
+  have hbound :=
+    v19_moving_vector_extension_inequality
+      A c v vstar n (hA n) (hc n)
+  have herr : ‖A n (v n) - c n • v n‖ < ε := by
+    linarith
+  simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using herr
+
 #print axioms v19_unit_phase_norm
 #print axioms v19_variance_controls_mean_modulus
 #print axioms v19_anchor_phase_agreement
 #print axioms v19_anchor_local_error_limit
 #print axioms v19_density_extension_inequality
 #print axioms v19_density_extension_limit
+#print axioms v19_moving_vector_extension_inequality
+#print axioms v19_moving_vector_extension_limit
 
 end SMScattering.W20Full
