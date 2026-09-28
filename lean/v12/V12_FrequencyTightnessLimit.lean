@@ -113,8 +113,9 @@ noncomputable def v12_slab_measure (a b : ℝ) : Measure V12Spacetime :=
 def v12_spatial_cylinder (R : ℕ) : Set V12Spacetime :=
   {z | ‖z.2‖ < (R : ℝ) + 1}
 
-abbrev V12SlabL2 (a b : ℝ) := Lp V12Field 2 (v12_slab_measure a b)
-abbrev V12CylinderL2 (a b : ℝ) (R : ℕ) :=
+/-- Explicit Type annotations take the carrier of Mathlib's Lp additive subgroup. -/
+abbrev V12SlabL2 (a b : ℝ) : Type := Lp V12Field 2 (v12_slab_measure a b)
+abbrev V12CylinderL2 (a b : ℝ) (R : ℕ) : Type :=
   Lp V12Field 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R))
 
 /-- The actual continuous linear restriction, not an unspecified norm symbol. -/
