@@ -232,7 +232,9 @@ theorem v19_fixed_phase_dense_class_extension
     Metric.tendsto_atTop.mp hTestNorm (ε / 4) hquarter
   refine ⟨N, ?_⟩
   intro n hn
-  have hcore : ‖A n (j d) - c n • j d‖ < ε / 4 := hN n hn
+  have hcoreDist := hN n hn
+  have hcore : ‖A n (j d) - c n • j d‖ < ε / 4 := by
+    simpa [Real.dist_eq, abs_of_nonneg (norm_nonneg _)] using hcoreDist
   have hbound :=
     v19_density_extension_inequality A c f (j d) n (hA n) (hc n)
   have herr : ‖A n f - c n • f‖ < ε := by
@@ -242,16 +244,16 @@ theorem v19_fixed_phase_dense_class_extension
 /-- Unit phases admit a convergent subsequence on the compact unit circle. -/
 theorem v19_unit_phase_convergent_subsequence
     (c : ℕ → ℂ) (hc : ∀ n, ‖c n‖ = 1) :
-    ∃ c∞ : ℂ, ‖c∞‖ = 1 ∧
+    ∃ cLim : ℂ, ‖cLim‖ = 1 ∧
       ∃ σ : ℕ → ℕ, StrictMono σ ∧
-        Tendsto (fun n => c (σ n)) atTop (𝓝 c∞) := by
+        Tendsto (fun n => c (σ n)) atTop (𝓝 cLim) := by
   have hmem : ∀ n, c n ∈ Metric.sphere (0 : ℂ) 1 := by
     intro n
     simpa [Metric.mem_sphere, dist_zero_left] using hc n
-  obtain ⟨c∞, hc∞, σ, hσ, hlim⟩ :=
+  obtain ⟨cLim, hcLim, σ, hσ, hlim⟩ :=
     (isCompact_sphere (0 : ℂ) 1).tendsto_subseq hmem
-  refine ⟨c∞, ?_, σ, hσ, hlim⟩
-  simpa [Metric.mem_sphere, dist_zero_left] using hc∞
+  refine ⟨cLim, ?_, σ, hσ, hlim⟩
+  simpa [Metric.mem_sphere, dist_zero_left] using hcLim
 
 /--
 Quantifier-closed terminal bridge for v19:lem:phase-profile-constant:
@@ -267,19 +269,19 @@ theorem v19_phase_profile_quantifier_bridge
     (hc : ∀ n, ‖c n‖ = 1)
     (hTest : ∀ d,
       Tendsto (fun n => A n (j d) - c n • j d) atTop (𝓝 0)) :
-    ∃ (c∞ : ℂ) (σ : ℕ → ℕ),
-      ‖c∞‖ = 1
+    ∃ (cLim : ℂ) (σ : ℕ → ℕ),
+      ‖cLim‖ = 1
         ∧ StrictMono σ
-        ∧ Tendsto (fun n => c (σ n)) atTop (𝓝 c∞)
+        ∧ Tendsto (fun n => c (σ n)) atTop (𝓝 cLim)
         ∧ ∀ f : H,
           Tendsto
             (fun n => A (σ n) f - c (σ n) • f)
             atTop (𝓝 0) := by
   have hAll :=
     v19_fixed_phase_dense_class_extension j hj A c hA hc hTest
-  obtain ⟨c∞, hc∞, σ, hσ, hcLim⟩ :=
+  obtain ⟨cLim, hcLim, σ, hσ, hcLim⟩ :=
     v19_unit_phase_convergent_subsequence c hc
-  refine ⟨c∞, σ, hc∞, hσ, hcLim, ?_⟩
+  refine ⟨cLim, σ, hcLim, hσ, hcLim, ?_⟩
   intro f
   exact (hAll f).comp hσ.tendsto_atTop
 
