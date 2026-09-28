@@ -1,42 +1,49 @@
 # Manuscript sync record
 
-Public verification repository: `penghongzhong/sm`
+Public verification repository: `penghongzhong/sm`.
 
-This repository contains Lean verification material only. The manuscript source and PDF are stored separately in the user's ChatGPT Library and are intentionally not committed here.
+This public repository contains Lean verification material only. The manuscript TeX/PDF remains in the user's ChatGPT Library and is synchronized here only by filename and hash.
 
-## Current verification target
+## Closed manuscript authority
 
-The manuscript being verified is the short Lean-oriented Schrödinger-map scattering paper:
+- TeX: `SM_Q_threshold_scattering_theorem_chain_repaired_cn.tex`
+- PDF: `SM_Q_threshold_scattering_theorem_chain_repaired_cn.pdf`
+- PDF pages: 18
+- TeX SHA-256: `a55ff2da41d8013b0d494c10d1ce75b6915e02c1ed78e9c0302391461b7c41d4`
+- PDF SHA-256: `cb82c3a5e69c965ee51c5e2471a910b33fe6fcf017887dbea7e736048c1349b8`
+- threshold: `E < E_car = ||Q||_2^2 < 4π`
+- sync date: 2026-09-28
 
-- TeX filename: `SM_Lean_Min_v4_SYNC_T025_T027_20260918.tex`
-- PDF filename: `SM_Lean_Min_v4_SYNC_T025_T027_20260918.pdf`
-- PDF pages: 36
-- Title: `二维球极复标量 Schrödinger Map 阈下散射 — Lean 最短证明稿 v4（T025–T027 同步展开）`
-- Main threshold: `E < E_car = ||Q_gs||_2^2 < 4π`
-- TeX SHA-256: `86bebcf905183159be8e3e946e2151722b1786033c1a19e14bb976b435879836`
-- PDF SHA-256: `f943390e6e86ae62431c2b2a7607366e71a8f79523b3eb4df043e00ed3a2f506`
-- Sync date: 2026-09-28
+## Authority hierarchy
 
-## Source hierarchy
+1. **Verification authority:** the 18-page closed theorem-chain manuscript above.
+2. **Lean migration source:** `SM_Lean_Min_v4_SYNC_T025_T027_20260918` and later N001–N033 semantic-resync material.
+3. **Long proof-mining source:** `stereo_scalar_scattering_v20_W20`.
 
-- Verification target: the 36-page Lean-min v4 manuscript above.
-- Long proof source / proof-mining authority: `stereo_scalar_scattering_v20_W20`.
-- Imported Lean migration batch: `SM_V21_N001_N033_MEGA_RESYNC_20260920.lean`.
+The 36-page Lean-min file and the 133-page W20 file are not the manuscript being certified.
 
-The 133-page W20 manuscript is **not** the public verification target. It is used only as a private proof source when a compressed theorem in the Lean-min manuscript needs expansion.
+## Verification boundary
 
-Because the migration batch was later semantically resynchronized, every imported theorem must be checked against the 36-page target before it is promoted to PASS.
+The 18-page manuscript describes the proof as closed relative to:
+- a standard critical analytic package; and
+- a previously proved balanced-rigidity module.
+
+During formal verification, each such input must be classified as either:
+- an exact published theorem / standard-analysis interface; or
+- an internal theorem that must itself be formalized from the private proof source.
+
+A compressed internal module is never accepted merely because the short manuscript names it.
 
 ## Synchronization rule
 
-A mathematically substantive Lean failure must be handled in this order:
+If Lean exposes a substantive issue:
 
-1. identify the exact theorem/equation in the 36-page verification target;
-2. if needed, proof-mine the corresponding long W20 source;
-3. repair the ChatGPT-Library TeX target;
-4. compile and visually verify the Library PDF;
-5. update the corresponding Lean theorem;
-6. rerun Lean/CI;
-7. update the hashes above.
+1. locate the exact theorem/equation in the 18-page authority;
+2. classify the dependency as published/standard or internal;
+3. if internal, proof-mine the longer private source and formalize the missing bridge;
+4. repair the Library TeX if the human proof statement needs correction;
+5. compile the Library PDF;
+6. update Lean and rerun verification;
+7. update hashes here.
 
-No manuscript body, TeX source, or PDF may be added to this public repository.
+No manuscript TeX/PDF may be committed to the public repository.
