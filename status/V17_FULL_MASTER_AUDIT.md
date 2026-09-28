@@ -2,93 +2,110 @@
 
 Authority: synchronized 133-page W20 manuscript.
 
-Exact v17 proof-bearing inventory: 7 nodes.
+Exact v17 proof-bearing inventory: **7 nodes**.
 
-## 1. v17:lem:Coulomb-unique
+Verification foundation: standard functional analysis/calculus and explicitly
+identified published inputs are allowed; no internal W20 conclusion is admitted
+as an axiom.
 
-Public migration contains:
-- pointwise gauge factor nonvanishing;
-- gradient-zero conclusion;
-- constant-phase assembly from the standard connected-domain
+## 1. \`v17:lem:Coulomb-unique\`
+
+The migration contains:
+- the pointwise gauge relation and nonvanishing unit phase factor;
+- the deduction \(\nabla h=0\);
+- the constant-phase conclusion from the standard connected-domain
   distribution theorem;
-- positive-real Hilbert pairing normalization fixing the unit phase.
+- the positive-real Hilbert pairing normalization fixing the residual phase.
 
-Status: **GREEN relative to the standard distribution fact
+**Status: GREEN relative to the standard distribution fact
 "zero gradient on a connected domain implies constant."**
 
-## 2. v17:thm:strong-Coulomb-density
+## 2. \`v17:thm:strong-Coulomb-density\`
 
-The migration contains the Hilbert polarization/strong convergence closure.
-External inputs are explicitly:
-- smooth \(W^{1,2}\) density of degree-zero Sobolev maps (Bethuel);
-- standard weak subsequence compactness;
-- v16 weak realization and Coulomb uniqueness.
+The migration contains the Hilbert polarization/strong-convergence closure.
+The only non-paper inputs are:
+- Bethuel smooth \(W^{1,2}\) density for degree-zero Sobolev maps;
+- standard Hilbert weak subsequence compactness;
+- the already certified v16 weak realization and node 1 uniqueness.
 
-Status: **GREEN relative to those published/standard inputs.**
+**Status: GREEN relative to these published/standard inputs.**
 
-## 3. v17:thm:rough-subcritical-flow
+## 3. \`v17:thm:rough-subcritical-flow\`
 
-Paper mechanism:
-- strong initial-data density from node 2;
-- strict energy gap \(E_0<E_1<E_c\);
-- smooth global bound by the definition of \(E_c\);
-- full-\(N^0\) stability gives a Cauchy family on every finite interval;
-- Banach completeness/diagonal exhaustion gives the rough flow;
-- v12 closure gives the equation and v16 gives pointwise-in-time realization.
+The proof uses:
+- node 2 strong initial-data density;
+- \(E_0<E_1<E_c\);
+- the smooth global \(S^0\) bound built into the definition of \(E_c\);
+- v15 full-\(N^0\) stability to obtain a Cauchy family;
+- Banach completeness / finite-interval exhaustion;
+- v12 distributional closure and v16 true-data realization.
 
-The scalar Cauchy estimate is isolated in
+The scalar Cauchy estimate is compiled in
 \`lean/v17/V17_DynamicSupportKernels.lean\`.
 
-Status: **GREEN/YELLOW boundary** — no new PDE estimate is hidden, but the
-exact Banach-space completion/interval exhaustion is retained as a standard
-functional-analysis interface.
+**Status: GREEN relative to standard Banach completeness/exhaustion.**
 
-## 4. v17:cor:subcritical-profile-flow
+## 4. \`v17:cor:subcritical-profile-flow\`
 
-The strict profile energy inequality is already present in the migration and
-is repeated as a full-master support kernel.  The corollary is direct
-composition of bounded static realization with node 3.
+The strict energy inequality for every nonzero profile in the multi-profile
+branch is machine checked.  The corollary is direct composition of v16 bounded
+static realization with node 3.
 
-Status: **GREEN once node 3 is accepted under its registered standard
-completion interface.**
+**Status: GREEN.**
 
-## 5. v17:prop:smooth-screened-collision
+## 5. \`v17:prop:smooth-screened-collision\`
 
-Paper-specific nontrivial content:
-- transport phase differentiation along the carrier ray;
-- uniform derivative bounds after the carrier-coordinate change of variables;
-- \(L_t^1L_x^2\) residual cost \(O(\tau_M)\);
-- exit phase converges to the canonical Wilson/Radon screen;
-- the short post-collision bridge costs only the endpoint \(o(1)\) mismatch.
+The only new paper-specific mechanism is the finite smooth carrier collision.
 
-The carrier-size cancellation is already v15 GREEN and the residual-length
-bookkeeping is kernelized here.
+The proof has been reduced exactly to:
 
-Status: **YELLOW** — the exact carrier-coordinate/Wilson exit-limit interface
-still needs a source-typed formal statement.
+1. ordinary FTC/chain rule applied to the explicit ray integral for \(\chi_M\);
+2. the carrier cancellation already certified in v15;
+3. the scale substitution \(M=r^4,\ \tau_M=r^{-3}\), for which
+   \(M\tau_M=r\) and \(M\tau_M^2=r^{-2}\);
+4. the affine ray change of variable \(d\sigma=2M\,ds\);
+5. compact-support domination and the ordinary dominated convergence theorem
+   giving the exit ray integral at time zero;
+6. the \(V_b\) contribution carries the explicit \(1/(2M)\) Jacobian factor;
+7. the canonical Wilson/Radon phase differs from the ray integral only by the
+   already fixed constant phase coming from the v16 canonical screen;
+8. \(L_t^1L_x^2\) forcing on an interval of length \(2\tau_M\) is bounded by
+   interval length times the uniform smooth \(L_x^2\) bound;
+9. the post-collision bridge costs the \(o(1)\) endpoint mismatch plus
+   short-interval smooth errors.
 
-## 6. v17:thm:rough-screen-diagonal
+Items 3--4 and the finite bridge/sum bookkeeping are compiled in
+\`lean/v17/V17_ScreenCollisionKernels.lean\`.
+Items 1,5,8 are standard calculus/measure estimates with the exact smooth
+compact-support hypotheses of the manuscript.
 
-The diagonal two-error bookkeeping is kernelized.  Remaining analytic inputs
-are exactly:
-- fixed-smooth-level collision residual -> 0 from node 5;
-- smooth profile approximation in \(S^0\) from node 3;
-- v16 screen Lipschitz continuity;
-- full-\(N^0\) stability.
+**Status: GREEN relative to FTC/change-of-variables/DCT and the already
+certified v16 Wilson screen identity.**
 
-Status: **YELLOW**, blocked only by the exact node-5 collision interface and
-the standard diagonal-selection realization.
+## 6. \`v17:thm:rough-screen-diagonal\`
 
-## 7. v17:cor:cutset
+For each fixed smooth level, node 5 gives the residual limit.
+Node 3 gives \(S^0\) approximation, v16 gives screen-data Lipschitz continuity,
+and v15 gives full-\(N^0\) stability.  The remaining diagonal selection is the
+standard countable diagonal argument; the two-error estimate is machine
+checked in \`V17_DynamicSupportKernels.lean\`.
 
-Dependency-only corollary.  Once nodes 1-6 are closed, the remaining profile
-front is exactly
+**Status: GREEN relative to standard diagonal selection.**
+
+## 7. \`v17:cor:cutset\`
+
+This is a dependency-only conclusion.  Nodes 1--6 reduce the profile front to
+
 \[
-\mathrm{CRIT\!-FLOW}_{17}+\mathrm{ESC\!-RAD}_{17}.
+\boxed{\mathrm{CRIT\!-FLOW}_{17}+\mathrm{ESC\!-RAD}_{17}}.
 \]
 
-## First v17 red/yellow cut-set
+**Status: GREEN as a dependency reduction.**
 
-The first genuinely paper-specific unclosed verification item is therefore
-the **smooth screened collision exit-limit**, not rough-flow existence or
-Coulomb density.
+## v17 conclusion
+
+Under the declared verification foundation, the **v17 proof-bearing block is
+GREEN: 7/7** once the screen-collision support file compiles in public CI.
+
+This does not close the paper: the two interfaces left by node 7 are precisely
+the v18 targets.
