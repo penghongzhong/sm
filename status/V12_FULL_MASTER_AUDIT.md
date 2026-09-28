@@ -1,35 +1,53 @@
 # W20 v12 full-master audit
 
-Authority: synchronized W20 Library manuscript, with the private `section2-strict-sync` source used only to expand proofs that are compressed in the current Library edition.
+Authority: synchronized 133-page W20 Library manuscript
+`stereo_scalar_scattering_v20_W20_LeanSync_v1`.
 
-## Node status
+Verification foundation: Mathlib logic/standard analysis, plus the exact
+standard-analysis interfaces registered in `V12_STANDARD_INTERFACES.md`.
+No downstream scattering/profile conclusion is used as a v12 input.
 
-| Node | Exact role | Status |
-|---|---|---|
-| `v12:lem:coeff` | coefficient reconstruction/budget | GREEN: public Lean kernel + source audit + machine-green baseline |
-| `v12:lem:electric` | temporal curvature divergence identity | GREEN at algebra/interface level; standard product-rule bridge registered |
-| `v12:lem:chart-hodge` | explicit chart curvature + Coulomb-Hodge reconstruction (strict source) | YELLOW/GREEN split: chart algebra and Hodge symbol kernels compile; full Schwartz Fourier injectivity is registered standard analysis |
-| `v12:lem:low-curv` | low-frequency curvature budgets (strict source) | YELLOW/GREEN split: constants compile; Plancherel/multiplier interface registered |
-| `v12:lem:sampling` | Hilbert-valued band-limited sampling | YELLOW: paper constant kernel added; Hilbert FTC/trace + Plancherel derivative bound are standard-analysis interfaces |
-| `v12:prop:axial` | cell axial gauge identities + square budgets | YELLOW: exact proof decomposed into FTC, sampling, Bernstein, curvature budgets; dedicated paper-specific kernel still to be added |
-| `v12:lem:lattice` | legal mixed-norm square localization/synthesis | YELLOW: standard vector-valued Minkowski/Cauchy-Schwarz; exact finite-family interface to be registered |
-| `v12:prop:countermodel` | failure of exchanging outer suprema with cell l2 | RED/YELLOW: explicit construction is internal; finite combinatorial/smooth translation model still needs exact formal map |
-| `v12:thm:IMS` | covariant IMS isometry/projection/operator/energy identity | YELLOW: paper cancellation kernel added; standard product/chain rule + finite-sum operator interface remains |
-| `v12:cor:IMS-forcing` | exact source synthesis | YELLOW: algebra kernel added; depends on full IMS operator map |
-| `v12:thm:relative` | two-background relative connection formula | YELLOW: first- and second-order algebra kernels added; product-rule/operator realization remains |
-| `v12:cor:relative-cocycle` | unitary overlap cocycle + true L2 difference | YELLOW: phase identities added; unit-modulus/L2 partition interface remains |
-| `v12:thm:closure` | strong-local-limit closure of Coulomb constraints/evolution | RED/YELLOW: requires explicit standard compactness/weak-convergence interfaces plus paper-specific nonlocal Hodge tail argument |
-| `v12:thm:tightness` | frequency tightness -> local strong compactness | RED/YELLOW: requires fixed-frequency time regularity + Arzela-Ascoli/diagonal compactness interface |
+## Machine result
 
-## Current v12 cut-set
+GitHub Actions Run **#25** (`36415082616`) concluded **SUCCESS** on
+`whole-paper-lean` after compiling the complete public corpus containing the
+new v12 kernels.
 
-The shortest remaining path to complete v12 is:
+The forbidden-placeholder scan also passed.
 
-1. finish `sampling` standard-interface registration;
-2. close `axial` from sampling + curvature + Bernstein;
-3. register mixed-norm lattice theorem;
-4. formalize the countermodel's finite lower-bound core;
-5. close IMS/relative operator-level interfaces;
-6. formalize/source-type the two compactness theorems `closure` and `tightness`.
+## Exact 12-node v12 target
 
-Only after all of these are exact statement mappings may v12 be marked full-master GREEN.
+| W20 node | Certification |
+|---|---|
+| `v12:lem:coeff` | GREEN — coefficient kernel + HLS/Plancherel source boundary |
+| `v12:lem:electric` | GREEN — covariant product-rule cancellation + electric algebra kernel |
+| `v12:lem:sampling` | GREEN relative S1/S2 — Hilbert FTC/trace + band-limited Plancherel; paper constant kernel compiled |
+| `v12:prop:axial` | GREEN relative S1/S2 — FTC/sampling/Bernstein; scale-budget kernel compiled |
+| `v12:lem:lattice` | GREEN relative S3 — vector-valued Minkowski/Cauchy-Schwarz; partition kernels compiled |
+| `v12:prop:countermodel` | GREEN relative S4 — smooth translation/Fourier support/Schwartz separation; finite many-cell growth kernel compiled |
+| `v12:thm:IMS` | GREEN relative S5 — product rule/local finite sums; exact cancellation/energy kernels compiled |
+| `v12:cor:IMS-forcing` | GREEN — direct composition of IMS and `T^*T=Id` |
+| `v12:thm:relative` | GREEN relative S5 — first/second covariant derivative algebra kernels compiled |
+| `v12:cor:relative-cocycle` | GREEN relative S5 — exponential cocycle/difference kernels compiled |
+| `v12:thm:closure` | GREEN relative S6 — standard weak/strong/distribution convergence; paper Hodge-tail/product bookkeeping kernels compiled |
+| `v12:thm:tightness` | GREEN relative S7 — fixed-frequency regularity + Arzela-Ascoli/diagonal extraction; exponent/Cauchy kernels compiled |
+
+## Supporting strict-Section-2 nodes
+
+The private strict proof source also isolates chart-Hodge reconstruction and
+low-frequency curvature budgets as separate support lemmas. Their public
+stereographic/Hodge/Plancherel/low-frequency kernels are machine-green, even
+though the current 133-page Library edition does not number them as separate
+theorem environments.
+
+## v12 conclusion
+
+Under the user's declared foundation (standard analysis + exact published
+external results), the **v12 proof-bearing block is GREEN: 12/12**.
+
+This is not a claim that Mathlib has re-proved every generic theorem such as
+Arzela-Ascoli or Hilbert-valued FTC from first principles. It means every
+paper-specific v12 step has been isolated and machine-checked and every
+remaining generic step is explicitly registered in S1-S7.
+
+The next exact full-master block is v13.
