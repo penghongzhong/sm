@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: whole-paper-lean
 
       - name: Install Lean toolchain
         uses: leanprover/lean-action@v1
