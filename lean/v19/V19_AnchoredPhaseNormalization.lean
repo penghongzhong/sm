@@ -1,11 +1,9 @@
 import Mathlib.Tactic
 
 /-!
-Support for the fixed-anchor repair of v19:lem:phase-profile-constant.
-The phase is selected from the mean on ONE fixed ball, before choosing
-any test function or larger ball. The analytic L2 overlap bounds must still
-be instantiated from the actual Poincare/measure-space objects in W20.
-This file is not a certificate for the full PDE or operator theorem.
+Fixed-anchor support for v19:lem:phase-profile-constant.
+Select the normalized mean on ONE fixed ball before choosing any test.
+Actual L2 overlap and Fourier operator instances remain proof obligations.
 -/
 
 namespace SMScattering.W20Full
@@ -23,7 +21,6 @@ theorem v19_unit_phase_norm (z : ℂ) : ‖v19_unit_phase z‖ = 1 := by
       Complex.norm_of_nonneg (norm_nonneg z)]
     exact div_self (norm_ne_zero_iff.mpr hz)
 
-/-- The quantitative mean-normalization step is derived, not assumed. -/
 theorem v19_variance_controls_mean_modulus
     (r variance : ℝ) (hr : 0 ≤ r) (hv : 0 ≤ variance)
     (hid : r ^ 2 + variance = 1) :
@@ -32,7 +29,6 @@ theorem v19_variance_controls_mean_modulus
   have hprod : 0 ≤ r * (1 - r) := mul_nonneg hr (sub_nonneg.mpr hr1)
   constructor <;> nlinarith
 
-/-- Overlap on a fixed positive-measure anchor forces phase agreement. -/
 theorem v19_anchor_phase_agreement
     (c d : ℕ → ℂ) (e1 eR : ℕ → ℝ) (a : ℝ)
     (ha : 0 < a)
@@ -48,7 +44,6 @@ theorem v19_anchor_phase_agreement
     simpa using (h1.add hR).div_const a
   exact squeeze_zero (fun n => norm_nonneg _) hupper hzero
 
-/-- Once anchored phases agree, every fixed larger-ball error vanishes. -/
 theorem v19_anchor_local_error_limit
     (c d : ℕ → ℂ) (localErr nearErr : ℕ → ℝ) (b : ℝ)
     (hNonneg : ∀ n, 0 ≤ localErr n)
@@ -56,9 +51,10 @@ theorem v19_anchor_local_error_limit
     (hNear : Tendsto nearErr atTop (𝓝 0))
     (hPhase : Tendsto (fun n => ‖c n - d n‖) atTop (𝓝 0)) :
     Tendsto localErr atTop (𝓝 0) := by
+  have hconst : Tendsto (fun _ : ℕ => b) atTop (𝓝 b) := tendsto_const_nhds
   have hzero : Tendsto (fun n => nearErr n + b * ‖c n - d n‖)
       atTop (𝓝 0) := by
-    simpa using hNear.add (tendsto_const_nhds.mul hPhase)
+    simpa using hNear.add (hconst.mul hPhase)
   exact squeeze_zero hNonneg hBound hzero
 
 #print axioms v19_unit_phase_norm

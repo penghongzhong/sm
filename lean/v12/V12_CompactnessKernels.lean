@@ -1,11 +1,9 @@
 import Mathlib.Tactic
 
 /-!
-Partial support for W20 v12 closure/tightness. The old product and Hodge
-lemmas repeated the desired inequalities as hypotheses. They are replaced
-by actual complex-product and finite-sum norm inequalities below.
-Finite-sum Hodge control is NOT a proof of the continuum convolution bound.
-Pointwise convergence is NOT a proof of local L2/L1 convergence.
+Partial support for W20 v12 closure/tightness. Replaces goal-as-hypothesis
+wrappers by actual complex-product and finite-sum norm proofs.
+Finite sums are not continuum convolutions; scalar limits are not L2 limits.
 -/
 
 namespace SMScattering.W20Full
@@ -13,18 +11,15 @@ namespace SMScattering.W20Full
 open scoped BigOperators Topology
 open Filter
 
-/-- Pointwise product difference, with no assumed norm estimate. -/
 theorem v12_closure_product_difference_kernel
     (An Qn A Q : ℂ) :
-    ‖An * Qn - A * Q‖ ≤
-      ‖An - A‖ * ‖Qn‖ + ‖A‖ * ‖Qn - Q‖ := by
+    ‖An * Qn - A * Q‖ ≤ ‖An - A‖ * ‖Qn‖ + ‖A‖ * ‖Qn - Q‖ := by
   have hid : An * Qn - A * Q = (An - A) * Qn + A * (Qn - Q) := by ring
   calc
     ‖An * Qn - A * Q‖ = ‖(An - A) * Qn + A * (Qn - Q)‖ := by rw [hid]
     _ ≤ ‖(An - A) * Qn‖ + ‖A * (Qn - Q)‖ := norm_add_le _ _
     _ = ‖An - A‖ * ‖Qn‖ + ‖A‖ * ‖Qn - Q‖ := by rw [norm_mul, norm_mul]
 
-/-- Genuine finite-sum kernel control; no bound on the sum is assumed. -/
 theorem v12_closure_hodge_far_kernel
     {ι : Type*} [Fintype ι] (K b : ι → ℂ) (κ : ℝ)
     (hK : ∀ i, ‖K i‖ ≤ κ) :
@@ -36,12 +31,13 @@ theorem v12_closure_hodge_far_kernel
       Finset.sum_le_sum (fun i _ => mul_le_mul_of_nonneg_right (hK i) (norm_nonneg _))
     _ = κ * ∑ i, ‖b i‖ := by rw [Finset.mul_sum]
 
-/-- Actual sequential product limit over complex scalars. -/
 theorem v12_closure_pointwise_product_limit
     (An Qn : ℕ → ℂ) (A Q : ℂ)
     (hA : Tendsto An atTop (𝓝 A)) (hQ : Tendsto Qn atTop (𝓝 Q)) :
     Tendsto (fun n => An n * Qn n - A * Q) atTop (𝓝 0) := by
-  simpa using (hA.mul hQ).sub tendsto_const_nhds
+  have hconst : Tendsto (fun _ : ℕ => A * Q) atTop (𝓝 (A * Q)) :=
+    tendsto_const_nhds
+  simpa using (hA.mul hQ).sub hconst
 
 theorem v12_tightness_cauchy_kernel
     (tailN tailN' lowDiff totalDiff eps : ℝ)
