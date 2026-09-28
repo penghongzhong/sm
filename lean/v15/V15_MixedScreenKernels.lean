@@ -5,6 +5,7 @@ W20 full-master v15 finite algebra:
 - cross quadratic expansion in ordered-pair form;
 - mixed first-order residual with the cross connection;
 - carrier-size transport phase cancellation;
+- screened-superposition -> mixed-forcing dependency;
 - final frequency-tightness triangle bookkeeping.
 
 The passage from ordered pairs to the paper's a<b notation is ordinary finite
@@ -58,6 +59,20 @@ theorem v15_screen_carrier_cancel
     -A0 + dtChi - 2 * Axi + 2 * xiGrad = 0 := by
   linarith
 
+/--
+Logical assembly of v15:prop:mix-reduction after the analytic pairwise
+orthogonality estimates have been supplied.
+-/
+theorem v15_mix_forcing_reduction_dependency
+    (Realized ScreenSup CrossSmall MixedForc : Prop)
+    (hRealized : Realized)
+    (hScreen : ScreenSup)
+    (hCross : Realized → CrossSmall)
+    (hAssemble :
+      Realized → ScreenSup → CrossSmall → MixedForc) :
+    MixedForc :=
+  hAssemble hRealized hScreen (hCross hRealized)
+
 theorem v15_frequency_tightness_triangle
     (tailQ strongDiff tailPhi eps : ℝ)
     (htotal : tailQ ≤ strongDiff + tailPhi)
@@ -70,6 +85,7 @@ theorem v15_frequency_tightness_triangle
 #print axioms v15_cross_square_ordered
 #print axioms v15_mixed_first_order_with_cross
 #print axioms v15_screen_carrier_cancel
+#print axioms v15_mix_forcing_reduction_dependency
 #print axioms v15_frequency_tightness_triangle
 
 end SMScattering.W20Full
