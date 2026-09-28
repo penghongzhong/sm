@@ -48,8 +48,18 @@ theorem relative_difference_phase_identity
     rw [← Complex.exp_add]
     congr 1
     ring
-  rw [hphase]
-  ring
+  calc
+    Complex.exp (-Complex.I * q) * Q
+        - Complex.exp (Complex.I * (p - q))
+            * (Complex.exp (-Complex.I * p) * P)
+      =
+      Complex.exp (-Complex.I * q) * Q
+        - (Complex.exp (Complex.I * (p - q))
+            * Complex.exp (-Complex.I * p)) * P := by ring
+    _ =
+      Complex.exp (-Complex.I * q) * Q
+        - Complex.exp (-Complex.I * q) * P := by rw [hphase]
+    _ = Complex.exp (-Complex.I * q) * (Q - P) := by ring
 
 #print axioms phase_cocycle
 #print axioms relative_phase_cocycle
