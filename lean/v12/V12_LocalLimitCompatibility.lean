@@ -17,7 +17,7 @@ theorem v12_spatial_cylinder_measurable (R : ℕ) :
     MeasurableSet (v12_spatial_cylinder R) := by
   have hopen : IsOpen (v12_spatial_cylinder R) := by
     rw [v12_spatial_cylinder]
-    exact isOpen_lt continuous_norm (continuous_const.add continuous_const)
+    exact isOpen_lt (continuous_norm.comp continuous_snd) continuous_const
   exact hopen.measurableSet
 
 theorem v12_nested_measure_eq
