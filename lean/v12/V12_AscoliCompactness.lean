@@ -76,6 +76,40 @@ theorem v12_ascoli_L2_compact_closure
 
 #print axioms v12_ascoli_L2_compact_closure
 
+
+theorem v12_ascoli_continuous_image_compact_closure
+    {X Y : Type*}
+    [MetricSpace X] [CompactSpace X]
+    [NormedAddCommGroup Y] [NormedSpace ℂ Y]
+    (F : ℕ → C(X, V12Field))
+    (J : C(X, V12Field) →L[ℂ] Y)
+    (M : ℝ) (hM : 0 ≤ M)
+    (hEq :
+      Equicontinuous
+        ((↑) : Set.range F → X → V12Field))
+    (hBound : ∀ n x, ‖F n x‖ ≤ M) :
+    IsCompact
+      (closure (Set.range (fun n => J (F n)))) := by
+  let S : Set C(X, V12Field) := Set.range F
+  have hScompact : IsCompact (closure S) := by
+    apply v12_ascoli_compact_closure S M hM hEq
+    intro g hg x
+    obtain ⟨n, rfl⟩ := hg
+    exact hBound n x
+  have hImageCompact : IsCompact (J '' closure S) :=
+    hScompact.image J.continuous
+  have hImageClosed : IsClosed (J '' closure S) :=
+    hImageCompact.isClosed
+  have hRangeSubset :
+      Set.range (fun n => J (F n)) ⊆ J '' closure S := by
+    intro y hy
+    obtain ⟨n, rfl⟩ := hy
+    exact ⟨F n, subset_closure (Set.mem_range_self n), rfl⟩
+  exact hImageCompact.of_isClosed_subset isClosed_closure
+    (closure_minimal hRangeSubset hImageClosed)
+
+#print axioms v12_ascoli_continuous_image_compact_closure
+
 #print axioms v12_ascoli_compact_closure
 
 end SMScattering.W20Full
