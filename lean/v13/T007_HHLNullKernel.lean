@@ -27,6 +27,45 @@ theorem jacobian_output_frequency_cancel (eta xi : ℝ × ℝ) :
   simp [wedge2]
   ring
 
+
+/-- Euclidean two-dimensional Lagrange identity behind the Jacobian Cauchy bound. -/
+theorem lagrange_identity_2d
+    (a1 a2 b1 b2 : ℝ) :
+    (a1 * b2 - a2 * b1) ^ 2 + (a1 * b1 + a2 * b2) ^ 2
+      =
+    (a1 ^ 2 + a2 ^ 2) * (b1 ^ 2 + b2 ^ 2) := by
+  ring
+
+/--
+Abstract frequency-order form of the high-high-to-low symbol calculation.
+
+If the second high input has size at least M/2, and the Jacobian wedge is
+bounded by |eta| |xi|, then after the output Riesz factor and the two input
+gradient factors the symbol is of order at most 2/M.  The displayed
+cross-multiplied inequality avoids introducing square-root norms/division.
+-/
+theorem jacobian_symbol_order_crossmultiplied
+    (M xiNorm etaNorm thetaNorm wedgeAbs : ℝ)
+    (hM : 0 ≤ M)
+    (hxi : 0 ≤ xiNorm)
+    (heta : 0 ≤ etaNorm)
+    (htheta : M / 2 ≤ thetaNorm)
+    (hwedge : wedgeAbs ≤ etaNorm * xiNorm) :
+    M * wedgeAbs ≤ 2 * xiNorm * etaNorm * thetaNorm := by
+  have hMtheta : M ≤ 2 * thetaNorm := by
+    linarith
+  have hprod0 : 0 ≤ etaNorm * xiNorm := mul_nonneg heta hxi
+  have h1 : M * wedgeAbs ≤ M * (etaNorm * xiNorm) :=
+    mul_le_mul_of_nonneg_left hwedge hM
+  have h2 :
+      M * (etaNorm * xiNorm)
+        ≤ (2 * thetaNorm) * (etaNorm * xiNorm) :=
+    mul_le_mul_of_nonneg_right hMtheta hprod0
+  calc
+    M * wedgeAbs ≤ M * (etaNorm * xiNorm) := h1
+    _ ≤ (2 * thetaNorm) * (etaNorm * xiNorm) := h2
+    _ = 2 * xiNorm * etaNorm * thetaNorm := by ring
+
 /--
 Polarized Jacobian identity used in the two-background difference estimate.
 -/
@@ -60,6 +99,8 @@ theorem small_square_absorb
   nlinarith [mul_le_mul_of_nonneg_right hzsq hCRS]
 
 #print axioms jacobian_output_frequency_cancel
+#print axioms lagrange_identity_2d
+#print axioms jacobian_symbol_order_crossmultiplied
 #print axioms jacobian_polarized_difference
 #print axioms small_square_absorb
 
