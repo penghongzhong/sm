@@ -887,31 +887,34 @@ theorem v12_cutoffN_schwartz_ae_continuousRep
       v12_L2ConvolutionRep
         (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
         (f.toLp 2) := by
-  rw [v12_cutoffN_on_schwartz_eq_convolution
-    p hp_cpt hp_smooth N f]
-  have hconv :=
-    (SchwartzMap.convolution
+  let conv : SchwartzMap V12Spatial V12Field :=
+    SchwartzMap.convolution
       (ContinuousLinearMap.lsmul ℂ ℂ :
         ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
       (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
-      f).coeFn_toLp 2 (volume : Measure V12Spatial)
-  filter_upwards [hconv] with x hx
-  calc
-    ((SchwartzMap.convolution
-      (ContinuousLinearMap.lsmul ℂ ℂ :
-        ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
-      (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
-      f).toLp 2 : V12Spatial → V12Field) x =
-        SchwartzMap.convolution
-          (ContinuousLinearMap.lsmul ℂ ℂ :
-            ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
-          (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
-          f x := hx
-    _ = v12_L2ConvolutionRep
+      f
+  have hL2 :
+      v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2) =
+        conv.toLp 2 := by
+    simpa [conv] using
+      v12_cutoffN_on_schwartz_eq_convolution
+        p hp_cpt hp_smooth N f
+  have hcoe :
+      (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2) :
+        V12Spatial → V12Field) =ᵐ[volume]
+        (conv.toLp 2 : V12Spatial → V12Field) := by
+    rw [hL2]
+  have hconv :
+      (conv.toLp 2 : V12Spatial → V12Field) =ᵐ[volume]
+        v12_L2ConvolutionRep
           (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
-          (f.toLp 2) x :=
+          (f.toLp 2) := by
+    have hbase := conv.coeFn_toLp 2 (volume : Measure V12Spatial)
+    filter_upwards [hbase] with x hx
+    exact hx.trans <|
       (v12_cutoffKernel_rep_eq_schwartzConvolution
         p hp_cpt hp_smooth N f x).symm
+  exact hcoe.trans hconv
 
 #print axioms v12_cutoffKernel_rep_eq_schwartzConvolution
 #print axioms v12_cutoffN_schwartz_ae_continuousRep
