@@ -1424,6 +1424,7 @@ theorem v12_holderConjugate_four_fourThirds :
     ENNReal.HolderConjugate (4 : ℝ≥0∞) ((4 : ℝ≥0∞) / 3) := by
   rw [ENNReal.holderConjugate_iff]
   rw [ENNReal.inv_div (by norm_num) (by norm_num)]
+  rw [inv_eq_one_div, ← add_div]
   norm_num
 
 instance v12_fact_one_le_four :
