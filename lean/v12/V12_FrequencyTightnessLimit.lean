@@ -701,21 +701,11 @@ theorem v12_cutoffN_on_schwartz_eq_convolution
           ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
         (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
         f).toLp 2 := by
-  apply (Lp.fourierTransformₗᵢ V12Spatial V12Field).injective
-  change
-    𝓕 (𝓕⁻ (v12_L2Multiplier
-      (v12_cutoffSymbolLInf p hp_cpt hp_smooth N)
-      (𝓕 (f.toLp 2)))) =
-    𝓕 ((SchwartzMap.convolution
-      (ContinuousLinearMap.lsmul ℂ ℂ :
-        ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
-      (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
-      f).toLp 2)
-  rw [fourier_fourierInv_eq,
-    SchwartzMap.toLp_fourier_eq, SchwartzMap.fourier_convolution]
-  simpa [v12_cutoffKernelSchwartz] using
-    v12_cutoffMultiplier_on_fourierSchwartz
-      p hp_cpt hp_smooth N f
+  rw [v12_cutoffN_apply, SchwartzMap.toLp_fourier_eq,
+    v12_cutoffMultiplier_on_fourierSchwartz p hp_cpt hp_smooth N f,
+    SchwartzMap.toLp_fourierInv_eq]
+  congr 1
+  simp [SchwartzMap.convolution, v12_cutoffKernelSchwartz]
 
 #print axioms v12_cutoffN_on_schwartz_eq_convolution
 
