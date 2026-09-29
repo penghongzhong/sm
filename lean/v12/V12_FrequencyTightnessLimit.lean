@@ -490,6 +490,153 @@ theorem v12_symbolToLInf_ae
 #print axioms v12_symbolToLInf_ae
 
 
+/-! ===== actual L2 convolution continuous representative ===== -/
+
+/-- Scalar spatial L2 kernel space. -/
+abbrev V12ScalarL2 : Type := Lp (α := V12Spatial) ℂ 2
+
+/-- The continuous family (x,y) ↦ x-y, curried in x. -/
+noncomputable def v12_subLeftFamily :
+    C(V12Spatial, C(V12Spatial, V12Spatial)) :=
+  ContinuousMap.curry
+    ⟨fun z : V12Spatial × V12Spatial => z.1 - z.2, by fun_prop⟩
+
+@[simp]
+theorem v12_subLeftFamily_apply (x y : V12Spatial) :
+    v12_subLeftFamily x y = x - y := rfl
+
+/-- Pull a scalar L2 kernel back by the measure-preserving map y ↦ x-y. -/
+noncomputable def v12_reflectedTranslate
+    (k : V12ScalarL2) (x : V12Spatial) : V12ScalarL2 :=
+  Lp.compMeasurePreserving
+    (v12_subLeftFamily x)
+    ((volume : Measure V12Spatial).measurePreserving_sub_left x) k
+
+theorem v12_reflectedTranslate_ae
+    (k : V12ScalarL2) (x : V12Spatial) :
+    (v12_reflectedTranslate k x : V12Spatial → ℂ)
+      =ᵐ[(volume : Measure V12Spatial)] fun y => k (x - y) := by
+  simpa [v12_reflectedTranslate, Function.comp_def] using
+    (Lp.coeFn_compMeasurePreserving k
+      ((volume : Measure V12Spatial).measurePreserving_sub_left x))
+
+@[simp]
+theorem v12_reflectedTranslate_norm
+    (k : V12ScalarL2) (x : V12Spatial) :
+    ‖v12_reflectedTranslate k x‖ = ‖k‖ := by
+  simpa [v12_reflectedTranslate] using
+    (Lp.norm_compMeasurePreserving k
+      ((volume : Measure V12Spatial).measurePreserving_sub_left x))
+
+/-- x ↦ k(x-·) is continuous as an L2-valued map. -/
+theorem v12_continuous_reflectedTranslate (k : V12ScalarL2) :
+    Continuous (v12_reflectedTranslate k) := by
+  have hg : Continuous (fun x : V12Spatial => v12_subLeftFamily x) :=
+    v12_subLeftFamily.continuous
+  have hgm : ∀ x : V12Spatial,
+      MeasurePreserving (v12_subLeftFamily x)
+        (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
+    intro x
+    change MeasurePreserving (fun y : V12Spatial => x - y)
+      (volume : Measure V12Spatial) (volume : Measure V12Spatial)
+    exact (volume : Measure V12Spatial).measurePreserving_sub_left x
+  simpa [v12_reflectedTranslate] using
+    (Continuous.compMeasurePreservingLp
+      (μ := (volume : Measure V12Spatial))
+      (ν := (volume : Measure V12Spatial))
+      (E := ℂ) (p := (2 : ℝ≥0∞))
+      (f := fun _ : V12Spatial => k)
+      (g := fun x : V12Spatial => v12_subLeftFamily x)
+      continuous_const hg hgm (by norm_num : (2 : ℝ≥0∞) ≠ ∞))
+
+/-- The L2-L2 Hölder pairing implementing scalar-kernel convolution. -/
+noncomputable def v12_L2ConvolutionPairing :
+    V12ScalarL2 →L[ℂ] V12SpatialL2 →L[ℂ] V12Field :=
+  (ContinuousLinearMap.lsmul ℂ ℂ (E := V12Field)).lpPairing
+    (volume : Measure V12Spatial) 2 2
+
+/-- Continuous pointwise representative of k*f. -/
+noncomputable def v12_L2ConvolutionRep
+    (k : V12ScalarL2) (f : V12SpatialL2) (x : V12Spatial) : V12Field :=
+  v12_L2ConvolutionPairing (v12_reflectedTranslate k x) f
+
+theorem v12_continuous_L2ConvolutionRep
+    (k : V12ScalarL2) (f : V12SpatialL2) :
+    Continuous (v12_L2ConvolutionRep k f) := by
+  simpa [v12_L2ConvolutionRep] using
+    (v12_L2ConvolutionPairing.continuous₂.comp₂
+      (v12_continuous_reflectedTranslate k) continuous_const)
+
+/-- The bundled pairing is exactly the usual convolution integral. -/
+theorem v12_L2ConvolutionRep_eq_integral
+    (k : V12ScalarL2) (f : V12SpatialL2) (x : V12Spatial) :
+    v12_L2ConvolutionRep k f x =
+      ∫ y : V12Spatial, k (x - y) • f y := by
+  rw [v12_L2ConvolutionRep, v12_L2ConvolutionPairing,
+    ContinuousLinearMap.lpPairing_eq_integral]
+  apply integral_congr_ae
+  filter_upwards [v12_reflectedTranslate_ae k x] with y hy
+  rw [hy]
+
+/-- Uniform pointwise estimate at fixed kernel. -/
+theorem v12_L2ConvolutionRep_norm_le
+    (k : V12ScalarL2) (f : V12SpatialL2) (x : V12Spatial) :
+    ‖v12_L2ConvolutionRep k f x‖ ≤
+      ‖v12_L2ConvolutionPairing‖ * ‖k‖ * ‖f‖ := by
+  calc
+    ‖v12_L2ConvolutionRep k f x‖
+        = ‖v12_L2ConvolutionPairing (v12_reflectedTranslate k x) f‖ := rfl
+    _ ≤ ‖v12_L2ConvolutionPairing (v12_reflectedTranslate k x)‖ * ‖f‖ :=
+      (v12_L2ConvolutionPairing (v12_reflectedTranslate k x)).le_opNorm f
+    _ ≤ (‖v12_L2ConvolutionPairing‖ *
+          ‖v12_reflectedTranslate k x‖) * ‖f‖ := by
+      gcongr
+      exact v12_L2ConvolutionPairing.le_opNorm (v12_reflectedTranslate k x)
+    _ = ‖v12_L2ConvolutionPairing‖ * ‖k‖ * ‖f‖ := by
+      rw [v12_reflectedTranslate_norm]
+
+/-- Spatial differences reduce to the L2 translation modulus of the fixed kernel. -/
+theorem v12_L2ConvolutionRep_dist_le
+    (k : V12ScalarL2) (f : V12SpatialL2) (x y : V12Spatial) :
+    dist (v12_L2ConvolutionRep k f x) (v12_L2ConvolutionRep k f y) ≤
+      ‖v12_L2ConvolutionPairing‖ *
+        dist (v12_reflectedTranslate k x) (v12_reflectedTranslate k y) * ‖f‖ := by
+  rw [dist_eq_norm, v12_L2ConvolutionRep]
+  have hmap :
+      v12_L2ConvolutionPairing
+          (v12_reflectedTranslate k x - v12_reflectedTranslate k y) =
+        v12_L2ConvolutionPairing (v12_reflectedTranslate k x) -
+          v12_L2ConvolutionPairing (v12_reflectedTranslate k y) :=
+    map_sub v12_L2ConvolutionPairing _ _
+  calc
+    ‖v12_L2ConvolutionPairing (v12_reflectedTranslate k x) f -
+        v12_L2ConvolutionPairing (v12_reflectedTranslate k y) f‖
+        = ‖v12_L2ConvolutionPairing
+            (v12_reflectedTranslate k x - v12_reflectedTranslate k y) f‖ := by
+          rw [hmap]
+          rfl
+    _ ≤ ‖v12_L2ConvolutionPairing
+          (v12_reflectedTranslate k x - v12_reflectedTranslate k y)‖ * ‖f‖ :=
+      (v12_L2ConvolutionPairing
+        (v12_reflectedTranslate k x - v12_reflectedTranslate k y)).le_opNorm f
+    _ ≤
+        (‖v12_L2ConvolutionPairing‖ *
+          ‖v12_reflectedTranslate k x - v12_reflectedTranslate k y‖) * ‖f‖ := by
+      gcongr
+      exact v12_L2ConvolutionPairing.le_opNorm
+        (v12_reflectedTranslate k x - v12_reflectedTranslate k y)
+    _ = ‖v12_L2ConvolutionPairing‖ *
+        dist (v12_reflectedTranslate k x) (v12_reflectedTranslate k y) * ‖f‖ := by
+      rw [dist_eq_norm]
+
+#print axioms v12_reflectedTranslate_ae
+#print axioms v12_reflectedTranslate_norm
+#print axioms v12_continuous_reflectedTranslate
+#print axioms v12_continuous_L2ConvolutionRep
+#print axioms v12_L2ConvolutionRep_eq_integral
+#print axioms v12_L2ConvolutionRep_norm_le
+#print axioms v12_L2ConvolutionRep_dist_le
+
 /-! ===== merged from lean/v12/V12_EquicontinuityAdapter.lean ===== -/
 
 open Filter
