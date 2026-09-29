@@ -1308,6 +1308,16 @@ theorem v12_equicontinuous_of_space_time_modulus
 
 /-! ===== finite-measure L^(4/3)-to-L1 time-integrability bridge ===== -/
 
+/-- The exact ENNReal exponent order needed for the finite-measure
+L^(4/3)-to-L1 embedding.  This is kept as a named leaf so pinned Mathlib does
+not have to infer ordered division from a bare `norm_num` call. -/
+theorem v12_one_le_fourThirds_ENNReal :
+    (1 : ℝ≥0∞) ≤ (4 : ℝ≥0∞) / 3 := by
+  apply (ENNReal.le_div_iff_mul_le
+    (Or.inl (by norm_num))
+    (Or.inl (by simp))).2
+  norm_num
+
 /-- On any finite measure space, the L^(4/3) seminorm controls the L1
 seminorm with the exact finite-measure Holder factor.  This is the analytic
 leaf used later on a time subinterval to produce the manuscript 1/4 modulus. -/
@@ -1325,9 +1335,33 @@ theorem v12_eLpNorm_one_le_fourThirds
   exact eLpNorm_le_eLpNorm_mul_rpow_measure_univ
     (p := (1 : ℝ≥0∞))
     (q := ((4 : ℝ≥0∞) / 3))
-    (by norm_num) hG
+    v12_one_le_fourThirds_ENNReal hG
 
+/-- The manuscript time Holder exponent is exactly 1/4. -/
+theorem v12_fourThirds_holder_exponent :
+    1 / (1 : ℝ≥0∞).toReal -
+        1 / (((4 : ℝ≥0∞) / 3).toReal) =
+      (1 : ℝ) / 4 := by
+  norm_num [ENNReal.toReal_div]
+
+/-- Finite-measure L^(4/3)-to-L1 with the exponent rewritten in the exact
+form used by the manuscript time-modulus estimate. -/
+theorem v12_eLpNorm_one_le_fourThirds_quarter
+    {Ω E : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E]
+    (μ : Measure Ω)
+    (G : Ω → E)
+    (hG : AEStronglyMeasurable G μ) :
+    eLpNorm G 1 μ ≤
+      eLpNorm G ((4 : ℝ≥0∞) / 3) μ *
+        μ Set.univ ^ ((1 : ℝ) / 4) := by
+  simpa only [v12_fourThirds_holder_exponent] using
+    v12_eLpNorm_one_le_fourThirds μ G hG
+
+#print axioms v12_one_le_fourThirds_ENNReal
 #print axioms v12_eLpNorm_one_le_fourThirds
+#print axioms v12_fourThirds_holder_exponent
+#print axioms v12_eLpNorm_one_le_fourThirds_quarter
 
 /-! ===== compact-domain Arzela--Ascoli bridge ===== -/
 
