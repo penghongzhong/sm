@@ -565,7 +565,111 @@ theorem v12_ascoli_linear_image_compact
   exact hImage.of_isClosed_subset isClosed_closure
     (closure_minimal hsub hImage.isClosed)
 
+
+/-! ===== Ascoli representative to actual local-L2 bridge ===== -/
+
+/--
+If two local L2 classes admit representatives obtained by evaluating two bounded
+continuous functions along the same parameter map, their L2 distance is bounded
+by the sup-distance times the L2 norm of the constant one function.
+No measurability or continuity of the parameter map is needed here: the actual
+a.e. representative identities are supplied explicitly.
+-/
+theorem v12_localLp_dist_le_sup_of_ae_rep
+    {X Ω : Type*} [MetricSpace X] [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsFiniteMeasure μ]
+    (r : Ω → X)
+    (F G : BoundedContinuousFunction X V12Field)
+    (u v : Lp V12Field 2 μ)
+    (hu : (u : Ω → V12Field) =ᵐ[μ] fun z => F (r z))
+    (hv : (v : Ω → V12Field) =ᵐ[μ] fun z => G (r z)) :
+    dist u v ≤
+      dist F G * ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖ := by
+  rw [dist_eq_norm]
+  apply Lp.norm_le_mul_norm_of_ae_le_mul
+    (g := Lp.const (2 : ℝ≥0∞) μ (1 : ℝ))
+  filter_upwards [Lp.coeFn_sub u v, hu, hv,
+    Lp.coeFn_const (p := (2 : ℝ≥0∞)) (μ := μ) (c := (1 : ℝ))] with z hsub huz hvz hone
+  rw [hsub, huz, hvz, hone]
+  simp only [norm_one, mul_one]
+  simpa only [dist_eq_norm] using
+    (BoundedContinuousFunction.dist_coe_le_dist (f := F) (g := G) (r z))
+
+/--
+A Cauchy sequence in the bounded-continuous sup norm transfers to a Cauchy
+sequence of actual L2 classes whenever all terms have the stated common
+representative map.
+-/
+theorem v12_cauchy_localLp_of_cauchy_bcf
+    {X Ω : Type*} [MetricSpace X] [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsFiniteMeasure μ]
+    (r : Ω → X)
+    (F : ℕ → BoundedContinuousFunction X V12Field)
+    (u : ℕ → Lp V12Field 2 μ)
+    (hF : CauchySeq F)
+    (hRep : ∀ n, (u n : Ω → V12Field) =ᵐ[μ] fun z => F n (r z)) :
+    CauchySeq u := by
+  let C : ℝ := ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖
+  have hC0 : 0 ≤ C := norm_nonneg _
+  by_cases hC : C = 0
+  · apply Metric.cauchySeq_iff.mpr
+    intro ε hε
+    refine ⟨0, ?_⟩
+    intro m _ n _
+    have hle := v12_localLp_dist_le_sup_of_ae_rep
+      μ r (F m) (F n) (u m) (u n) (hRep m) (hRep n)
+    have hle0 : dist (u m) (u n) ≤ 0 := by
+      simpa [C, hC] using hle
+    exact hle0.trans_lt hε
+  · have hCpos : 0 < C := lt_of_le_of_ne hC0 (Ne.symm hC)
+    apply Metric.cauchySeq_iff.mpr
+    intro ε hε
+    obtain ⟨N, hN⟩ :=
+      Metric.cauchySeq_iff.mp hF (ε / C) (div_pos hε hCpos)
+    refine ⟨N, ?_⟩
+    intro m hm n hn
+    have hle := v12_localLp_dist_le_sup_of_ae_rep
+      μ r (F m) (F n) (u m) (u n) (hRep m) (hRep n)
+    calc
+      dist (u m) (u n) ≤ dist (F m) (F n) * C := by
+        simpa [C] using hle
+      _ < (ε / C) * C :=
+        mul_lt_mul_of_pos_right (hN m hm n hn) hCpos
+      _ = ε := div_mul_cancel₀ ε hC
+
+/--
+Ascoli compactness plus an actual a.e. representative identification yields a
+strictly increasing subsequence that is Cauchy in the target local L2 space.
+This is the precise abstract bridge needed before instantiating the manuscript
+fixed-frequency PDE estimates.
+-/
+theorem v12_ascoli_localLp_subsequence
+    {X Ω : Type*} [MetricSpace X] [CompactSpace X] [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsFiniteMeasure μ]
+    (r : Ω → X)
+    (F : ℕ → BoundedContinuousFunction X V12Field)
+    (u : ℕ → Lp V12Field 2 μ)
+    (M : ℝ)
+    (hEq : Equicontinuous ((↑) : Set.range F → X → V12Field))
+    (hBound : ∀ n x, ‖F n x‖ ≤ M)
+    (hRep : ∀ n, (u n : Ω → V12Field) =ᵐ[μ] fun z => F n (r z)) :
+    ∃ σ : ℕ → ℕ, StrictMono σ ∧
+      CauchySeq (fun n => u (σ n)) := by
+  have hK := v12_ascoli_compact_domain F M hEq hBound
+  have hMem : ∀ n, F n ∈ closure (Set.range F) :=
+    fun n => subset_closure (Set.mem_range_self n)
+  obtain ⟨F∞, _, σ, hσ, hlim⟩ := hK.tendsto_subseq hMem
+  refine ⟨σ, hσ, ?_⟩
+  have hFCauchy : CauchySeq (fun n => F (σ n)) := hlim.cauchySeq
+  exact v12_cauchy_localLp_of_cauchy_bcf
+    μ r (fun n => F (σ n)) (fun n => u (σ n))
+    hFCauchy (fun n => hRep (σ n))
+
+
 #print axioms v12_ascoli_compact_domain
 #print axioms v12_ascoli_linear_image_compact
+#print axioms v12_localLp_dist_le_sup_of_ae_rep
+#print axioms v12_cauchy_localLp_of_cauchy_bcf
+#print axioms v12_ascoli_localLp_subsequence
 
 end SMScattering.W20Full
