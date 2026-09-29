@@ -1065,17 +1065,25 @@ theorem v12_restrict_eq_bcfToLp_of_ae
       (BoundedContinuousFunction.toLp
         2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ) F := by
   apply Lp.ext_iff.2
-  have hcut :=
+  have hcut :
+      ((LpToLpRestrictCLM
+        V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
+        (v12_spatial_ball R)) u : V12Spatial → V12Field)
+        =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))]
+          (u : V12Spatial → V12Field) :=
     LpToLpRestrictCLM_coeFn ℂ (v12_spatial_ball R) u
   have hRepLocal :
       (u : V12Spatial → V12Field)
         =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))] F :=
     ae_restrict_of_ae (s := v12_spatial_ball R) hRep
-  have hF :=
+  have hF :
+      ((BoundedContinuousFunction.toLp
+        2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ) F :
+          V12Spatial → V12Field)
+        =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))] F :=
     BoundedContinuousFunction.coeFn_toLp
       2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ F
-  filter_upwards [hcut, hRepLocal, hF] with x hxcut hxrep hxF
-  rw [hxcut, hxrep, hxF]
+  exact hcut.trans (hRepLocal.trans hF.symm)
 
 /-- On Schwartz input, the two local L2 realizations coincide by the already
 verified Fourier/convolution identity and the actual continuous representative. -/
