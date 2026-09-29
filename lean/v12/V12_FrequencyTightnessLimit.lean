@@ -516,17 +516,27 @@ theorem v12_reflectedTranslate_ae
     (k : V12ScalarL2) (x : V12Spatial) :
     (v12_reflectedTranslate k x : V12Spatial → ℂ)
       =ᵐ[(volume : Measure V12Spatial)] fun y => k (x - y) := by
-  simpa [v12_reflectedTranslate, Function.comp_def] using
-    (Lp.coeFn_compMeasurePreserving k
-      ((volume : Measure V12Spatial).measurePreserving_sub_left x))
+  have hmp :
+      MeasurePreserving (v12_subLeftFamily x)
+        (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
+    change MeasurePreserving (fun y : V12Spatial => x - y)
+      (volume : Measure V12Spatial) (volume : Measure V12Spatial)
+    exact (volume : Measure V12Spatial).measurePreserving_sub_left x
+  have h :=
+    Lp.coeFn_compMeasurePreserving k hmp
+  simpa [v12_reflectedTranslate, Function.comp_def] using h
 
 @[simp]
 theorem v12_reflectedTranslate_norm
     (k : V12ScalarL2) (x : V12Spatial) :
     ‖v12_reflectedTranslate k x‖ = ‖k‖ := by
-  simpa [v12_reflectedTranslate] using
-    (Lp.norm_compMeasurePreserving k
-      ((volume : Measure V12Spatial).measurePreserving_sub_left x))
+  have hmp :
+      MeasurePreserving (v12_subLeftFamily x)
+        (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
+    change MeasurePreserving (fun y : V12Spatial => x - y)
+      (volume : Measure V12Spatial) (volume : Measure V12Spatial)
+    exact (volume : Measure V12Spatial).measurePreserving_sub_left x
+  exact Lp.norm_compMeasurePreserving k hmp
 
 /-- x ↦ k(x-·) is continuous as an L2-valued map. -/
 theorem v12_continuous_reflectedTranslate (k : V12ScalarL2) :
@@ -540,14 +550,16 @@ theorem v12_continuous_reflectedTranslate (k : V12ScalarL2) :
     change MeasurePreserving (fun y : V12Spatial => x - y)
       (volume : Measure V12Spatial) (volume : Measure V12Spatial)
     exact (volume : Measure V12Spatial).measurePreserving_sub_left x
-  simpa [v12_reflectedTranslate] using
-    (Continuous.compMeasurePreservingLp
+  change Continuous (fun x : V12Spatial =>
+    Lp.compMeasurePreserving (v12_subLeftFamily x) (hgm x) k)
+  exact
+    Continuous.compMeasurePreservingLp
       (μ := (volume : Measure V12Spatial))
       (ν := (volume : Measure V12Spatial))
       (E := ℂ) (p := (2 : ℝ≥0∞))
       (f := fun _ : V12Spatial => k)
       (g := fun x : V12Spatial => v12_subLeftFamily x)
-      continuous_const hg hgm (by norm_num : (2 : ℝ≥0∞) ≠ ∞))
+      continuous_const hg hgm (by norm_num : (2 : ℝ≥0∞) ≠ ∞)
 
 /-- The L2-L2 Hölder pairing implementing scalar-kernel convolution. -/
 noncomputable def v12_L2ConvolutionPairing :
@@ -563,9 +575,11 @@ noncomputable def v12_L2ConvolutionRep
 theorem v12_continuous_L2ConvolutionRep
     (k : V12ScalarL2) (f : V12SpatialL2) :
     Continuous (v12_L2ConvolutionRep k f) := by
-  simpa [v12_L2ConvolutionRep] using
-    (v12_L2ConvolutionPairing.continuous₂.comp₂
-      (v12_continuous_reflectedTranslate k) continuous_const)
+  change Continuous (fun x : V12Spatial =>
+    v12_L2ConvolutionPairing (v12_reflectedTranslate k x) f)
+  exact
+    v12_L2ConvolutionPairing.continuous₂.comp₂
+      (v12_continuous_reflectedTranslate k) continuous_const
 
 /-- The bundled pairing is exactly the usual convolution integral. -/
 theorem v12_L2ConvolutionRep_eq_integral
@@ -577,6 +591,7 @@ theorem v12_L2ConvolutionRep_eq_integral
   apply integral_congr_ae
   filter_upwards [v12_reflectedTranslate_ae k x] with y hy
   rw [hy]
+  rfl
 
 /-- Uniform pointwise estimate at fixed kernel. -/
 theorem v12_L2ConvolutionRep_norm_le
