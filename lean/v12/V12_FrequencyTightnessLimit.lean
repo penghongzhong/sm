@@ -1152,13 +1152,23 @@ theorem v12_cutoffNBall_eq_convolutionBall
           p hp_cpt hp_smooth N sf
       ] with x hx
       simpa [v12_L2ConvolutionBCFCLM_apply] using hx
-    rw [v12_cutoffNBallCLM_apply, v12_convolutionBallCLM_apply]
-    exact
+    have hlocal :
+        v12_ballRestrictCLM R
+            (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2)) =
+          v12_ballBCFToLpCLM R
+            (v12_L2ConvolutionBCFCLM
+              (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (sf.toLp 2)) :=
       v12_restrict_eq_bcfToLp_of_ae R
         (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2))
         (v12_L2ConvolutionBCFCLM
           (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (sf.toLp 2))
         hRep
+    exact
+      (v12_cutoffNBallCLM_apply
+        p hp_cpt hp_smooth N R (sf.toLp 2)).trans <|
+      hlocal.trans <|
+        (v12_convolutionBallCLM_apply
+          p hp_cpt hp_smooth N R (sf.toLp 2)).symm
 
 #print axioms v12_cutoffNBall_eq_convolutionBall
 
