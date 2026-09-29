@@ -279,9 +279,9 @@ theorem v19_phase_profile_quantifier_bridge
             atTop (𝓝 0) := by
   have hAll :=
     v19_fixed_phase_dense_class_extension j hj A c hA hc hTest
-  obtain ⟨cLim, hcLim, σ, hσ, hcLim⟩ :=
+  obtain ⟨cLim, hnormLim, σ, hσ, hphaseLim⟩ :=
     v19_unit_phase_convergent_subsequence c hc
-  refine ⟨cLim, σ, hcLim, hσ, hcLim, ?_⟩
+  refine ⟨cLim, σ, hnormLim, hσ, hphaseLim, ?_⟩
   intro f
   exact (hAll f).comp hσ.tendsto_atTop
 
@@ -325,10 +325,10 @@ theorem v19_anchor_normalization_from_variance
   have hupper : ∀ n,
       e n ≤ d n + Real.sqrt area * v n := by
     intro n
-    exact (htri n).trans <|
-      add_le_add_left
-        (mul_le_mul_of_nonneg_left (hr1 n) (Real.sqrt_nonneg area))
-        (d n)
+    have hmul :
+        Real.sqrt area * (1 - r n) ≤ Real.sqrt area * v n :=
+      mul_le_mul_of_nonneg_left (hr1 n) (Real.sqrt_nonneg area)
+    exact (htri n).trans (add_le_add le_rfl hmul)
   have hzero :
       Tendsto (fun n => d n + Real.sqrt area * v n) atTop (𝓝 0) := by
     have hc :
