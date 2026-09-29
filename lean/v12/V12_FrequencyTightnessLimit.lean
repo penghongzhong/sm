@@ -1363,6 +1363,57 @@ theorem v12_eLpNorm_one_le_fourThirds_quarter
 #print axioms v12_fourThirds_holder_exponent
 #print axioms v12_eLpNorm_one_le_fourThirds_quarter
 
+/-- The finite-measure embedding applied to an actual Bochner set integral.
+This is the quantitative bridge from an L^(4/3) time source to its L1
+integral on a measurable time set. -/
+theorem v12_enorm_setIntegral_le_fourThirds_quarter
+    {Ω E : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (μ : Measure Ω)
+    (s : Set Ω)
+    (G : Ω → E)
+    (hG : AEStronglyMeasurable G (μ.restrict s)) :
+    ‖∫ x in s, G x ∂μ‖ₑ ≤
+      eLpNorm G ((4 : ℝ≥0∞) / 3) (μ.restrict s) *
+        (μ s) ^ ((1 : ℝ) / 4) := by
+  calc
+    ‖∫ x in s, G x ∂μ‖ₑ
+        ≤ ∫⁻ x, ‖G x‖ₑ ∂(μ.restrict s) := by
+          exact enorm_integral_le_lintegral_enorm
+            (μ := μ.restrict s) G
+    _ = eLpNorm G 1 (μ.restrict s) := by
+          exact (eLpNorm_one_eq_lintegral_enorm hG).symm
+    _ ≤ eLpNorm G ((4 : ℝ≥0∞) / 3) (μ.restrict s) *
+          (μ.restrict s) Set.univ ^ ((1 : ℝ) / 4) :=
+        v12_eLpNorm_one_le_fourThirds_quarter
+          (μ.restrict s) G hG
+    _ = eLpNorm G ((4 : ℝ≥0∞) / 3) (μ.restrict s) *
+          (μ s) ^ ((1 : ℝ) / 4) := by
+        rw [Measure.restrict_apply_univ]
+
+/-- Ordered-interval specialization.  The measure factor is exactly the
+Lebesgue length of (s,t], hence the manuscript |t-s|^(1/4) factor when s ≤ t. -/
+theorem v12_enorm_intervalIntegral_le_fourThirds_quarter_of_le
+    {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (G : ℝ → E)
+    {s t : ℝ}
+    (hst : s ≤ t)
+    (hG :
+      AEStronglyMeasurable G
+        ((volume : Measure ℝ).restrict (Set.Ioc s t))) :
+    ‖∫ τ in s..t, G τ‖ₑ ≤
+      eLpNorm G ((4 : ℝ≥0∞) / 3)
+          ((volume : Measure ℝ).restrict (Set.Ioc s t)) *
+        ENNReal.ofReal (t - s) ^ ((1 : ℝ) / 4) := by
+  rw [intervalIntegral.integral_of_le hst]
+  simpa only [Real.volume_Ioc] using
+    v12_enorm_setIntegral_le_fourThirds_quarter
+      (volume : Measure ℝ) (Set.Ioc s t) G hG
+
+#print axioms v12_enorm_setIntegral_le_fourThirds_quarter
+#print axioms v12_enorm_intervalIntegral_le_fourThirds_quarter_of_le
+
 /-! ===== compact-domain Arzela--Ascoli bridge ===== -/
 
 /--
