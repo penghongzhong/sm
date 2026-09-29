@@ -1051,6 +1051,18 @@ noncomputable def v12_cutoffNBallCLM
   (v12_ballRestrictCLM R) ∘L
     v12_cutoffN p hp_cpt hp_smooth N
 
+
+@[simp]
+theorem v12_cutoffNBallCLM_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N R : ℕ) (f : V12SpatialL2) :
+    v12_cutoffNBallCLM p hp_cpt hp_smooth N R f =
+      v12_ballRestrictCLM R
+        (v12_cutoffN p hp_cpt hp_smooth N f) := by
+  rfl
+
 /-- Put the bounded continuous convolution representative into local L2 on a
 fixed spatial ball. -/
 noncomputable def v12_convolutionBallCLM
@@ -1062,6 +1074,19 @@ noncomputable def v12_convolutionBallCLM
   (v12_ballBCFToLpCLM R) ∘L
     v12_L2ConvolutionBCFCLM
       (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
+
+
+@[simp]
+theorem v12_convolutionBallCLM_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N R : ℕ) (f : V12SpatialL2) :
+    v12_convolutionBallCLM p hp_cpt hp_smooth N R f =
+      v12_ballBCFToLpCLM R
+        (v12_L2ConvolutionBCFCLM
+          (v12_cutoffKernelL2 p hp_cpt hp_smooth N) f) := by
+  rfl
 
 /-- Restricting a global L2 class agrees with the local L2 class of any
 bounded continuous representative that is almost everywhere equal to it. -/
@@ -1102,17 +1127,19 @@ theorem v12_cutoffNBall_eq_convolutionBall
     (f : V12SpatialL2) :
     v12_cutoffNBallCLM p hp_cpt hp_smooth N R f =
       v12_convolutionBallCLM p hp_cpt hp_smooth N R f := by
-  let A := v12_cutoffNBallCLM p hp_cpt hp_smooth N R
-  let B := v12_convolutionBallCLM p hp_cpt hp_smooth N R
   apply DenseRange.induction_on
-    (p := fun g : V12SpatialL2 => A g = B g)
+    (p := fun g : V12SpatialL2 =>
+      v12_cutoffNBallCLM p hp_cpt hp_smooth N R g =
+        v12_convolutionBallCLM p hp_cpt hp_smooth N R g)
     (SchwartzMap.denseRange_toLpCLM
       (E := V12Spatial) (F := V12Field)
       (p := (2 : ℝ≥0∞))
       (μ := (volume : Measure V12Spatial))
       ENNReal.ofNat_ne_top)
     f
-  · exact isClosed_eq A.continuous B.continuous
+  · exact isClosed_eq
+      (v12_cutoffNBallCLM p hp_cpt hp_smooth N R).continuous
+      (v12_convolutionBallCLM p hp_cpt hp_smooth N R).continuous
   · intro sf
     have hRep :
         (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2) :
@@ -1125,12 +1152,7 @@ theorem v12_cutoffNBall_eq_convolutionBall
           p hp_cpt hp_smooth N sf
       ] with x hx
       simpa [v12_L2ConvolutionBCFCLM_apply] using hx
-    change
-      v12_ballRestrictCLM R
-          (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2)) =
-        v12_ballBCFToLpCLM R
-          (v12_L2ConvolutionBCFCLM
-            (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (sf.toLp 2))
+    rw [v12_cutoffNBallCLM_apply, v12_convolutionBallCLM_apply]
     exact
       v12_restrict_eq_bcfToLp_of_ae R
         (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2))
