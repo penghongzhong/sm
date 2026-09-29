@@ -505,38 +505,34 @@ noncomputable def v12_subLeftFamily :
 theorem v12_subLeftFamily_apply (x y : V12Spatial) :
     v12_subLeftFamily x y = x - y := rfl
 
+/-- The exact measure-preserving proof object used everywhere for y ↦ x-y. -/
+theorem v12_subLeft_measurePreserving (x : V12Spatial) :
+    MeasurePreserving (v12_subLeftFamily x)
+      (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
+  change MeasurePreserving (fun y : V12Spatial => x - y)
+    (volume : Measure V12Spatial) (volume : Measure V12Spatial)
+  exact (volume : Measure V12Spatial).measurePreserving_sub_left x
+
 /-- Pull a scalar L2 kernel back by the measure-preserving map y ↦ x-y. -/
 noncomputable def v12_reflectedTranslate
     (k : V12ScalarL2) (x : V12Spatial) : V12ScalarL2 :=
   Lp.compMeasurePreserving
     (v12_subLeftFamily x)
-    ((volume : Measure V12Spatial).measurePreserving_sub_left x) k
+    (v12_subLeft_measurePreserving x) k
 
 theorem v12_reflectedTranslate_ae
     (k : V12ScalarL2) (x : V12Spatial) :
     (v12_reflectedTranslate k x : V12Spatial → ℂ)
       =ᵐ[(volume : Measure V12Spatial)] fun y => k (x - y) := by
-  have hmp :
-      MeasurePreserving (v12_subLeftFamily x)
-        (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
-    change MeasurePreserving (fun y : V12Spatial => x - y)
-      (volume : Measure V12Spatial) (volume : Measure V12Spatial)
-    exact (volume : Measure V12Spatial).measurePreserving_sub_left x
   have h :=
-    Lp.coeFn_compMeasurePreserving k hmp
+    Lp.coeFn_compMeasurePreserving k (v12_subLeft_measurePreserving x)
   simpa [v12_reflectedTranslate, Function.comp_def] using h
 
 @[simp]
 theorem v12_reflectedTranslate_norm
     (k : V12ScalarL2) (x : V12Spatial) :
     ‖v12_reflectedTranslate k x‖ = ‖k‖ := by
-  have hmp :
-      MeasurePreserving (v12_subLeftFamily x)
-        (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
-    change MeasurePreserving (fun y : V12Spatial => x - y)
-      (volume : Measure V12Spatial) (volume : Measure V12Spatial)
-    exact (volume : Measure V12Spatial).measurePreserving_sub_left x
-  exact Lp.norm_compMeasurePreserving k hmp
+  exact Lp.norm_compMeasurePreserving k (v12_subLeft_measurePreserving x)
 
 /-- x ↦ k(x-·) is continuous as an L2-valued map. -/
 theorem v12_continuous_reflectedTranslate (k : V12ScalarL2) :
@@ -545,11 +541,8 @@ theorem v12_continuous_reflectedTranslate (k : V12ScalarL2) :
     v12_subLeftFamily.continuous
   have hgm : ∀ x : V12Spatial,
       MeasurePreserving (v12_subLeftFamily x)
-        (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
-    intro x
-    change MeasurePreserving (fun y : V12Spatial => x - y)
-      (volume : Measure V12Spatial) (volume : Measure V12Spatial)
-    exact (volume : Measure V12Spatial).measurePreserving_sub_left x
+        (volume : Measure V12Spatial) (volume : Measure V12Spatial) :=
+    v12_subLeft_measurePreserving
   change Continuous (fun x : V12Spatial =>
     Lp.compMeasurePreserving (v12_subLeftFamily x) (hgm x) k)
   exact
