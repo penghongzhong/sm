@@ -200,49 +200,37 @@ theorem v12_tail_range_bddAbove
     (a b M : ℝ)
     (Q : ℕ → V12SlabL2 a b)
     (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
-    (hM : 0 ≤ M)
-    (hQ : ∀ n, ‖Q n‖ ≤ M)
-    (hP : ∀ k, ‖P k‖ ≤ 1) :
+    (hQ : ∀ n, ‖Q n‖ ≤ M) :
     ∀ k, BddAbove (Set.range (fun n => ‖Q n - P k (Q n)‖)) := by
   intro k
-  refine ⟨2 * M, ?_⟩
+  refine ⟨M + ‖P k‖ * M, ?_⟩
   rintro y ⟨n, rfl⟩
-  have hPn0 : 0 ≤ ‖Q n‖ := norm_nonneg _
-  have hPk0 : 0 ≤ ‖P k‖ := norm_nonneg _
   have hmap : ‖P k (Q n)‖ ≤ ‖P k‖ * ‖Q n‖ :=
     ContinuousLinearMap.le_opNorm (P k) (Q n)
-  have hmapM : ‖P k (Q n)‖ ≤ M := by
-    calc
-      ‖P k (Q n)‖ ≤ ‖P k‖ * ‖Q n‖ := hmap
-      _ ≤ 1 * M := by
-        exact mul_le_mul (hP k) (hQ n) hPn0 (by norm_num)
-      _ = M := one_mul M
+  have hmapM : ‖P k (Q n)‖ ≤ ‖P k‖ * M := by
+    exact hmap.trans
+      (mul_le_mul_of_nonneg_left (hQ n) (norm_nonneg (P k)))
   calc
     ‖Q n - P k (Q n)‖ ≤ ‖Q n‖ + ‖P k (Q n)‖ := norm_sub_le _ _
-    _ ≤ M + M := add_le_add (hQ n) hmapM
-    _ = 2 * M := by ring
+    _ ≤ M + ‖P k‖ * M := add_le_add (hQ n) hmapM
 
 theorem v12_tail_le_tailSup
     (a b M : ℝ)
     (Q : ℕ → V12SlabL2 a b)
     (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
-    (hM : 0 ≤ M)
-    (hQ : ∀ n, ‖Q n‖ ≤ M)
-    (hP : ∀ k, ‖P k‖ ≤ 1) :
+    (hQ : ∀ n, ‖Q n‖ ≤ M) :
     ∀ k n, ‖Q n - P k (Q n)‖ ≤ v12_tailSup a b Q P k := by
   intro k n
   unfold v12_tailSup
   exact le_csSup
-    (v12_tail_range_bddAbove a b M Q P hM hQ hP k)
+    (v12_tail_range_bddAbove a b M Q P hQ k)
     (Set.mem_range_self n)
 
 theorem v12_manuscript_tail_adapter
     (a b M : ℝ)
     (Q : ℕ → V12SlabL2 a b)
     (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
-    (hM : 0 ≤ M)
     (hQ : ∀ n, ‖Q n‖ ≤ M)
-    (hP : ∀ k, ‖P k‖ ≤ 1)
     (hFreqTight :
       Tendsto (fun k => v12_tailSup a b Q P k) atTop (𝓝 0)) :
     ∃ err : ℕ → ℝ,
@@ -250,7 +238,7 @@ theorem v12_manuscript_tail_adapter
         ∧
       ∀ k n, ‖Q n - P k (Q n)‖ ≤ err k := by
   refine ⟨fun k => v12_tailSup a b Q P k, hFreqTight, ?_⟩
-  exact v12_tail_le_tailSup a b M Q P hM hQ hP
+  exact v12_tail_le_tailSup a b M Q P hQ
 
 #print axioms v12_tail_range_bddAbove
 #print axioms v12_tail_le_tailSup
@@ -296,9 +284,7 @@ theorem v12_tightness_common_subsequence_from_tail
     (a b M : ℝ)
     (Q : ℕ → V12SlabL2 a b)
     (P : ℕ → V12SlabL2 a b →L[ℂ] V12SlabL2 a b)
-    (hM : 0 ≤ M)
     (hQ : ∀ n, ‖Q n‖ ≤ M)
-    (hP : ∀ k, ‖P k‖ ≤ 1)
     (hFreqTight :
       Tendsto (fun k => v12_tailSup a b Q P k) atTop (𝓝 0))
     (hCompact : ∀ R k, IsCompact
@@ -308,7 +294,7 @@ theorem v12_tightness_common_subsequence_from_tail
         Tendsto (fun n => v12_localize a b R (Q (σ n)))
           atTop (𝓝 q) := by
   obtain ⟨err, hErr, hTail⟩ :=
-    v12_manuscript_tail_adapter a b M Q P hM hQ hP hFreqTight
+    v12_manuscript_tail_adapter a b M Q P hQ hFreqTight
   exact v12_spacetime_L2_common_subsequence
     a b Q P err hErr hTail hCompact
 
@@ -532,71 +518,42 @@ theorem v12_equicontinuous_of_space_time_modulus
 
 /--
 For a compact metric parameter domain, an equicontinuous uniformly bounded
-sequence of V12Field-valued continuous maps has compact closure in the
-continuous-map topology.
+sequence of V12Field-valued bounded continuous maps has compact closure in the
+sup-norm topology.
 
-The closed-embedding input in Mathlib's Arzela--Ascoli theorem is obtained by
-using the compact-domain uniform-function embedding, rather than the larger
-all-compact-subsets UniformOnFun model.
+This is the pinned Mathlib Arzela--Ascoli theorem directly, with the common
+range compact set chosen to be a finite-dimensional closed ball.
 -/
 theorem v12_ascoli_compact_domain
     {X : Type*} [MetricSpace X] [CompactSpace X]
-    (F : ℕ → C(X, V12Field))
-    (M : ℝ) (hM : 0 ≤ M)
+    (F : ℕ → (X →ᵇ V12Field))
+    (M : ℝ)
     (hEq : Equicontinuous ((↑) : Set.range F → X → V12Field))
     (hBound : ∀ n x, ‖F n x‖ ≤ M) :
     IsCompact (closure (Set.range F)) := by
-  let 𝔖 : Set (Set X) := {Set.univ}
-  let U : C(X, V12Field) → UniformFun X V12Field :=
-    fun f => UniformFun.ofFun f
-  have hUclosed : IsClosedEmbedding U := by
-    exact ContinuousMap.isUniformEmbedding_uniformFunOfFun.isClosedEmbedding
-  let e :
-      UniformOnFun X V12Field 𝔖 ≃ᵤ UniformFun X V12Field :=
-    UniformOnFun.uniformEquivUniformFun V12Field 𝔖 (by simp [𝔖])
-  have hClosed :
-      IsClosedEmbedding
-        (UniformOnFun.ofFun 𝔖 ∘
-          (fun f : C(X, V12Field) => (f : X → V12Field))) := by
-    have hcomp :
-        IsClosedEmbedding
-          (e.symm ∘ U) :=
-      e.symm.isClosedEmbedding.comp hUclosed
-    simpa [e, U, 𝔖, Function.comp_def] using hcomp
-  apply ArzelaAscoli.isCompact_closure_of_isClosedEmbedding
-    (𝔖 := 𝔖)
-    (F := fun f : C(X, V12Field) => (f : X → V12Field))
-    (s := Set.range F)
-    (fun K hK => by
-      simp [𝔖] at hK
-      simpa [hK] using (isCompact_univ : IsCompact (Set.univ : Set X)))
-    hClosed
-  · intro K hK
-    have hKuniv : K = Set.univ := by simpa [𝔖] using hK
-    subst K
-    simpa [Function.comp_def] using hEq.equicontinuousOn (Set.univ : Set X)
-  · intro K hK x hx
-    refine ⟨Metric.closedBall (0 : V12Field) M,
-      isCompact_closedBall 0 M, ?_⟩
-    intro g hg
-    obtain ⟨n, rfl⟩ := hg
-    simpa [Metric.mem_closedBall, dist_zero_right] using hBound n x
+  apply BoundedContinuousFunction.arzela_ascoli
+    (Metric.closedBall (0 : V12Field) M) (isCompact_closedBall 0 M)
+    (Set.range F)
+  · intro f x hf
+    obtain ⟨n, rfl⟩ := hf
+    simpa only [Metric.mem_closedBall, dist_zero_right] using hBound n x
+  · exact hEq
 
 /--
-A continuous linear image of the Ascoli family is locally compact.
-This is the exact generic bridge required for each fixed-frequency local
-Bochner-L2 realization.
+A continuous linear image of the Ascoli family is compact.
+This is the generic bridge used after a fixed-frequency continuous
+representative has been placed in a concrete local Bochner-L2 realization.
 -/
 theorem v12_ascoli_linear_image_compact
     {X Y : Type*} [MetricSpace X] [CompactSpace X]
     [NormedAddCommGroup Y] [NormedSpace ℂ Y]
-    (F : ℕ → C(X, V12Field))
-    (J : C(X, V12Field) →L[ℂ] Y)
-    (M : ℝ) (hM : 0 ≤ M)
+    (F : ℕ → (X →ᵇ V12Field))
+    (J : (X →ᵇ V12Field) →L[ℂ] Y)
+    (M : ℝ)
     (hEq : Equicontinuous ((↑) : Set.range F → X → V12Field))
     (hBound : ∀ n x, ‖F n x‖ ≤ M) :
     IsCompact (closure (Set.range (fun n => J (F n)))) := by
-  have hC := v12_ascoli_compact_domain F M hM hEq hBound
+  have hC := v12_ascoli_compact_domain F M hEq hBound
   have hImage : IsCompact (J '' closure (Set.range F)) :=
     hC.image J.continuous
   have hsub :
