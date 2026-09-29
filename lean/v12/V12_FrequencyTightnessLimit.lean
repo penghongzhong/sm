@@ -744,6 +744,9 @@ theorem v12_ascoli_localLp_compact
           ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖ := hle
       _ = (C : ℝ) * dist f g := by
         rw [hidx f, hidx g]
+        change
+          dist f.1 g.1 * ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖ =
+            (C : ℝ) * dist f.1 g.1
         simp [C, mul_comm]
   have hSubTB : TotallyBounded (Set.univ : Set S) := by
     have hpre :=
