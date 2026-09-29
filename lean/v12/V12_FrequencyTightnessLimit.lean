@@ -1090,42 +1090,6 @@ theorem v12_restrict_eq_bcfToLp_of_ae
         2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ F)
   exact hcut.trans (hRepLocal.trans hF.symm)
 
-/-- On Schwartz input, the two local L2 realizations coincide by the already
-verified Fourier/convolution identity and the actual continuous representative. -/
-theorem v12_cutoffNBall_eq_convolutionBall_on_schwartz
-    (p : V12Spatial → ℝ)
-    (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
-    (N R : ℕ)
-    (f : SchwartzMap V12Spatial V12Field) :
-    v12_cutoffNBallCLM p hp_cpt hp_smooth N R (f.toLp 2) =
-      v12_convolutionBallCLM p hp_cpt hp_smooth N R (f.toLp 2) := by
-  have hRep :
-      (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2) :
-        V12Spatial → V12Field)
-        =ᵐ[(volume : Measure V12Spatial)]
-          (v12_L2ConvolutionBCFCLM
-            (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (f.toLp 2)) := by
-    filter_upwards [
-      v12_cutoffN_schwartz_ae_continuousRep
-        p hp_cpt hp_smooth N f
-    ] with x hx
-    simpa [v12_L2ConvolutionBCFCLM_apply] using hx
-  change
-    v12_ballRestrictCLM R
-        (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2)) =
-      v12_ballBCFToLpCLM R
-        (v12_L2ConvolutionBCFCLM
-          (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (f.toLp 2))
-  exact
-    v12_restrict_eq_bcfToLp_of_ae R
-      (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2))
-      (v12_L2ConvolutionBCFCLM
-        (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (f.toLp 2))
-      hRep
-
-#print axioms v12_restrict_eq_bcfToLp_of_ae
-
 /-- The actual manuscript Fourier cutoff and the actual continuous convolution
 representative define the same local L2 element on every fixed spatial ball,
 for arbitrary spatial L2 input.  The extension from Schwartz data uses only
@@ -1150,9 +1114,29 @@ theorem v12_cutoffNBall_eq_convolutionBall
     f
   · exact isClosed_eq A.continuous B.continuous
   · intro sf
-    simpa [A, B] using
-      v12_cutoffNBall_eq_convolutionBall_on_schwartz
-        p hp_cpt hp_smooth N R sf
+    have hRep :
+        (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2) :
+          V12Spatial → V12Field)
+          =ᵐ[(volume : Measure V12Spatial)]
+            (v12_L2ConvolutionBCFCLM
+              (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (sf.toLp 2)) := by
+      filter_upwards [
+        v12_cutoffN_schwartz_ae_continuousRep
+          p hp_cpt hp_smooth N sf
+      ] with x hx
+      simpa [v12_L2ConvolutionBCFCLM_apply] using hx
+    change
+      v12_ballRestrictCLM R
+          (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2)) =
+        v12_ballBCFToLpCLM R
+          (v12_L2ConvolutionBCFCLM
+            (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (sf.toLp 2))
+    exact
+      v12_restrict_eq_bcfToLp_of_ae R
+        (v12_cutoffN p hp_cpt hp_smooth N (sf.toLp 2))
+        (v12_L2ConvolutionBCFCLM
+          (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (sf.toLp 2))
+        hRep
 
 #print axioms v12_cutoffNBall_eq_convolutionBall_on_schwartz
 #print axioms v12_cutoffNBall_eq_convolutionBall
