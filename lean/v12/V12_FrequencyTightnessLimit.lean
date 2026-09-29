@@ -729,7 +729,7 @@ theorem v12_ascoli_localLp_compact
     intro f
     exact Classical.choose_spec f.property
   let T : S → Lp V12Field 2 μ := fun f => u (idx f)
-  let C : ℝ≥0 := ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖₊
+  let C : NNReal := ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖₊
   have hLip : LipschitzWith C T := by
     apply LipschitzWith.of_dist_le_mul
     intro f g
