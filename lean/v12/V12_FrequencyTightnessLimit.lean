@@ -1010,6 +1010,105 @@ theorem v12_L2ConvolutionBCFCLM_norm_le
 #print axioms v12_L2ConvolutionBCFCLM_apply
 #print axioms v12_L2ConvolutionBCFCLM_norm_le
 
+/-! ===== actual cutoff versus convolution on finite spatial balls ===== -/
+
+/-- Spatial ball used for fixed-radius local L2 comparison. -/
+def v12_spatial_ball (R : ℕ) : Set V12Spatial :=
+  Metric.ball (0 : V12Spatial) ((R : ℝ) + 1)
+
+/-- Every spatial ball used below has finite Lebesgue measure. -/
+noncomputable instance v12_spatialBall_isFiniteMeasure (R : ℕ) :
+    IsFiniteMeasure
+      ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) :=
+  isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+
+/-- Local spatial L2 space on the radius-(R+1) ball. -/
+abbrev V12SpatialBallL2 (R : ℕ) : Type :=
+  Lp V12Field 2
+    ((volume : Measure V12Spatial).restrict (v12_spatial_ball R))
+
+/-- Restrict the actual manuscript Fourier cutoff to a fixed spatial ball. -/
+noncomputable def v12_cutoffNBallCLM
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N R : ℕ) :
+    V12SpatialL2 →L[ℂ] V12SpatialBallL2 R :=
+  (LpToLpRestrictCLM
+      V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
+      (v12_spatial_ball R)) ∘L
+    v12_cutoffN p hp_cpt hp_smooth N
+
+/-- Put the bounded continuous convolution representative into local L2 on a
+fixed spatial ball. -/
+noncomputable def v12_convolutionBallCLM
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N R : ℕ) :
+    V12SpatialL2 →L[ℂ] V12SpatialBallL2 R :=
+  (BoundedContinuousFunction.toLp
+      2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ) ∘L
+    v12_L2ConvolutionBCFCLM
+      (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
+
+/-- On Schwartz input, the two local L2 realizations coincide by the already
+verified Fourier/convolution identity and the actual continuous representative. -/
+theorem v12_cutoffNBall_eq_convolutionBall_on_schwartz
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N R : ℕ)
+    (f : SchwartzMap V12Spatial V12Field) :
+    v12_cutoffNBallCLM p hp_cpt hp_smooth N R (f.toLp 2) =
+      v12_convolutionBallCLM p hp_cpt hp_smooth N R (f.toLp 2) := by
+  apply Lp.ext_iff.2
+  have hcut :=
+    LpToLpRestrictCLM_coeFn ℂ (v12_spatial_ball R)
+      (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2))
+  have hrep :=
+    ae_restrict_of_ae
+      (v12_cutoffN_schwartz_ae_continuousRep
+        p hp_cpt hp_smooth N f)
+  have hconv :=
+    BoundedContinuousFunction.coeFn_toLp
+      2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ
+      (v12_L2ConvolutionBCFCLM
+        (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (f.toLp 2))
+  filter_upwards [hcut, hrep, hconv] with x hxcut hxrep hxconv
+  rw [hxcut, hxrep, hxconv]
+  rfl
+
+/-- The actual manuscript Fourier cutoff and the actual continuous convolution
+representative define the same local L2 element on every fixed spatial ball,
+for arbitrary spatial L2 input.  The extension from Schwartz data uses only
+Schwartz density and continuity of the two maps. -/
+theorem v12_cutoffNBall_eq_convolutionBall
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N R : ℕ)
+    (f : V12SpatialL2) :
+    v12_cutoffNBallCLM p hp_cpt hp_smooth N R f =
+      v12_convolutionBallCLM p hp_cpt hp_smooth N R f := by
+  let A := v12_cutoffNBallCLM p hp_cpt hp_smooth N R
+  let B := v12_convolutionBallCLM p hp_cpt hp_smooth N R
+  apply DenseRange.induction_on
+    (p := fun g : V12SpatialL2 => A g = B g)
+    (SchwartzMap.denseRange_toLpCLM
+      (E := V12Spatial) (F := V12Field)
+      (μ := (volume : Measure V12Spatial))
+      ENNReal.ofNat_ne_top)
+    f
+  · exact isClosed_eq A.continuous B.continuous
+  · intro sf
+    simpa [A, B] using
+      v12_cutoffNBall_eq_convolutionBall_on_schwartz
+        p hp_cpt hp_smooth N R sf
+
+#print axioms v12_cutoffNBall_eq_convolutionBall_on_schwartz
+#print axioms v12_cutoffNBall_eq_convolutionBall
+
 /-- Spatial differences reduce to the L2 translation modulus of the fixed kernel. -/
 theorem v12_L2ConvolutionRep_dist_le
     (k : V12ScalarL2) (f : V12SpatialL2) (x y : V12Spatial) :
