@@ -590,8 +590,8 @@ theorem v12_localLp_dist_le_sup_of_ae_rep
     (g := Lp.const (2 : ℝ≥0∞) μ (1 : ℝ))
   filter_upwards [Lp.coeFn_sub u v, hu, hv,
     Lp.coeFn_const (p := (2 : ℝ≥0∞)) (μ := μ) (c := (1 : ℝ))] with z hsub huz hvz hone
-  rw [hsub, huz, hvz, hone]
-  simp only [norm_one, mul_one]
+  rw [hsub]
+  simp only [Pi.sub_apply, huz, hvz, hone, Function.const_apply, norm_one, mul_one]
   simpa only [dist_eq_norm] using
     (BoundedContinuousFunction.dist_coe_le_dist (f := F) (g := G) (r z))
 
@@ -658,7 +658,7 @@ theorem v12_ascoli_localLp_subsequence
   have hK := v12_ascoli_compact_domain F M hEq hBound
   have hMem : ∀ n, F n ∈ closure (Set.range F) :=
     fun n => subset_closure (Set.mem_range_self n)
-  obtain ⟨F∞, _, σ, hσ, hlim⟩ := hK.tendsto_subseq hMem
+  obtain ⟨Flim, _, σ, hσ, hlim⟩ := hK.tendsto_subseq hMem
   refine ⟨σ, hσ, ?_⟩
   have hFCauchy : CauchySeq (fun n => F (σ n)) := hlim.cauchySeq
   exact v12_cauchy_localLp_of_cauchy_bcf
