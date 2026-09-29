@@ -496,11 +496,11 @@ theorem v12_symbolToLInf_ae
 noncomputable def v12_cutoffSchwartz
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p) :
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p) :
     SchwartzMap V12Spatial ℂ := by
   have hcpt : HasCompactSupport (Complex.ofRealCLM ∘ p) :=
     hp_cpt.comp_left rfl
-  have hsmooth : ContDiff ℝ ⊤ (Complex.ofRealCLM ∘ p) := by
+  have hsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Complex.ofRealCLM ∘ p) := by
     fun_prop
   exact hcpt.toSchwartzMap hsmooth
 
@@ -508,7 +508,7 @@ noncomputable def v12_cutoffSchwartz
 theorem v12_cutoffSchwartz_apply
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (η : V12Spatial) :
     v12_cutoffSchwartz p hp_cpt hp_smooth η = (p η : ℂ) := by
   rfl
@@ -544,7 +544,7 @@ variable eta. -/
 noncomputable def v12_scaledCutoffSchwartz
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) :
     SchwartzMap V12Spatial ℂ :=
   SchwartzMap.compCLMOfContinuousLinearEquiv ℂ
@@ -555,7 +555,7 @@ noncomputable def v12_scaledCutoffSchwartz
 theorem v12_scaledCutoffSchwartz_apply
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) (η : V12Spatial) :
     v12_scaledCutoffSchwartz p hp_cpt hp_smooth N η =
       (p (v12_cyclicScale N • η) : ℂ) := by
@@ -565,7 +565,7 @@ theorem v12_scaledCutoffSchwartz_apply
 noncomputable def v12_cutoffKernelSchwartz
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) :
     SchwartzMap V12Spatial ℂ :=
   𝓕⁻ (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N)
@@ -574,7 +574,7 @@ noncomputable def v12_cutoffKernelSchwartz
 noncomputable def v12_cutoffSymbolBCF
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) :
     BoundedContinuousFunction V12Spatial ℂ :=
   (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N).toBoundedContinuousFunction
@@ -583,7 +583,7 @@ noncomputable def v12_cutoffSymbolBCF
 theorem v12_cutoffSymbolBCF_apply
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) (η : V12Spatial) :
     v12_cutoffSymbolBCF p hp_cpt hp_smooth N η =
       (p (v12_cyclicScale N • η) : ℂ) := by
@@ -594,7 +594,7 @@ theorem v12_cutoffSymbolBCF_apply
 noncomputable def v12_cutoffSymbolLInf
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) :
     V12SymbolLInf :=
   v12_symbolToLInf (v12_cutoffSymbolBCF p hp_cpt hp_smooth N)
@@ -604,7 +604,7 @@ built into the symbol definition. -/
 noncomputable def v12_cutoffN
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) :
     V12SpatialL2 →L[ℂ] V12SpatialL2 :=
   v12_spatialFourierMultiplier
@@ -614,7 +614,7 @@ noncomputable def v12_cutoffN
 theorem v12_cutoffN_apply
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
-    (hp_smooth : ContDiff ℝ ⊤ p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) (f : V12SpatialL2) :
     v12_cutoffN p hp_cpt hp_smooth N f =
       𝓕⁻ (v12_L2Multiplier
