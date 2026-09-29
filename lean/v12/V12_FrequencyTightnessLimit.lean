@@ -590,7 +590,7 @@ noncomputable def v12_cutoffKernelL2
     (hp_cpt : HasCompactSupport p)
     (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N : ℕ) :
-    V12ScalarL2 :=
+    Lp (α := V12Spatial) ℂ 2 (volume : Measure V12Spatial) :=
   (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N).toLp 2
 
 /-- The same exact cyclic symbol, now bundled as a bounded continuous function. -/
@@ -711,13 +711,23 @@ theorem v12_cutoffN_on_schwartz_eq_convolution
           ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
         (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
         f).toLp 2 := by
-  rw [v12_cutoffN_apply]
-  apply (Lp.fourierTransformₗᵢ V12Spatial V12Field).injective
-  rw [(Lp.fourierTransformₗᵢ V12Spatial V12Field).apply_symm_apply,
-    SchwartzMap.toLp_fourier_eq, SchwartzMap.fourier_convolution]
-  simpa [v12_cutoffKernelSchwartz] using
-    v12_cutoffMultiplier_on_fourierSchwartz
-      p hp_cpt hp_smooth N f
+  rw [v12_cutoffN_apply, SchwartzMap.toLp_fourier_eq,
+    v12_cutoffMultiplier_on_fourierSchwartz p hp_cpt hp_smooth N f]
+  have hSchwartz :
+      SchwartzMap.pairing
+          (ContinuousLinearMap.lsmul ℂ ℂ :
+            ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+          (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N)
+          (𝓕 f) =
+        𝓕 (SchwartzMap.convolution
+          (ContinuousLinearMap.lsmul ℂ ℂ :
+            ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+          (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+          f) := by
+    rw [SchwartzMap.fourier_convolution]
+    simp [v12_cutoffKernelSchwartz]
+  rw [hSchwartz, ← SchwartzMap.toLp_fourier_eq]
+  exact fourierInv_fourier_eq _
 
 #print axioms v12_cutoffN_on_schwartz_eq_convolution
 
@@ -844,16 +854,20 @@ theorem v12_cutoffKernel_rep_eq_schwartzConvolution
         f x := by
   rw [v12_L2ConvolutionRep_eq_integral,
     SchwartzMap.convolution_apply, MeasureTheory.convolution_eq_swap]
-  have hk0 :=
-    (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N).coeFn_toLp
+  have hk0 :
+      (v12_cutoffKernelL2 p hp_cpt hp_smooth N :
+        V12Spatial → ℂ) =ᵐ[(volume : Measure V12Spatial)]
+          v12_cutoffKernelSchwartz p hp_cpt hp_smooth N := by
+    exact (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N).coeFn_toLp
       2 (volume : Measure V12Spatial)
+  have hpull :=
+    (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae hk0
   have hk :
       ∀ᵐ y ∂(volume : Measure V12Spatial),
         v12_cutoffKernelL2 p hp_cpt hp_smooth N (x - y) =
           v12_cutoffKernelSchwartz p hp_cpt hp_smooth N (x - y) := by
-    have hpull :=
-      (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae hk0
-    simpa [v12_cutoffKernelL2, v12_subLeftFamily_apply] using hpull
+    filter_upwards [hpull] with y hy
+    simpa only [v12_subLeftFamily_apply] using hy
   have hf := f.coeFn_toLp 2 (volume : Measure V12Spatial)
   apply integral_congr_ae
   filter_upwards [hk, hf] with y hky hfy
