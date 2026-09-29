@@ -103,9 +103,11 @@ gluing but is not yet represented as a compiled theorem.
 
 Theorem 7.2 may be called fully verified under the user's allowed foundation
 only after:
-- C and E compile without `sorryAx`;
+- the Ascoli-to-local-L2 compactness generator compiles without `sorryAx`;
 - A/B/D are hypothesis-matched to the actual manuscript objects, not merely
   named in prose;
+- the actual fixed-cutoff continuous representatives and the
+  \(|t-s|^{1/4}\) time modulus are formalized;
 - measurable gluing is discharged;
 - the resulting strong local limit is fed into Theorem 7.1's exact
   hypotheses.
