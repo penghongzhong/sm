@@ -839,21 +839,24 @@ noncomputable def v12_compactCylinderBase (a b : ℝ) (R : ℕ) :
   ⟨(min a b, 0), by
     constructor
     · exact ⟨le_rfl, min_le_max⟩
-    · simp [Metric.mem_closedBall]⟩
+    · have hR : (0 : ℝ) ≤ (R : ℝ) + 1 := by positivity
+      simpa only [Metric.mem_closedBall, dist_self] using hR⟩
 
 /-- Send an arbitrary ambient spacetime point to the compact cylinder, using
 the point itself on the closed cylinder and a fixed base point otherwise.
 Continuity is not required: this map is used only under the restricted local
 measure, where it is almost everywhere the identity. -/
 noncomputable def v12_toCompactCylinder (a b : ℝ) (R : ℕ)
-    (z : V12Spacetime) : V12CompactCylinder a b R :=
-  if hz : z ∈ v12_closed_spacetime_cylinder a b R then ⟨z, hz⟩
-  else v12_compactCylinderBase a b R
+    (z : V12Spacetime) : V12CompactCylinder a b R := by
+  classical
+  exact if hz : z ∈ v12_closed_spacetime_cylinder a b R then ⟨z, hz⟩
+    else v12_compactCylinderBase a b R
 
 theorem v12_toCompactCylinder_coe_of_mem (a b : ℝ) (R : ℕ)
     {z : V12Spacetime} (hz : z ∈ v12_closed_spacetime_cylinder a b R) :
     ((v12_toCompactCylinder a b R z : V12CompactCylinder a b R) :
       V12Spacetime) = z := by
+  classical
   simp [v12_toCompactCylinder, hz]
 
 theorem v12_toCompactCylinder_coe_ae (a b : ℝ) (R : ℕ) :
