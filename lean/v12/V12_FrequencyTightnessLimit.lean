@@ -1115,10 +1115,10 @@ theorem v12_restrict_eq_bcfToLp_of_ae
         2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ F)
   exact hcut.trans (hRepLocal.trans hF.symm)
 
-/-- The actual manuscript Fourier cutoff and the actual continuous convolution
-representative define the same local L2 element on every fixed spatial ball,
-for arbitrary spatial L2 input.  The extension from Schwartz data uses only
-Schwartz density and continuity of the two maps. -/
+/- The actual manuscript Fourier cutoff and the actual continuous convolution
+representative define the same local L2 element on every fixed spatial ball.
+The extension from Schwartz data uses only Schwartz density and continuity. -/
+
 /-- Schwartz-base case for the local cutoff/convolution identity.
 All large objects are named with explicit types before the local L2 comparison,
 so the dense extension below does not trigger expensive definitional equality. -/
