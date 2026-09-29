@@ -146,6 +146,139 @@ noncomputable instance v12_cylinder_isFiniteMeasure (a b : ℝ) (R : ℕ) :
   rw [v12_cylinder_measure_eq_prod]
   infer_instance
 
+/-! ===== V12 compact-cylinder representative bridge ===== -/
+
+/-- The closed compact cylinder used for Arzela--Ascoli.  The time interval is
+written with min/max so the type remains nonempty even for formal inputs a > b. -/
+def v12_closed_spacetime_cylinder (a b : ℝ) (R : ℕ) : Set V12Spacetime :=
+  Set.Icc (min a b) (max a b) ×ˢ
+    Metric.closedBall (0 : V12Spatial) ((R : ℝ) + 1)
+
+/-- The compact cylinder as an actual type. -/
+abbrev V12CompactCylinder (a b : ℝ) (R : ℕ) : Type :=
+  v12_closed_spacetime_cylinder a b R
+
+noncomputable instance v12_compactCylinder_compactSpace (a b : ℝ) (R : ℕ) :
+    CompactSpace (V12CompactCylinder a b R) :=
+  isCompact_iff_compactSpace.mp <|
+    IsCompact.prod isCompact_Icc
+      (isCompact_closedBall (0 : V12Spatial) ((R : ℝ) + 1))
+
+/-- The local cylinder measure is the ambient product Lebesgue measure
+restricted to the open spacetime rectangle Icc(a,b) x ball(0,R+1). -/
+theorem v12_cylinder_measure_eq_restrict_rect (a b : ℝ) (R : ℕ) :
+    (v12_slab_measure a b).restrict (v12_spatial_cylinder R) =
+      ((volume : Measure ℝ).prod (volume : Measure V12Spatial)).restrict
+        (Set.Icc a b ×ˢ Metric.ball (0 : V12Spatial) ((R : ℝ) + 1)) := by
+  rw [v12_cylinder_measure_eq_prod]
+  exact Measure.prod_restrict
+    (μ := (volume : Measure ℝ))
+    (ν := (volume : Measure V12Spatial))
+    (Set.Icc a b) (Metric.ball (0 : V12Spatial) ((R : ℝ) + 1))
+
+/-- The local measure is almost everywhere supported in the closed compact
+cylinder used by Ascoli. -/
+theorem v12_local_measure_mem_closed_cylinder_ae (a b : ℝ) (R : ℕ) :
+    ∀ᵐ z ∂((v12_slab_measure a b).restrict (v12_spatial_cylinder R)),
+      z ∈ v12_closed_spacetime_cylinder a b R := by
+  rw [v12_cylinder_measure_eq_restrict_rect]
+  filter_upwards [
+    self_mem_ae_restrict
+      ((measurableSet_Icc.prod
+        (measurableSet_ball :
+          MeasurableSet (Metric.ball (0 : V12Spatial) ((R : ℝ) + 1)))))
+  ] with z hz
+  exact ⟨
+    ⟨(min_le_left a b).trans hz.1.1,
+      hz.1.2.trans (le_max_right a b)⟩,
+    Metric.ball_subset_closedBall hz.2⟩
+
+/-- A fixed base point of every closed compact cylinder. -/
+noncomputable def v12_compactCylinderBase (a b : ℝ) (R : ℕ) :
+    V12CompactCylinder a b R :=
+  ⟨(min a b, 0), by
+    constructor
+    · exact ⟨le_rfl, min_le_max⟩
+    · simp [Metric.mem_closedBall]⟩
+
+/-- Send an arbitrary ambient spacetime point to the compact cylinder, using
+the point itself on the closed cylinder and a fixed base point otherwise.
+Continuity is not required: this map is used only under the restricted local
+measure, where it is almost everywhere the identity. -/
+noncomputable def v12_toCompactCylinder (a b : ℝ) (R : ℕ)
+    (z : V12Spacetime) : V12CompactCylinder a b R :=
+  if hz : z ∈ v12_closed_spacetime_cylinder a b R then ⟨z, hz⟩
+  else v12_compactCylinderBase a b R
+
+theorem v12_toCompactCylinder_coe_of_mem (a b : ℝ) (R : ℕ)
+    {z : V12Spacetime} (hz : z ∈ v12_closed_spacetime_cylinder a b R) :
+    ((v12_toCompactCylinder a b R z : V12CompactCylinder a b R) :
+      V12Spacetime) = z := by
+  simp [v12_toCompactCylinder, hz]
+
+theorem v12_toCompactCylinder_coe_ae (a b : ℝ) (R : ℕ) :
+    ∀ᵐ z ∂((v12_slab_measure a b).restrict (v12_spatial_cylinder R)),
+      ((v12_toCompactCylinder a b R z : V12CompactCylinder a b R) :
+        V12Spacetime) = z := by
+  filter_upwards [v12_local_measure_mem_closed_cylinder_ae a b R] with z hz
+  exact v12_toCompactCylinder_coe_of_mem a b R hz
+
+/-- Restrict an ambient continuous representative to the compact cylinder and
+bundle it with the sup norm. -/
+noncomputable def v12_compactBCF (a b : ℝ) (R : ℕ)
+    (g : C(V12Spacetime, V12Field)) :
+    BoundedContinuousFunction (V12CompactCylinder a b R) V12Field :=
+  BoundedContinuousFunction.mkOfCompact
+    ⟨fun z => g z.1, g.continuous.comp continuous_subtype_val⟩
+
+@[simp]
+theorem v12_compactBCF_apply (a b : ℝ) (R : ℕ)
+    (g : C(V12Spacetime, V12Field)) (z : V12CompactCylinder a b R) :
+    v12_compactBCF a b R g z = g z.1 :=
+  rfl
+
+/-- An actual local L2 class represented by an ambient continuous function is
+also represented almost everywhere by its compact-cylinder restriction after
+the support map. -/
+theorem v12_compactBCF_rep_ae (a b : ℝ) (R : ℕ)
+    (g : C(V12Spacetime, V12Field))
+    (u : V12CylinderL2 a b R)
+    (hu :
+      (u : V12Spacetime → V12Field)
+        =ᵐ[(v12_slab_measure a b).restrict (v12_spatial_cylinder R)] g) :
+    (u : V12Spacetime → V12Field)
+      =ᵐ[(v12_slab_measure a b).restrict (v12_spatial_cylinder R)]
+        fun z => v12_compactBCF a b R g (v12_toCompactCylinder a b R z) := by
+  filter_upwards [hu, v12_toCompactCylinder_coe_ae a b R] with z huz hcz
+  rw [huz, v12_compactBCF_apply, hcz]
+
+/-- V12-specialized Ascoli-to-local-L2 compactness: once the actual localized
+cutoff classes possess ambient continuous representatives with uniform compact-
+cylinder bounds and equicontinuity, their L2 closure is compact. -/
+theorem v12_local_compact_of_continuous_representatives
+    (a b : ℝ) (R : ℕ)
+    (g : ℕ → C(V12Spacetime, V12Field))
+    (u : ℕ → V12CylinderL2 a b R)
+    (M : ℝ)
+    (hEq :
+      Equicontinuous
+        ((↑) :
+          Set.range (fun n => v12_compactBCF a b R (g n)) →
+            V12CompactCylinder a b R → V12Field))
+    (hBound :
+      ∀ n z, ‖v12_compactBCF a b R (g n) z‖ ≤ M)
+    (hRep :
+      ∀ n,
+        (u n : V12Spacetime → V12Field)
+          =ᵐ[(v12_slab_measure a b).restrict (v12_spatial_cylinder R)] g n) :
+    IsCompact (closure (Set.range u)) := by
+  apply v12_ascoli_localLp_compact
+    ((v12_slab_measure a b).restrict (v12_spatial_cylinder R))
+    (v12_toCompactCylinder a b R)
+    (fun n => v12_compactBCF a b R (g n)) u M hEq hBound
+  intro n
+  exact v12_compactBCF_rep_ae a b R (g n) (u n) (hRep n)
+
 /-- Explicit Type annotations take the carrier of Mathlib's Lp additive subgroup. -/
 abbrev V12SlabL2 (a b : ℝ) : Type := Lp V12Field 2 (v12_slab_measure a b)
 abbrev V12CylinderL2 (a b : ℝ) (R : ℕ) : Type :=
@@ -212,6 +345,11 @@ theorem v12_spacetime_L2_common_subsequence
 #print axioms v12_shared_cutoff_subsequence
 #print axioms v12_countable_cutoff_limits
 #print axioms v12_spatial_cylinder_eq_prod_ball
+#print axioms v12_cylinder_measure_eq_restrict_rect
+#print axioms v12_local_measure_mem_closed_cylinder_ae
+#print axioms v12_toCompactCylinder_coe_ae
+#print axioms v12_compactBCF_rep_ae
+#print axioms v12_local_compact_of_continuous_representatives
 #print axioms v12_cylinder_measure_eq_prod
 #print axioms v12_localize_coeFn
 #print axioms v12_localize_norm_le
