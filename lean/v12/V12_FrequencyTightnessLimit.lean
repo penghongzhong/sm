@@ -113,6 +113,39 @@ noncomputable def v12_slab_measure (a b : ℝ) : Measure V12Spacetime :=
 def v12_spatial_cylinder (R : ℕ) : Set V12Spacetime :=
   {z | ‖z.2‖ < (R : ℝ) + 1}
 
+/-- The spatial cylinder is exactly the full time axis times the open spatial ball. -/
+theorem v12_spatial_cylinder_eq_prod_ball (R : ℕ) :
+    v12_spatial_cylinder R =
+      Set.univ ×ˢ Metric.ball (0 : V12Spatial) ((R : ℝ) + 1) := by
+  ext z
+  simp [v12_spatial_cylinder, Metric.mem_ball, dist_zero_right]
+
+/-- The local cylinder measure splits into the finite time restriction and
+the finite spatial-ball restriction. -/
+theorem v12_cylinder_measure_eq_prod (a b : ℝ) (R : ℕ) :
+    (v12_slab_measure a b).restrict (v12_spatial_cylinder R) =
+      ((volume : Measure ℝ).restrict (Set.Icc a b)).prod
+        ((volume : Measure V12Spatial).restrict
+          (Metric.ball (0 : V12Spatial) ((R : ℝ) + 1))) := by
+  rw [v12_slab_measure, v12_spatial_cylinder_eq_prod_ball]
+  simpa using
+    (Measure.prod_restrict
+      (μ := (volume : Measure ℝ).restrict (Set.Icc a b))
+      (ν := (volume : Measure V12Spatial))
+      Set.univ (Metric.ball (0 : V12Spatial) ((R : ℝ) + 1))).symm
+
+/-- Every local spacetime cylinder used by v12 has finite measure. -/
+noncomputable instance v12_cylinder_isFiniteMeasure (a b : ℝ) (R : ℕ) :
+    IsFiniteMeasure
+      ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)) := by
+  haveI hspace :
+      IsFiniteMeasure
+        ((volume : Measure V12Spatial).restrict
+          (Metric.ball (0 : V12Spatial) ((R : ℝ) + 1))) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  rw [v12_cylinder_measure_eq_prod]
+  infer_instance
+
 /-- Explicit Type annotations take the carrier of Mathlib's Lp additive subgroup. -/
 abbrev V12SlabL2 (a b : ℝ) : Type := Lp V12Field 2 (v12_slab_measure a b)
 abbrev V12CylinderL2 (a b : ℝ) (R : ℕ) : Type :=
@@ -178,6 +211,8 @@ theorem v12_spacetime_L2_common_subsequence
 #print axioms v12_limit_of_uniform_cutoff
 #print axioms v12_shared_cutoff_subsequence
 #print axioms v12_countable_cutoff_limits
+#print axioms v12_spatial_cylinder_eq_prod_ball
+#print axioms v12_cylinder_measure_eq_prod
 #print axioms v12_localize_coeFn
 #print axioms v12_localize_norm_le
 #print axioms v12_localize_dist_le
