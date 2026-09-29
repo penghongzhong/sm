@@ -490,6 +490,143 @@ theorem v12_symbolToLInf_ae
 #print axioms v12_symbolToLInf_ae
 
 
+/-! ===== Actual manuscript cutoff symbol and Schwartz kernel ===== -/
+
+/-- Complexification of the manuscript's real smooth compactly supported cutoff. -/
+noncomputable def v12_cutoffSchwartz
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p) :
+    𝓢(V12Spatial, ℂ) := by
+  have hcpt : HasCompactSupport (Complex.ofRealCLM ∘ p) :=
+    hp_cpt.comp_left rfl
+  have hsmooth : ContDiff ℝ ∞ (Complex.ofRealCLM ∘ p) := by
+    fun_prop
+  exact hcpt.toSchwartzMap hsmooth
+
+@[simp]
+theorem v12_cutoffSchwartz_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (η : V12Spatial) :
+    v12_cutoffSchwartz p hp_cpt hp_smooth η = (p η : ℂ) := by
+  rfl
+
+/-- Exact cyclic-frequency scale corresponding to the manuscript raw-frequency
+symbol p(2^{-N} xi), using xi = 2*pi*eta. -/
+def v12_cyclicScale (N : ℕ) : ℝ :=
+  (2 * Real.pi) / (2 : ℝ) ^ N
+
+theorem v12_cyclicScale_pos (N : ℕ) :
+    0 < v12_cyclicScale N := by
+  unfold v12_cyclicScale
+  positivity
+
+theorem v12_cyclicScale_ne_zero (N : ℕ) :
+    v12_cyclicScale N ≠ 0 :=
+  ne_of_gt (v12_cyclicScale_pos N)
+
+/-- Multiplication by the exact cyclic-frequency scale as a real continuous
+linear equivalence of the two-dimensional frequency space. -/
+noncomputable def v12_cyclicScaleEquiv (N : ℕ) :
+    V12Spatial ≃L[ℝ] V12Spatial :=
+  ContinuousLinearEquiv.smulLeft
+    (Units.mk0 (v12_cyclicScale N) (v12_cyclicScale_ne_zero N))
+
+@[simp]
+theorem v12_cyclicScaleEquiv_apply (N : ℕ) (η : V12Spatial) :
+    v12_cyclicScaleEquiv N η = v12_cyclicScale N • η := by
+  rfl
+
+/-- The manuscript cutoff symbol represented in Mathlib's cyclic Fourier
+variable eta. -/
+noncomputable def v12_scaledCutoffSchwartz
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) :
+    𝓢(V12Spatial, ℂ) :=
+  SchwartzMap.compCLMOfContinuousLinearEquiv ℂ
+    (v12_cyclicScaleEquiv N)
+    (v12_cutoffSchwartz p hp_cpt hp_smooth)
+
+@[simp]
+theorem v12_scaledCutoffSchwartz_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) (η : V12Spatial) :
+    v12_scaledCutoffSchwartz p hp_cpt hp_smooth N η =
+      (p (v12_cyclicScale N • η) : ℂ) := by
+  rfl
+
+/-- The inverse-Fourier Schwartz kernel of the exact dyadic cutoff symbol. -/
+noncomputable def v12_cutoffKernelSchwartz
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) :
+    𝓢(V12Spatial, ℂ) :=
+  𝓕⁻ (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N)
+
+/-- The same exact cyclic symbol, now bundled as a bounded continuous function. -/
+noncomputable def v12_cutoffSymbolBCF
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) :
+    BoundedContinuousFunction V12Spatial ℂ :=
+  (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N).toBoundedContinuousFunction
+
+@[simp]
+theorem v12_cutoffSymbolBCF_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) (η : V12Spatial) :
+    v12_cutoffSymbolBCF p hp_cpt hp_smooth N η =
+      (p (v12_cyclicScale N • η) : ℂ) := by
+  rfl
+
+/-- The exact manuscript cutoff symbol as an L-infinity class. -/
+noncomputable def v12_cutoffSymbolLInf
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) :
+    V12SymbolLInf :=
+  v12_symbolToLInf (v12_cutoffSymbolBCF p hp_cpt hp_smooth N)
+
+/-- The actual manuscript spatial cutoff on L2, with raw-to-cyclic conversion
+built into the symbol definition. -/
+noncomputable def v12_cutoffN
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) :
+    V12SpatialL2 →L[ℂ] V12SpatialL2 :=
+  v12_spatialFourierMultiplier
+    (v12_cutoffSymbolLInf p hp_cpt hp_smooth N)
+
+@[simp]
+theorem v12_cutoffN_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ∞ p)
+    (N : ℕ) (f : V12SpatialL2) :
+    v12_cutoffN p hp_cpt hp_smooth N f =
+      𝓕⁻ (v12_L2Multiplier
+        (v12_cutoffSymbolLInf p hp_cpt hp_smooth N) (𝓕 f)) := by
+  rfl
+
+#print axioms v12_cutoffSchwartz_apply
+#print axioms v12_cyclicScale_pos
+#print axioms v12_scaledCutoffSchwartz_apply
+#print axioms v12_cutoffSymbolBCF_apply
+#print axioms v12_cutoffN_apply
+
+
 /-! ===== actual L2 convolution continuous representative ===== -/
 
 /-- Scalar spatial L2 kernel space. -/
