@@ -686,6 +686,30 @@ theorem v12_cutoffN_apply
         (v12_cutoffSymbolLInf p hp_cpt hp_smooth N) (𝓕 f)) := by
   rfl
 
+
+/-- On Schwartz data, the manuscript Fourier cutoff is exactly convolution
+with the inverse-Fourier Schwartz kernel, as the same L2 element. -/
+theorem v12_cutoffN_on_schwartz_eq_convolution
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ)
+    (f : SchwartzMap V12Spatial V12Field) :
+    v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2) =
+      (SchwartzMap.convolution
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+        f).toLp 2 := by
+  apply (Lp.fourierTransformₗᵢ V12Spatial V12Field).injective
+  rw [v12_cutoffN_apply, fourier_fourierInv_eq,
+    SchwartzMap.toLp_fourier_eq, SchwartzMap.fourier_convolution]
+  simpa [v12_cutoffKernelSchwartz] using
+    v12_cutoffMultiplier_on_fourierSchwartz
+      p hp_cpt hp_smooth N f
+
+#print axioms v12_cutoffN_on_schwartz_eq_convolution
+
 #print axioms v12_cutoffSchwartz_apply
 #print axioms v12_cyclicScale_pos
 #print axioms v12_scaledCutoffSchwartz_apply
