@@ -1027,6 +1027,20 @@ abbrev V12SpatialBallL2 (R : ℕ) : Type :=
   Lp V12Field 2
     ((volume : Measure V12Spatial).restrict (v12_spatial_ball R))
 
+/-- Restriction from global spatial L2 to the fixed spatial ball. -/
+noncomputable def v12_ballRestrictCLM (R : ℕ) :
+    V12SpatialL2 →L[ℂ] V12SpatialBallL2 R :=
+  LpToLpRestrictCLM
+    V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
+    (v12_spatial_ball R)
+
+/-- Realize a bounded continuous spatial representative as local L2 on the
+fixed spatial ball. -/
+noncomputable def v12_ballBCFToLpCLM (R : ℕ) :
+    BoundedContinuousFunction V12Spatial V12Field →L[ℂ] V12SpatialBallL2 R :=
+  BoundedContinuousFunction.toLp
+    2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ
+
 /-- Restrict the actual manuscript Fourier cutoff to a fixed spatial ball. -/
 noncomputable def v12_cutoffNBallCLM
     (p : V12Spatial → ℝ)
@@ -1034,9 +1048,7 @@ noncomputable def v12_cutoffNBallCLM
     (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N R : ℕ) :
     V12SpatialL2 →L[ℂ] V12SpatialBallL2 R :=
-  (LpToLpRestrictCLM
-      V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
-      (v12_spatial_ball R)) ∘L
+  (v12_ballRestrictCLM R) ∘L
     v12_cutoffN p hp_cpt hp_smooth N
 
 /-- Put the bounded continuous convolution representative into local L2 on a
@@ -1047,8 +1059,7 @@ noncomputable def v12_convolutionBallCLM
     (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
     (N R : ℕ) :
     V12SpatialL2 →L[ℂ] V12SpatialBallL2 R :=
-  (BoundedContinuousFunction.toLp
-      2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ) ∘L
+  (v12_ballBCFToLpCLM R) ∘L
     v12_L2ConvolutionBCFCLM
       (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
 
@@ -1059,31 +1070,25 @@ theorem v12_restrict_eq_bcfToLp_of_ae
     (u : V12SpatialL2)
     (F : BoundedContinuousFunction V12Spatial V12Field)
     (hRep : (u : V12Spatial → V12Field) =ᵐ[(volume : Measure V12Spatial)] F) :
-    (LpToLpRestrictCLM
-        V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
-        (v12_spatial_ball R)) u =
-      (BoundedContinuousFunction.toLp
-        2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ) F := by
+    v12_ballRestrictCLM R u = v12_ballBCFToLpCLM R F := by
   apply Subtype.ext
   apply AEEqFun.ext
   have hcut :
-      ((LpToLpRestrictCLM
-        V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
-        (v12_spatial_ball R)) u : V12Spatial → V12Field)
+      (v12_ballRestrictCLM R u : V12Spatial → V12Field)
         =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))]
-          (u : V12Spatial → V12Field) :=
-    LpToLpRestrictCLM_coeFn ℂ (v12_spatial_ball R) u
+          (u : V12Spatial → V12Field) := by
+    simpa [v12_ballRestrictCLM] using
+      (LpToLpRestrictCLM_coeFn ℂ (v12_spatial_ball R) u)
   have hRepLocal :
       (u : V12Spatial → V12Field)
         =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))] F :=
     ae_restrict_of_ae (s := v12_spatial_ball R) hRep
   have hF :
-      ((BoundedContinuousFunction.toLp
-        2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ) F :
-          V12Spatial → V12Field)
-        =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))] F :=
-    BoundedContinuousFunction.coeFn_toLp
-      2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ F
+      (v12_ballBCFToLpCLM R F : V12Spatial → V12Field)
+        =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))] F := by
+    simpa [v12_ballBCFToLpCLM] using
+      (BoundedContinuousFunction.coeFn_toLp
+        2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ F)
   exact hcut.trans (hRepLocal.trans hF.symm)
 
 /-- On Schwartz input, the two local L2 realizations coincide by the already
@@ -1107,7 +1112,13 @@ theorem v12_cutoffNBall_eq_convolutionBall_on_schwartz
         p hp_cpt hp_smooth N f
     ] with x hx
     simpa [v12_L2ConvolutionBCFCLM_apply] using hx
-  simpa [v12_cutoffNBallCLM, v12_convolutionBallCLM] using
+  change
+    v12_ballRestrictCLM R
+        (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2)) =
+      v12_ballBCFToLpCLM R
+        (v12_L2ConvolutionBCFCLM
+          (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (f.toLp 2))
+  exact
     v12_restrict_eq_bcfToLp_of_ae R
       (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2))
       (v12_L2ConvolutionBCFCLM
