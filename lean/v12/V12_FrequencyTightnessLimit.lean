@@ -1064,7 +1064,8 @@ theorem v12_restrict_eq_bcfToLp_of_ae
         (v12_spatial_ball R)) u =
       (BoundedContinuousFunction.toLp
         2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ) F := by
-  apply Lp.ext_iff.2
+  apply Subtype.ext
+  apply AEEqFun.ext
   have hcut :
       ((LpToLpRestrictCLM
         V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
