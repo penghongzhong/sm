@@ -497,7 +497,7 @@ noncomputable def v12_cutoffSchwartz
     (p : V12Spatial → ℝ)
     (hp_cpt : HasCompactSupport p)
     (hp_smooth : ContDiff ℝ ⊤ p) :
-    𝓢(V12Spatial, ℂ) := by
+    SchwartzMap V12Spatial ℂ := by
   have hcpt : HasCompactSupport (Complex.ofRealCLM ∘ p) :=
     hp_cpt.comp_left rfl
   have hsmooth : ContDiff ℝ ⊤ (Complex.ofRealCLM ∘ p) := by
@@ -546,7 +546,7 @@ noncomputable def v12_scaledCutoffSchwartz
     (hp_cpt : HasCompactSupport p)
     (hp_smooth : ContDiff ℝ ⊤ p)
     (N : ℕ) :
-    𝓢(V12Spatial, ℂ) :=
+    SchwartzMap V12Spatial ℂ :=
   SchwartzMap.compCLMOfContinuousLinearEquiv ℂ
     (v12_cyclicScaleEquiv N)
     (v12_cutoffSchwartz p hp_cpt hp_smooth)
@@ -567,7 +567,7 @@ noncomputable def v12_cutoffKernelSchwartz
     (hp_cpt : HasCompactSupport p)
     (hp_smooth : ContDiff ℝ ⊤ p)
     (N : ℕ) :
-    𝓢(V12Spatial, ℂ) :=
+    SchwartzMap V12Spatial ℂ :=
   𝓕⁻ (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N)
 
 /-- The same exact cyclic symbol, now bundled as a bounded continuous function. -/
