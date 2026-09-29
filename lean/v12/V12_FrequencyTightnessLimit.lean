@@ -1138,7 +1138,6 @@ theorem v12_cutoffNBall_eq_convolutionBall
           (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (sf.toLp 2))
         hRep
 
-#print axioms v12_cutoffNBall_eq_convolutionBall_on_schwartz
 #print axioms v12_cutoffNBall_eq_convolutionBall
 
 /-- Spatial differences reduce to the L2 translation modulus of the fixed kernel. -/
