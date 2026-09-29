@@ -936,6 +936,80 @@ theorem v12_L2ConvolutionRep_norm_le
     _ = ‖v12_L2ConvolutionPairing‖ * ‖k‖ * ‖f‖ := by
       rw [v12_reflectedTranslate_norm]
 
+/-- Bundle the L2 convolution representative as a bounded continuous function. -/
+noncomputable def v12_L2ConvolutionBCF
+    (k : V12ScalarL2) (f : V12SpatialL2) :
+    BoundedContinuousFunction V12Spatial V12Field :=
+  BoundedContinuousFunction.ofNormedAddCommGroup
+    (v12_L2ConvolutionRep k f)
+    (v12_continuous_L2ConvolutionRep k f)
+    (‖v12_L2ConvolutionPairing‖ * ‖k‖ * ‖f‖)
+    (fun x => v12_L2ConvolutionRep_norm_le k f x)
+
+@[simp]
+theorem v12_L2ConvolutionBCF_apply
+    (k : V12ScalarL2) (f : V12SpatialL2) (x : V12Spatial) :
+    v12_L2ConvolutionBCF k f x = v12_L2ConvolutionRep k f x :=
+  rfl
+
+/-- The convolution representative is additive in the L2 input. -/
+theorem v12_L2ConvolutionBCF_add
+    (k : V12ScalarL2) (f g : V12SpatialL2) :
+    v12_L2ConvolutionBCF k (f + g) =
+      v12_L2ConvolutionBCF k f + v12_L2ConvolutionBCF k g := by
+  ext x
+  simp [v12_L2ConvolutionBCF, v12_L2ConvolutionRep]
+
+/-- The convolution representative is complex-linear in the L2 input. -/
+theorem v12_L2ConvolutionBCF_smul
+    (k : V12ScalarL2) (a : ℂ) (f : V12SpatialL2) :
+    v12_L2ConvolutionBCF k (a • f) =
+      a • v12_L2ConvolutionBCF k f := by
+  ext x
+  simp [v12_L2ConvolutionBCF, v12_L2ConvolutionRep]
+
+/-- For fixed scalar L2 kernel k, convolution is a continuous linear map
+from spatial L2 to bounded continuous vector fields. -/
+noncomputable def v12_L2ConvolutionBCFCLM
+    (k : V12ScalarL2) :
+    V12SpatialL2 →L[ℂ] BoundedContinuousFunction V12Spatial V12Field :=
+  LinearMap.mkContinuous
+    { toFun := v12_L2ConvolutionBCF k
+      map_add' := v12_L2ConvolutionBCF_add k
+      map_smul' := v12_L2ConvolutionBCF_smul k }
+    (‖v12_L2ConvolutionPairing‖ * ‖k‖)
+    (fun f => by
+      change
+        ‖BoundedContinuousFunction.ofNormedAddCommGroup
+            (v12_L2ConvolutionRep k f)
+            (v12_continuous_L2ConvolutionRep k f)
+            (‖v12_L2ConvolutionPairing‖ * ‖k‖ * ‖f‖)
+            (fun x => v12_L2ConvolutionRep_norm_le k f x)‖
+          ≤ (‖v12_L2ConvolutionPairing‖ * ‖k‖) * ‖f‖
+      apply BoundedContinuousFunction.norm_ofNormedAddCommGroup_le
+      · exact v12_continuous_L2ConvolutionRep k f
+      · positivity
+      · intro x
+        simpa [mul_assoc] using v12_L2ConvolutionRep_norm_le k f x)
+
+@[simp]
+theorem v12_L2ConvolutionBCFCLM_apply
+    (k : V12ScalarL2) (f : V12SpatialL2) (x : V12Spatial) :
+    v12_L2ConvolutionBCFCLM k f x =
+      v12_L2ConvolutionRep k f x :=
+  rfl
+
+theorem v12_L2ConvolutionBCFCLM_norm_le
+    (k : V12ScalarL2) :
+    ‖v12_L2ConvolutionBCFCLM k‖ ≤
+      ‖v12_L2ConvolutionPairing‖ * ‖k‖ := by
+  exact LinearMap.mkContinuous_norm_le _ (by positivity) _
+
+#print axioms v12_L2ConvolutionBCF_add
+#print axioms v12_L2ConvolutionBCF_smul
+#print axioms v12_L2ConvolutionBCFCLM_apply
+#print axioms v12_L2ConvolutionBCFCLM_norm_le
+
 /-- Spatial differences reduce to the L2 translation modulus of the fixed kernel. -/
 theorem v12_L2ConvolutionRep_dist_le
     (k : V12ScalarL2) (f : V12SpatialL2) (x y : V12Spatial) :
