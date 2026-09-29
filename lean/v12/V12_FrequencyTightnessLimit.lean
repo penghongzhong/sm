@@ -1065,13 +1065,13 @@ noncomputable def v12_convolutionBallCLM
 
 /-- Restricting a global L2 class agrees with the local L2 class of any
 bounded continuous representative that is almost everywhere equal to it. -/
-set_option maxHeartbeats 800000 in
 theorem v12_restrict_eq_bcfToLp_of_ae
     (R : ℕ)
     (u : V12SpatialL2)
     (F : BoundedContinuousFunction V12Spatial V12Field)
     (hRep : (u : V12Spatial → V12Field) =ᵐ[(volume : Measure V12Spatial)] F) :
     v12_ballRestrictCLM R u = v12_ballBCFToLpCLM R F := by
+  set_option maxHeartbeats 800000 in
   apply Subtype.ext
   apply AEEqFun.ext
   have hcut :
