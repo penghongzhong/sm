@@ -631,6 +631,39 @@ theorem v12_cutoffSymbolLInf_ae
     _ = (p (v12_cyclicScale N • η) : ℂ) :=
       v12_cutoffSymbolBCF_apply p hp_cpt hp_smooth N η
 
+
+/-- On Schwartz Fourier data, the exact manuscript L-infinity multiplier is
+exactly the L2 class of the Schwartz pointwise scalar pairing. -/
+theorem v12_cutoffMultiplier_on_fourierSchwartz
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ)
+    (f : SchwartzMap V12Spatial V12Field) :
+    v12_L2Multiplier
+        (v12_cutoffSymbolLInf p hp_cpt hp_smooth N)
+        ((𝓕 f).toLp 2) =
+      (SchwartzMap.pairing
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N)
+        (𝓕 f)).toLp 2 := by
+  apply Lp.ext_iff.2
+  filter_upwards [
+    v12_L2Multiplier_ae
+      (v12_cutoffSymbolLInf p hp_cpt hp_smooth N)
+      ((𝓕 f).toLp 2),
+    v12_cutoffSymbolLInf_ae p hp_cpt hp_smooth N,
+    (𝓕 f).coeFn_toLp 2 (volume : Measure V12Spatial),
+    (SchwartzMap.pairing
+      (ContinuousLinearMap.lsmul ℂ ℂ :
+        ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+      (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N)
+      (𝓕 f)).coeFn_toLp 2 (volume : Measure V12Spatial)
+  ] with η hmul hsym hf hpair
+  rw [hmul, hpair, hsym, hf]
+  simp
+
 /-- The actual manuscript spatial cutoff on L2, with raw-to-cyclic conversion
 built into the symbol definition. -/
 noncomputable def v12_cutoffN
