@@ -583,6 +583,16 @@ noncomputable def v12_cutoffKernelSchwartz
     SchwartzMap V12Spatial ℂ :=
   𝓕⁻ (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N)
 
+
+/-- The exact inverse-Fourier cutoff kernel as an actual spatial L2 class. -/
+noncomputable def v12_cutoffKernelL2
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    V12ScalarL2 :=
+  (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N).toLp 2
+
 /-- The same exact cyclic symbol, now bundled as a bounded continuous function. -/
 noncomputable def v12_cutoffSymbolBCF
     (p : V12Spatial → ℝ)
@@ -811,6 +821,84 @@ theorem v12_L2ConvolutionRep_eq_integral
   filter_upwards [v12_reflectedTranslate_ae k x] with y hy
   rw [hy]
   rfl
+
+
+/-- For Schwartz input, the abstract L2 convolution representative is pointwise
+the same function as Mathlib's Schwartz convolution with the exact cutoff kernel. -/
+theorem v12_cutoffKernel_rep_eq_schwartzConvolution
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ)
+    (f : SchwartzMap V12Spatial V12Field)
+    (x : V12Spatial) :
+    v12_L2ConvolutionRep
+        (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
+        (f.toLp 2) x =
+      SchwartzMap.convolution
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+        f x := by
+  rw [v12_L2ConvolutionRep_eq_integral,
+    SchwartzMap.convolution_apply, MeasureTheory.convolution_eq_swap]
+  have hk0 :=
+    (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N).coeFn_toLp
+      2 (volume : Measure V12Spatial)
+  have hk :
+      ∀ᵐ y ∂(volume : Measure V12Spatial),
+        v12_cutoffKernelL2 p hp_cpt hp_smooth N (x - y) =
+          v12_cutoffKernelSchwartz p hp_cpt hp_smooth N (x - y) := by
+    have hpull :=
+      (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae hk0
+    simpa [v12_cutoffKernelL2, v12_subLeftFamily_apply] using hpull
+  have hf := f.coeFn_toLp 2 (volume : Measure V12Spatial)
+  apply integral_congr_ae
+  filter_upwards [hk, hf] with y hky hfy
+  rw [hky, hfy]
+  rfl
+
+/-- On Schwartz input, the actual manuscript Fourier cutoff has the actual
+continuous convolution representative almost everywhere. -/
+theorem v12_cutoffN_schwartz_ae_continuousRep
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ)
+    (f : SchwartzMap V12Spatial V12Field) :
+    (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2) :
+      V12Spatial → V12Field) =ᵐ[volume]
+      v12_L2ConvolutionRep
+        (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
+        (f.toLp 2) := by
+  rw [v12_cutoffN_on_schwartz_eq_convolution
+    p hp_cpt hp_smooth N f]
+  have hconv :=
+    (SchwartzMap.convolution
+      (ContinuousLinearMap.lsmul ℂ ℂ :
+        ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+      (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+      f).coeFn_toLp 2 (volume : Measure V12Spatial)
+  filter_upwards [hconv] with x hx
+  calc
+    ((SchwartzMap.convolution
+      (ContinuousLinearMap.lsmul ℂ ℂ :
+        ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+      (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+      f).toLp 2 : V12Spatial → V12Field) x =
+        SchwartzMap.convolution
+          (ContinuousLinearMap.lsmul ℂ ℂ :
+            ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+          (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+          f x := hx
+    _ = v12_L2ConvolutionRep
+          (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
+          (f.toLp 2) x :=
+      (v12_cutoffKernel_rep_eq_schwartzConvolution
+        p hp_cpt hp_smooth N f x).symm
+
+#print axioms v12_cutoffKernel_rep_eq_schwartzConvolution
+#print axioms v12_cutoffN_schwartz_ae_continuousRep
 
 /-- Uniform pointwise estimate at fixed kernel. -/
 theorem v12_L2ConvolutionRep_norm_le
