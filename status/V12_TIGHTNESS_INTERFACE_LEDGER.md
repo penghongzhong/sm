@@ -31,15 +31,19 @@ The operator in the manuscript is the spatial Fourier multiplier
 
 Allowed standard facts:
 1. Plancherel on spatial (L_x^2);
-2. multiplication by a bounded cutoff symbol is an (L_x^2) contraction;
-3. Fubini/Tonelli promotes the fiberwise operator to a continuous linear map
-   on the finite-slab (L^2_{t,x}).
+2. multiplication by a bounded cutoff symbol is a bounded (L_x^2) operator;
+3. Fubini/Tonelli promotes the fiberwise operator to the finite-slab setting.
 
-Mathlib contains the L2 Fourier isometry in
-`Mathlib/Analysis/Fourier/LpSpace.lean`:
-`norm_fourier_eq` via `Lp.fourierTransformₗᵢ`.
-The current Lean bridge now requires (P_N) to be a continuous linear map;
-it is no longer an arbitrary function.
+The manuscript cutoff definition does NOT state (0 <= p <= 1), hence no
+contraction hypothesis is licensed.  The public Lean development now uses
+the finite operator norm of each fixed cutoff, not (|P_N| <= 1).
+
+The current public V12 module constructs the actual manuscript cutoff from the
+same smooth compactly supported symbol (p), with the exact raw-to-cyclic
+conversion (xi = 2*pi*eta), builds its inverse-Fourier Schwartz kernel, and
+proves the Fourier multiplier / convolution identity on Schwartz data.  It
+also constructs the actual continuous L2-convolution representative and local
+ball L2 realization.
 
 ## C. Exact manuscript tail quantifier
 
@@ -49,14 +53,15 @@ delta_N:=sup_n|(1-P_{le N})Q_n|_{L^2(I	imesmathbb R^2)}
 longrightarrow0.
 ]
 
-The public Lean file `V12_FrequencyTailAdapter.lean` defines the same
-conditional supremum and proves:
-- boundedness of the range from a uniform L2 bound and (|P_N|le1);
+The merged public V12 file defines the same conditional supremum and proves:
+- boundedness of the range from the uniform L2 bound and the finite operator
+  norm of each fixed cutoff,
+  (|Q_n-P_NQ_n| <= M + |P_N| M);
 - each individual tail is bounded by that supremum;
 - convergence of the manuscript supremum gives the `hTail` input used by
   the common-subsequence theorem.
 
-This item is considered verified only after its CI run is green.
+This noncontractive tail adapter has already passed public GitHub CI.
 
 ## D. Fixed-cutoff local compactness
 
@@ -103,11 +108,10 @@ gluing but is not yet represented as a compiled theorem.
 
 Theorem 7.2 may be called fully verified under the user's allowed foundation
 only after:
-- the Ascoli-to-local-L2 compactness generator compiles without `sorryAx`;
-- A/B/D are hypothesis-matched to the actual manuscript objects, not merely
-  named in prose;
-- the actual fixed-cutoff continuous representatives and the
-  \(|t-s|^{1/4}\) time modulus are formalized;
+- the current local representative identity and arbitrary-L2 ball identity
+  compile without `sorryAx`;
+- the actual fixed-N time modulus \(|t-s|^{1/4}\) is formalized from the
+  manuscript PDE source bounds;
 - measurable gluing is discharged;
 - the resulting strong local limit is fed into Theorem 7.1's exact
   hypotheses.
