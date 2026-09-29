@@ -526,7 +526,7 @@ range compact set chosen to be a finite-dimensional closed ball.
 -/
 theorem v12_ascoli_compact_domain
     {X : Type*} [MetricSpace X] [CompactSpace X]
-    (F : ℕ → (X →ᵇ V12Field))
+    (F : ℕ → (BoundedContinuousFunction X V12Field))
     (M : ℝ)
     (hEq : Equicontinuous ((↑) : Set.range F → X → V12Field))
     (hBound : ∀ n x, ‖F n x‖ ≤ M) :
@@ -547,8 +547,8 @@ representative has been placed in a concrete local Bochner-L2 realization.
 theorem v12_ascoli_linear_image_compact
     {X Y : Type*} [MetricSpace X] [CompactSpace X]
     [NormedAddCommGroup Y] [NormedSpace ℂ Y]
-    (F : ℕ → (X →ᵇ V12Field))
-    (J : (X →ᵇ V12Field) →L[ℂ] Y)
+    (F : ℕ → (BoundedContinuousFunction X V12Field))
+    (J : (BoundedContinuousFunction X V12Field) →L[ℂ] Y)
     (M : ℝ)
     (hEq : Equicontinuous ((↑) : Set.range F → X → V12Field))
     (hBound : ∀ n x, ‖F n x‖ ≤ M) :
