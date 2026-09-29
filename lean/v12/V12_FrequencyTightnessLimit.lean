@@ -749,10 +749,20 @@ theorem v12_ascoli_localLp_compact
             (C : ℝ) * dist f.1 g.1
         simp [C, mul_comm]
   have hSubTB : TotallyBounded (Set.univ : Set S) := by
-    have hpre :=
+    have hpre :
+        TotallyBounded
+          ((Subtype.val : S → BoundedContinuousFunction X V12Field) ⁻¹' S) :=
       totallyBounded_preimage
+        (f := (Subtype.val : S → BoundedContinuousFunction X V12Field))
+        (s := S)
         isUniformEmbedding_subtype_val.isUniformInducing hSTB
-    simpa using hpre
+    have hpre_eq :
+        ((Subtype.val : S → BoundedContinuousFunction X V12Field) ⁻¹' S)
+          = (Set.univ : Set S) := by
+      ext f
+      simp only [Set.mem_preimage, Set.mem_univ, iff_true]
+      exact f.2
+    rwa [hpre_eq] at hpre
   have hImageTB : TotallyBounded (T '' (Set.univ : Set S)) :=
     hSubTB.image hLip.uniformContinuous
   have hRangeSub : Set.range u ⊆ T '' (Set.univ : Set S) := by
