@@ -1063,11 +1063,29 @@ theorem v12_cutoffNBall_eq_convolutionBall_on_schwartz
     v12_cutoffNBallCLM p hp_cpt hp_smooth N R (f.toLp 2) =
       v12_convolutionBallCLM p hp_cpt hp_smooth N R (f.toLp 2) := by
   apply Lp.ext_iff.2
+  change
+    ((LpToLpRestrictCLM
+        V12Spatial V12Field ℂ (volume : Measure V12Spatial) 2
+        (v12_spatial_ball R))
+      (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2)) :
+        V12Spatial → V12Field)
+      =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))]
+    ((BoundedContinuousFunction.toLp
+        2 ((volume : Measure V12Spatial).restrict (v12_spatial_ball R)) ℂ)
+      (v12_L2ConvolutionBCFCLM
+        (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (f.toLp 2)) :
+        V12Spatial → V12Field)
   have hcut :=
     LpToLpRestrictCLM_coeFn ℂ (v12_spatial_ball R)
       (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2))
-  have hrep :=
-    ae_restrict_of_ae
+  have hrep :
+      (v12_cutoffN p hp_cpt hp_smooth N (f.toLp 2) :
+        V12Spatial → V12Field)
+        =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))]
+          v12_L2ConvolutionRep
+            (v12_cutoffKernelL2 p hp_cpt hp_smooth N)
+            (f.toLp 2) :=
+    ae_restrict_of_ae (s := v12_spatial_ball R)
       (v12_cutoffN_schwartz_ae_continuousRep
         p hp_cpt hp_smooth N f)
   have hconv :=
@@ -1097,6 +1115,7 @@ theorem v12_cutoffNBall_eq_convolutionBall
     (p := fun g : V12SpatialL2 => A g = B g)
     (SchwartzMap.denseRange_toLpCLM
       (E := V12Spatial) (F := V12Field)
+      (p := (2 : ℝ≥0∞))
       (μ := (volume : Measure V12Spatial))
       ENNReal.ofNat_ne_top)
     f
