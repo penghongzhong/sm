@@ -418,6 +418,19 @@ noncomputable def v12_L2Multiplier (m : V12SymbolLInf) :
     ContinuousLinearMap.lsmul ℂ ℂ
   exact (B.holderL (volume : Measure V12Spatial) ∞ 2 2) m
 
+
+/-- The L-infinity-by-L2 multiplier is the pointwise scalar product almost everywhere. -/
+theorem v12_L2Multiplier_ae
+    (m : V12SymbolLInf) (f : V12SpatialL2) :
+    (v12_L2Multiplier m f : V12Spatial → V12Field) =ᵐ[volume]
+      fun x => m x • f x := by
+  let B : ℂ →L[ℂ] V12Field →L[ℂ] V12Field :=
+    ContinuousLinearMap.lsmul ℂ ℂ
+  change
+    ((B.holderL (volume : Measure V12Spatial) ∞ 2 2) m f :
+      V12Spatial → V12Field) =ᵐ[volume] fun x => m x • f x
+  simpa [B] using (B.coeFn_holder m f)
+
 theorem v12_L2Multiplier_bound
     (m : V12SymbolLInf) (f : V12SpatialL2) :
     ‖v12_L2Multiplier m f‖ ≤ ‖m‖ * ‖f‖ := by
@@ -598,6 +611,25 @@ noncomputable def v12_cutoffSymbolLInf
     (N : ℕ) :
     V12SymbolLInf :=
   v12_symbolToLInf (v12_cutoffSymbolBCF p hp_cpt hp_smooth N)
+
+
+/-- The exact L-infinity cutoff class has the manuscript cyclic symbol almost everywhere. -/
+theorem v12_cutoffSymbolLInf_ae
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    (v12_cutoffSymbolLInf p hp_cpt hp_smooth N : V12Spatial → ℂ)
+      =ᵐ[volume] fun η => (p (v12_cyclicScale N • η) : ℂ) := by
+  have h :=
+    v12_symbolToLInf_ae (v12_cutoffSymbolBCF p hp_cpt hp_smooth N)
+  filter_upwards [h] with η hη
+  calc
+    (v12_cutoffSymbolLInf p hp_cpt hp_smooth N : V12Spatial → ℂ) η =
+        v12_cutoffSymbolBCF p hp_cpt hp_smooth N η := by
+          exact hη
+    _ = (p (v12_cyclicScale N • η) : ℂ) :=
+      v12_cutoffSymbolBCF_apply p hp_cpt hp_smooth N η
 
 /-- The actual manuscript spatial cutoff on L2, with raw-to-cyclic conversion
 built into the symbol definition. -/
