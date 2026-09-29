@@ -1071,9 +1071,7 @@ theorem v12_restrict_eq_bcfToLp_of_ae
     (F : BoundedContinuousFunction V12Spatial V12Field)
     (hRep : (u : V12Spatial → V12Field) =ᵐ[(volume : Measure V12Spatial)] F) :
     v12_ballRestrictCLM R u = v12_ballBCFToLpCLM R F := by
-  set_option maxHeartbeats 800000 in
-  apply Subtype.ext
-  apply AEEqFun.ext
+  apply Lp.ext_iff.2
   have hcut :
       (v12_ballRestrictCLM R u : V12Spatial → V12Field)
         =ᵐ[((volume : Measure V12Spatial).restrict (v12_spatial_ball R))]
