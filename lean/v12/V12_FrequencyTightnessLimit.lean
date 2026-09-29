@@ -1414,6 +1414,110 @@ theorem v12_enorm_intervalIntegral_le_fourThirds_quarter_of_le
 #print axioms v12_enorm_setIntegral_le_fourThirds_quarter
 #print axioms v12_enorm_intervalIntegral_le_fourThirds_quarter_of_le
 
+/-! ===== exact L4-L^(4/3) cutoff convolution for the zero-order PDE source ===== -/
+
+abbrev V12ScalarL4 : Type := Lp (α := V12Spatial) ℂ 4
+abbrev V12SpatialLFourThirds : Type :=
+  Lp (α := V12Spatial) V12Field ((4 : ℝ≥0∞) / 3)
+
+theorem v12_holderConjugate_four_fourThirds :
+    ENNReal.HolderConjugate (4 : ℝ≥0∞) ((4 : ℝ≥0∞) / 3) := by
+  rw [ENNReal.holderConjugate_iff]
+  rw [ENNReal.inv_div (by norm_num) (by norm_num)]
+  norm_num
+
+instance v12_fact_one_le_four :
+    Fact ((1 : ℝ≥0∞) ≤ (4 : ℝ≥0∞)) :=
+  ⟨by norm_num⟩
+
+instance v12_fact_one_le_fourThirds :
+    Fact ((1 : ℝ≥0∞) ≤ (4 : ℝ≥0∞) / 3) :=
+  ⟨v12_one_le_fourThirds_ENNReal⟩
+
+instance v12_holderConjugate_four_fourThirds_inst :
+    ENNReal.HolderConjugate (4 : ℝ≥0∞) ((4 : ℝ≥0∞) / 3) :=
+  v12_holderConjugate_four_fourThirds
+
+/-- Pull an L4 scalar kernel back by the exact measure-preserving reflection
+translation y ↦ x-y. -/
+noncomputable def v12_reflectedTranslateL4
+    (k : V12ScalarL4) (x : V12Spatial) : V12ScalarL4 :=
+  Lp.compMeasurePreserving
+    (v12_subLeftFamily x)
+    (v12_subLeft_measurePreserving x) k
+
+@[simp]
+theorem v12_reflectedTranslateL4_norm
+    (k : V12ScalarL4) (x : V12Spatial) :
+    ‖v12_reflectedTranslateL4 k x‖ = ‖k‖ := by
+  exact Lp.norm_compMeasurePreserving k (v12_subLeft_measurePreserving x)
+
+/-- x ↦ k(x-·) is continuous in spatial L4. -/
+theorem v12_continuous_reflectedTranslateL4 (k : V12ScalarL4) :
+    Continuous (v12_reflectedTranslateL4 k) := by
+  have hg : Continuous (fun x : V12Spatial => v12_subLeftFamily x) :=
+    v12_subLeftFamily.continuous
+  have hgm : ∀ x : V12Spatial,
+      MeasurePreserving (v12_subLeftFamily x)
+        (volume : Measure V12Spatial) (volume : Measure V12Spatial) :=
+    v12_subLeft_measurePreserving
+  change Continuous (fun x : V12Spatial =>
+    Lp.compMeasurePreserving (v12_subLeftFamily x) (hgm x) k)
+  exact
+    Continuous.compMeasurePreservingLp
+      (μ := (volume : Measure V12Spatial))
+      (ν := (volume : Measure V12Spatial))
+      (E := ℂ) (p := (4 : ℝ≥0∞))
+      (f := fun _ : V12Spatial => k)
+      (g := fun x : V12Spatial => v12_subLeftFamily x)
+      continuous_const hg hgm (by norm_num : (4 : ℝ≥0∞) ≠ ∞)
+
+/-- Hölder pairing for the exact L4 kernel against an L^(4/3) vector source. -/
+noncomputable def v12_L4L43ConvolutionPairing :
+    V12ScalarL4 →L[ℂ] V12SpatialLFourThirds →L[ℂ] V12Field :=
+  (ContinuousLinearMap.lsmul ℂ ℂ :
+      ℂ →L[ℂ] V12Field →L[ℂ] V12Field).lpPairing
+    (volume : Measure V12Spatial) 4 ((4 : ℝ≥0∞) / 3)
+
+/-- Continuous pointwise representative of k*f for k in L4 and f in L^(4/3). -/
+noncomputable def v12_L4L43ConvolutionRep
+    (k : V12ScalarL4) (f : V12SpatialLFourThirds)
+    (x : V12Spatial) : V12Field :=
+  v12_L4L43ConvolutionPairing (v12_reflectedTranslateL4 k x) f
+
+theorem v12_continuous_L4L43ConvolutionRep
+    (k : V12ScalarL4) (f : V12SpatialLFourThirds) :
+    Continuous (v12_L4L43ConvolutionRep k f) := by
+  change Continuous (fun x : V12Spatial =>
+    v12_L4L43ConvolutionPairing (v12_reflectedTranslateL4 k x) f)
+  exact
+    v12_L4L43ConvolutionPairing.continuous₂.comp₂
+      (v12_continuous_reflectedTranslateL4 k) continuous_const
+
+theorem v12_L4L43ConvolutionRep_norm_le
+    (k : V12ScalarL4) (f : V12SpatialLFourThirds) (x : V12Spatial) :
+    ‖v12_L4L43ConvolutionRep k f x‖ ≤
+      ‖v12_L4L43ConvolutionPairing‖ * ‖k‖ * ‖f‖ := by
+  calc
+    ‖v12_L4L43ConvolutionRep k f x‖
+        = ‖v12_L4L43ConvolutionPairing
+              (v12_reflectedTranslateL4 k x) f‖ := rfl
+    _ ≤ ‖v12_L4L43ConvolutionPairing
+            (v12_reflectedTranslateL4 k x)‖ * ‖f‖ :=
+      (v12_L4L43ConvolutionPairing
+        (v12_reflectedTranslateL4 k x)).le_opNorm f
+    _ ≤ (‖v12_L4L43ConvolutionPairing‖ *
+          ‖v12_reflectedTranslateL4 k x‖) * ‖f‖ := by
+      gcongr
+      exact v12_L4L43ConvolutionPairing.le_opNorm
+        (v12_reflectedTranslateL4 k x)
+    _ = ‖v12_L4L43ConvolutionPairing‖ * ‖k‖ * ‖f‖ := by
+      rw [v12_reflectedTranslateL4_norm]
+
+#print axioms v12_holderConjugate_four_fourThirds
+#print axioms v12_continuous_reflectedTranslateL4
+#print axioms v12_L4L43ConvolutionRep_norm_le
+
 /-! ===== compact-domain Arzela--Ascoli bridge ===== -/
 
 /--
