@@ -986,10 +986,11 @@ noncomputable def v12_L2ConvolutionBCFCLM
             (‖v12_L2ConvolutionPairing‖ * ‖k‖ * ‖f‖)
             (fun x => v12_L2ConvolutionRep_norm_le k f x)‖
           ≤ (‖v12_L2ConvolutionPairing‖ * ‖k‖) * ‖f‖
-      apply BoundedContinuousFunction.norm_ofNormedAddCommGroup_le
-      · positivity
-      · intro x
-        simpa [mul_assoc] using v12_L2ConvolutionRep_norm_le k f x)
+      exact BoundedContinuousFunction.norm_ofNormedAddCommGroup_le
+        (v12_continuous_L2ConvolutionRep k f)
+        (by positivity)
+        (fun x => by
+          simpa [mul_assoc] using v12_L2ConvolutionRep_norm_le k f x))
 
 @[simp]
 theorem v12_L2ConvolutionBCFCLM_apply
