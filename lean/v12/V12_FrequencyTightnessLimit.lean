@@ -701,10 +701,83 @@ theorem v12_ascoli_localLp_subsequence
     hFCauchy (fun n => hRep (σ n))
 
 
+
+/--
+Ascoli compactness and an a.e. representative identification imply compactness
+of the closure of the actual L2 range.  The proof does not construct a
+subtype-L2 equivalence: it transfers total boundedness through the quantitative
+distance estimate and then uses completeness of L2.
+-/
+theorem v12_ascoli_localLp_compact
+    {X Ω : Type*} [MetricSpace X] [CompactSpace X] [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsFiniteMeasure μ]
+    (r : Ω → X)
+    (F : ℕ → BoundedContinuousFunction X V12Field)
+    (u : ℕ → Lp V12Field 2 μ)
+    (M : ℝ)
+    (hEq : Equicontinuous ((↑) : Set.range F → X → V12Field))
+    (hBound : ∀ n x, ‖F n x‖ ≤ M)
+    (hRep : ∀ n, (u n : Ω → V12Field) =ᵐ[μ] fun z => F n (r z)) :
+    IsCompact (closure (Set.range u)) := by
+  let S : Set (BoundedContinuousFunction X V12Field) := Set.range F
+  have hKS : IsCompact (closure S) := by
+    simpa [S] using v12_ascoli_compact_domain F M hEq hBound
+  have hSTB : TotallyBounded S :=
+    hKS.totallyBounded.subset subset_closure
+  let idx : S → ℕ := fun f => Classical.choose f.property
+  have hidx : ∀ f : S, F (idx f) = f.1 := by
+    intro f
+    exact Classical.choose_spec f.property
+  let T : S → Lp V12Field 2 μ := fun f => u (idx f)
+  let C : ℝ≥0 := ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖₊
+  have hLip : LipschitzWith C T := by
+    apply LipschitzWith.of_dist_le_mul
+    intro f g
+    have hle := v12_localLp_dist_le_sup_of_ae_rep
+      μ r (F (idx f)) (F (idx g))
+      (u (idx f)) (u (idx g))
+      (hRep (idx f)) (hRep (idx g))
+    calc
+      dist (T f) (T g)
+          = dist (u (idx f)) (u (idx g)) := rfl
+      _ ≤ dist (F (idx f)) (F (idx g)) *
+          ‖Lp.const (2 : ℝ≥0∞) μ (1 : ℝ)‖ := hle
+      _ = (C : ℝ) * dist f g := by
+        rw [hidx f, hidx g]
+        simp [C, mul_comm]
+  have hSubTB : TotallyBounded (Set.univ : Set S) := by
+    have hpre :=
+      totallyBounded_preimage
+        isUniformEmbedding_subtype_val.isUniformInducing hSTB
+    simpa using hpre
+  have hImageTB : TotallyBounded (T '' (Set.univ : Set S)) :=
+    hSubTB.image hLip.uniformContinuous
+  have hRangeSub : Set.range u ⊆ T '' (Set.univ : Set S) := by
+    rintro y ⟨n, rfl⟩
+    let f : S := ⟨F n, Set.mem_range_self n⟩
+    have hfidx : F (idx f) = F n := by
+      simpa [f] using hidx f
+    have huEq : u (idx f) = u n := by
+      apply eq_of_dist_eq_zero
+      have hle := v12_localLp_dist_le_sup_of_ae_rep
+        μ r (F (idx f)) (F n)
+        (u (idx f)) (u n)
+        (hRep (idx f)) (hRep n)
+      apply le_antisymm
+      · exact hle.trans_eq (by rw [hfidx, dist_self, zero_mul])
+      · exact dist_nonneg
+    refine ⟨f, Set.mem_univ f, ?_⟩
+    simpa [T] using huEq
+  have hRangeTB : TotallyBounded (Set.range u) :=
+    TotallyBounded.subset hRangeSub hImageTB
+  exact hRangeTB.closure.isCompact_of_isClosed isClosed_closure
+
+
 #print axioms v12_ascoli_compact_domain
 #print axioms v12_ascoli_linear_image_compact
 #print axioms v12_localLp_dist_le_sup_of_ae_rep
 #print axioms v12_cauchy_localLp_of_cauchy_bcf
 #print axioms v12_ascoli_localLp_subsequence
+#print axioms v12_ascoli_localLp_compact
 
 end SMScattering.W20Full
