@@ -1305,6 +1305,30 @@ theorem v12_equicontinuous_of_space_time_modulus
 #print axioms v12_equicontinuous_of_space_time_modulus
 
 
+
+/-! ===== finite-measure L^(4/3)-to-L1 time-integrability bridge ===== -/
+
+/-- On any finite measure space, the L^(4/3) seminorm controls the L1
+seminorm with the exact finite-measure Holder factor.  This is the analytic
+leaf used later on a time subinterval to produce the manuscript 1/4 modulus. -/
+theorem v12_eLpNorm_one_le_fourThirds
+    {Ω E : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E]
+    (μ : Measure Ω)
+    (G : Ω → E)
+    (hG : AEStronglyMeasurable G μ) :
+    eLpNorm G 1 μ ≤
+      eLpNorm G ((4 : ℝ≥0∞) / 3) μ *
+        μ Set.univ ^
+          (1 / (1 : ℝ≥0∞).toReal -
+            1 / (((4 : ℝ≥0∞) / 3).toReal)) := by
+  exact eLpNorm_le_eLpNorm_mul_rpow_measure_univ
+    (p := (1 : ℝ≥0∞))
+    (q := ((4 : ℝ≥0∞) / 3))
+    (by norm_num) hG
+
+#print axioms v12_eLpNorm_one_le_fourThirds
+
 /-! ===== compact-domain Arzela--Ascoli bridge ===== -/
 
 /--
