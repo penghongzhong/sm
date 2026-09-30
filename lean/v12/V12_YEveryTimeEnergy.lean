@@ -61,6 +61,8 @@ theorem v12_time_slice_eLpNorm_le_of_ae
     tendsto_nhdsWithin_iff.mpr
       ⟨hτlim, Filter.Eventually.of_forall (fun n => (hτmem n).1)⟩
   apply Lp.eLpNorm_le_of_ae_tendsto
+    (μ := μ) (p := p) (u := atTop)
+    (f := fun n => Q (τ n)) (g := Q t)
     (Filter.Eventually.of_forall (fun n => (hτmem n).2))
     (fun n => hmeas (τ n) (hτmem n).1) (hmeas t ht)
   exact Filter.Eventually.of_forall
