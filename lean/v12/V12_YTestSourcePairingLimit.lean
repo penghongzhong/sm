@@ -205,15 +205,17 @@ theorem v12_testSourceFromLpKernels_L1_tendsto_of_MemLp
 entire convolution-to-BCF construction inside a limit proof. -/
 theorem v12_schwartzL2_convolutionRep_integral
     (k : SchwartzMap V12Spatial ℂ) (f : V12SpatialL2) (x : V12Spatial) :
-    v12_L2ConvolutionRep (k.toLp 2) f x = ∫ y : V12Spatial, k (x-y) • f y := by
+    v12_L2ConvolutionRep (k.toLp 2 (volume : Measure V12Spatial)) f x =
+      ∫ y : V12Spatial, k (x-y) • f y := by
   rw [v12_L2ConvolutionRep_eq_integral]
   apply integral_congr_ae
   have hk := (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae
     (k.coeFn_toLp 2 (volume : Measure V12Spatial))
   filter_upwards [hk] with y hy
-  change (k.toLp 2 : V12Spatial → ℂ) (x-y) • f y = k (x-y) • f y
-  rw [show (k.toLp 2 : V12Spatial → ℂ) (x-y) = k (x-y) by
-    simpa only [v12_subLeftFamily_apply] using hy]
+  have hy' : (k.toLp 2 (volume : Measure V12Spatial) : V12Spatial → ℂ) (x-y) =
+      k (x-y) := by
+    simpa only [v12_subLeftFamily_apply] using hy
+  exact congrArg (fun z : ℂ => z • f y) hy'
 
 /-- Concrete compact tests converge to the actual BCF convolution value. -/
 theorem v12_compactSpatialTest_endpoint_to_BCF
@@ -221,7 +223,7 @@ theorem v12_compactSpatialTest_endpoint_to_BCF
     (hχb : ∀ y, 0 ≤ χ y ∧ χ y ≤ 1)
     (k : SchwartzMap V12Spatial ℂ) (x : V12Spatial) (f : V12SpatialL2) :
     Tendsto (fun R => ∫ y, v12_compactSpatialTest χ k R x y • f y)
-      atTop (𝓝 (v12_L2ConvolutionBCFCLM (k.toLp 2) f x)) := by
+      atTop (𝓝 (v12_L2ConvolutionBCFCLM (k.toLp 2 (volume : Measure V12Spatial)) f x)) := by
   simpa only [v12_L2ConvolutionBCFCLM_apply, v12_schwartzL2_convolutionRep_integral] using
     v12_compactSpatialTest_endpoint_tendsto χ hχc hχ0 hχb k x
       (fun y => f y) (Lp.memLp f)
