@@ -104,3 +104,10 @@ Run 145 subsequently compiled ZC and ZD with only the standard three axioms.
 The V7 equations 7.33–7.35 now have compiled spatial-IBP/raw-source matches.
 ZE still needs an explicit measure annotation; ZF/ZG remain dependency-blocked.
 This is not full-paper certification.
+
+Run 146 compiled ZE–ZG: exact raw/Lp source identification, compact-test
+time identity, and removal of the test cutoff. The new gluing candidates map
+to existing labels v12:eq:localL2-compatible and v12:eq:localL2-gluing; the
+least containing cylinder is exactly the paper's disjoint annulus selector.
+These gluing candidates are pending compilation. No manuscript statement
+has been weakened to obtain these results.

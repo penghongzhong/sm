@@ -2,13 +2,12 @@
 
 ## Completed evidence
 
-Run 145 / 36739627738 / job 109970305733 checks
-`be918a692f80a1c7440f76d96f9a9a2868895a6b`.
-ZA–ZD COMPILE_OK, all printed declarations use only propext,
-Classical.choice, Quot.sound. ZE FAIL at an unspecified measure parameter;
-ZF–ZG dependency-blocked. Whole run FAILURE (53/56 files passed).
-Next batch repairs that measure and submits YC, YSpacetimeSlices and ZH.
-This file does not certify those pending modules.
+Run 146 / 36740897606 / job 109974714585 checks
+`8c5cc49ef0a2182ac1c9cd09a4c0bf67c8bbe9ad`.
+ZA–ZG and YC COMPILE_OK, with only propext, Classical.choice, Quot.sound.
+YSpacetimeSlices FAIL: invalid identifier token; ZH FAIL: local-let unfolding.
+Whole run FAILURE (57/59 files passed). Next batch repairs those two leaves
+and submits local compatibility / measurable gluing. No full-paper certificate.
 
 ## Forward and reverse correspondence
 
@@ -18,12 +17,12 @@ This file does not certify those pending modules.
 | ZB (passed) | the limiting source is the exact cutoff source | same fields and cutoff kernel as ZA |
 | ZC (passed) | compact test IBP twice and actual raw PDE tested source | smooth raw q,f; continuous g; actual pointwise divergence PDE |
 | ZD (passed) | raw tested curve continuity and FTC | joint raw q,dq continuity through endpoints, actual time derivative in interior |
-| ZE (measure repair pending) | Lp source equals the raw tested PDE source | exact a.e. representatives of q,f,g, same test |
-| ZF (dependency-blocked) | finite-test source integrability and time identity | above raw PDE/regularity/representatives; no tested identity input |
-| ZG (dependency-blocked) | actual cutoff BCF time integral identity | above conditions, Q time-L∞, F time-L2, G time-L4/3, endpoint Q representatives |
-| YC, ZH (submitted candidates) | product derivative, Coulomb divergence cancellation and raw RHS conversion | actual differentiability and div A=0 at the same spatial point |
+| ZE (passed) | Lp source equals the raw tested PDE source | exact a.e. representatives of q,f,g, same test |
+| ZF (passed) | finite-test source integrability and time identity | above raw PDE/regularity/representatives; no tested identity input |
+| ZG (passed) | actual cutoff BCF time integral identity | above conditions, Q time-L∞, F time-L2, G time-L4/3, endpoint Q representatives |
+| YC (passed), ZH (repair pending) | product derivative, Coulomb divergence cancellation and raw RHS conversion | actual differentiability and div A=0 at the same spatial point |
 
-The ZG candidate accepts no hIntegral, hFTC, hCompact, kernel derivative
+The compiled ZG theorem accepts no hIntegral, hFTC, hCompact, kernel derivative
 limit or source L1 limit: these are derived using the preceding chain.
 Its raw regularity, representatives and Bochner hypotheses must be instantiated
 for the original reconstructed fields. They are not externally licensed facts.
@@ -67,3 +66,8 @@ every-time representative from an a.e. assertion. Its standard source is
 Mathlib MeasureTheory/Integral/Prod.lean: Integrable.prod_right_ae,
 AEStronglyMeasurable.prodMk_left, Integrable.integral_prod_left and integral_prod;
 MemLp.integrable_norm_rpow supplies the checked finite exponent integrability.
+
+The new compatibility/gluing candidates are in YLocalLimitCompatibility and
+YMeasurableLocalLimitGluing. They derive nested equality and one strongly
+measurable raw field from the SAME sequence's local L2 limits. They do not
+assume compatibility or gluing, and do not certify the original PDE instance.

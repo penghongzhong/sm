@@ -16,18 +16,19 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run 145 (partial, FAILURE)
+## Latest completed verification: Run 146 (partial, FAILURE)
 
-Run 36739627738 / job 109970305733, checked
-`be918a692f80a1c7440f76d96f9a9a2868895a6b`: 53 COMPILE_OK, 3 COMPILE_FAIL.
-ZA, ZB, ZC and ZD now passed, including their printed standard-only axiom
-dependencies. This establishes the actual derivative/source limits, compact
-spatial IBP/raw tested source, endpoint continuity and compact-test FTC.
-ZE failed at an unresolved measure parameter in compact-product integrability;
-ZF–ZG were dependency-blocked. Recovery sorryAx is not an accepted proof.
-The next batch supplies the explicit measure and includes YC/YSpacetimeSlices/ZH
-candidates. None is certified by this ledger before its compiler result.
-No claim of whole-repository success or full-paper certification follows.
+Run 36740897606 / job 109974714585, checked
+`8c5cc49ef0a2182ac1c9cd09a4c0bf67c8bbe9ad`: 57 COMPILE_OK, 2 COMPILE_FAIL.
+ZA–ZG and YC now passed, with standard-only printed axiom dependencies.
+The actual raw-PDE -> compact tests/IBP -> exact Lp source -> FTC -> cutoff
+BCF time identity chain is compiled. ZG takes no hIntegral/hFTC/kernel-limit/
+source-limit premise. It still requires concrete original-field regularity,
+same-field representatives and time-Lp conditions, all still to instantiate.
+YSpacetimeSlices had an identifier syntax error; ZH had a local-let unfolding
+rewrite failure. The next batch repairs these and tests new compatibility/
+measurable-gluing constructions. None is certified before actual compilation.
+No whole-repository success or full-paper certification is claimed.
 
 ## Layers and remaining actual correspondence
 
@@ -36,7 +37,7 @@ No claim of whole-repository success or full-paper certification follows.
 | Section 2 | Algebra, geometry, Fourier symbols and actual Plancherel | Complete function/derivative/Hodge/HLS applications |
 | v12 Fourier/local L2 | Actual cutoff symbol/kernels, local restrictions, tail-sup adapter, common radius/frequency subsequence | Whole-spacetime realization and precise same-field operator inputs |
 | v12 source products | Actual A_j Q and VQ+W conjugate(Q), Holder estimates, MemLp | Hodge-defined coefficients, M/Z bounds, Fubini time-Lp realization |
-| v12 time integration | Source L43 budget, interval Holder, weak-test residual and limit machinery | Raw PDE/FTC/source-representative application chain ZC–ZG is under compiler verification; original-system and same-field hypotheses remain open |
+| v12 time integration | Source L43 budget, interval Holder, weak-test residual and limit machinery | Original-system regularity, same-field time-Bochner realizations and Hodge/MZ hypotheses remain open; ZC–ZG compiled in Run 146 |
 | v12 fixed-cutoff compactness | NEW: actual cylinder representatives constructed; joint equicontinuity and L2 compact closure derived from energy/source integrals | Prove the terminal source/budget/integral/representative inputs from the original PDE; instantiate downstream common-subsequence theorem |
 | v12 local limits | Conditional common-subsequence/tail support | Compatible measurable gluing and exact Theorem-7.1 limit passage |
 | v13-v20 | Existing scalar/finite/dependency kernels | Exact norm objects and transitive analytic hypotheses |
@@ -56,7 +57,7 @@ F_j=A_j Q, G=VQ+W conjugate(Q), with Hodge-defined coefficients and uniform
 M/Z bounds. Every-time energy must follow from a justified representative
 argument, not an a.e.-to-everywhere conversion by assertion. ZA/ZB now verify the concrete compact-test derivative and source limits.
 The raw PDE, spatial IBP, finite-test FTC and cutoff identity chain ZC–ZG
-is submitted but not yet fully compiled. The private V7 text spells out
+compiled in Run 146, with its concrete original-field inputs still open. The private V7 text spells out
 the spatial integrability and integration-by-parts calculation.
 
 Then connect the verified compactness conclusion to common local limits,

@@ -29,6 +29,7 @@ theorem v12_rawDivergenceRHS_coulomb
   let e := EuclideanSpace.basisFun (Fin 2) ℝ
   have hd := v12_coulomb_drift_divergence A q x (e 0) (e 1) hA hq hdiv
   unfold v12_rawDivergenceRHS
+  dsimp only
   rw [add_assoc (Complex.I • _) ((2 : ℂ) • _) ((2 : ℂ) • _), ← smul_add, hd]
 
 #print axioms v12_rawDivergenceRHS_coulomb
