@@ -58,7 +58,7 @@ noncomputable def v12_compactSpatialTestL4
     (χ : V12Spatial → ℝ) (hc : HasCompactSupport χ)
     (hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ)
     (k : SchwartzMap V12Spatial ℂ) (R : ℕ) (x : V12Spatial) : V12ScalarL4 :=
-  (v12_compactSpatialTestSchwartz χ hc hs k R x).toLp 4
+  (v12_compactSpatialTestSchwartz χ hc hs k R x).toLp 4 (volume : Measure V12Spatial)
 
 theorem v12_compactSpatialTestL4_ae
     (χ : V12Spatial → ℝ) (hc : HasCompactSupport χ)
@@ -71,12 +71,13 @@ theorem v12_compactSpatialTestL4_ae
 
 theorem v12_reflectedSchwartzL4_ae
     (k : SchwartzMap V12Spatial ℂ) (x : V12Spatial) :
-    (v12_reflectedTranslateL4 (k.toLp 4) x : V12Spatial → ℂ)
+    (v12_reflectedTranslateL4 (k.toLp 4 (volume : Measure V12Spatial)) x : V12Spatial → ℂ)
       =ᵐ[volume] fun y => k (x-y) := by
-  have hc : (v12_reflectedTranslateL4 (k.toLp 4) x : V12Spatial → ℂ)
-      =ᵐ[volume] fun y => (k.toLp 4 : V12Spatial → ℂ) (x-y) := by
+  have hc : (v12_reflectedTranslateL4 (k.toLp 4 (volume : Measure V12Spatial)) x : V12Spatial → ℂ)
+      =ᵐ[volume] fun y => (k.toLp 4 (volume : Measure V12Spatial) : V12Spatial → ℂ) (x-y) := by
     simpa [v12_reflectedTranslateL4, Function.comp_def] using
-      Lp.coeFn_compMeasurePreserving (k.toLp 4) (v12_subLeft_measurePreserving x)
+      Lp.coeFn_compMeasurePreserving (k.toLp 4 (volume : Measure V12Spatial))
+        (v12_subLeft_measurePreserving x)
   have hk := (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae
     (k.coeFn_toLp 4 (volume : Measure V12Spatial))
   filter_upwards [hc, hk] with y hcy hky
@@ -89,10 +90,10 @@ theorem v12_compactSpatialTestL4_tendsto
     (hχ0 : χ 0 = 1) (hχb : ∀ y, 0 ≤ χ y ∧ χ y ≤ 1)
     (k : SchwartzMap V12Spatial ℂ) (x : V12Spatial) :
     Tendsto (fun R => v12_compactSpatialTestL4 χ hc hs k R x) atTop
-      (𝓝 (v12_reflectedTranslateL4 (k.toLp 4) x)) := by
+      (𝓝 (v12_reflectedTranslateL4 (k.toLp 4 (volume : Measure V12Spatial)) x)) := by
   exact v12_Lp_tendsto_of_ae_eLpNorm_error volume 4
     (fun R => v12_compactSpatialTestL4 χ hc hs k R x)
-    (v12_reflectedTranslateL4 (k.toLp 4) x)
+    (v12_reflectedTranslateL4 (k.toLp 4 (volume : Measure V12Spatial)) x)
     (fun R => v12_compactSpatialTest χ k R x) (fun y => k (x-y))
     (fun R => v12_compactSpatialTestL4_ae χ hc hs k R x)
     (v12_reflectedSchwartzL4_ae k x)
@@ -107,8 +108,8 @@ theorem v12_L4L43Pairing_eq_integral_of_ae
   rw [v12_L4L43ConvolutionPairing, ContinuousLinearMap.lpPairing_eq_integral]
   apply integral_congr_ae
   filter_upwards [hk] with y hy
+  change k y • f y = K y • f y
   rw [hy]
-  rfl
 
 /-- Actual zero-order compact-test source limit. The spatial L4 limit and
 the time-L1 error are both conclusions, not assumptions. -/
@@ -121,12 +122,12 @@ theorem v12_actual_zeroOrder_test_source_L1_tendsto
     (G : ℝ → V12SpatialLFourThirds) (hG : MemLp G ((4 : ℝ≥0∞) / 3) μ) :
     Tendsto (fun R => ∫ t,
       ‖(∫ y, v12_compactSpatialTest χ k R x y • G t y) -
-        v12_L4L43ConvolutionBCFCLM (k.toLp 4) (G t) x‖ ∂μ)
+        v12_L4L43ConvolutionBCFCLM (k.toLp 4 (volume : Measure V12Spatial)) (G t) x‖ ∂μ)
       atTop (𝓝 0) := by
   have hk := v12_compactSpatialTestL4_tendsto χ hc hs hχ0 hχb k x
   have h := v12_pairing_norm_L1_tendsto μ v12_L4L43ConvolutionPairing
     (fun R => v12_compactSpatialTestL4 χ hc hs k R x)
-    (v12_reflectedTranslateL4 (k.toLp 4) x) hk G
+    (v12_reflectedTranslateL4 (k.toLp 4 (volume : Measure V12Spatial)) x) hk G
     (memLp_one_iff_integrable.mp (hG.mono_exponent v12_one_le_fourThirds_ENNReal))
   have heq : ∀ R t,
       v12_L4L43ConvolutionPairing (v12_compactSpatialTestL4 χ hc hs k R x) (G t) =
@@ -137,7 +138,8 @@ theorem v12_actual_zeroOrder_test_source_L1_tendsto
       (v12_compactSpatialTest χ k R x) (v12_compactSpatialTestL4_ae χ hc hs k R x)
   change Tendsto (fun R => ∫ t,
     ‖(∫ y, v12_compactSpatialTest χ k R x y • G t y) -
-      v12_L4L43ConvolutionPairing (v12_reflectedTranslateL4 (k.toLp 4) x) (G t)‖ ∂μ)
+      v12_L4L43ConvolutionPairing
+        (v12_reflectedTranslateL4 (k.toLp 4 (volume : Measure V12Spatial)) x) (G t)‖ ∂μ)
     atTop (𝓝 0)
   simpa only [heq] using h
 
