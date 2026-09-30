@@ -50,6 +50,7 @@ theorem v12_compact_test_time_identity (a b : ℝ) (v d g : ℝ → E)
     v t - v s = ∫ τ in s..t, g τ := by
   have hae := v12_weak_residual_ae_eq a b d g hd hg hweak
   have heq : d =ᵐ[(volume : Measure ℝ).restrict (Set.Ioo s t)] g := by
+    change ∀ᵐ τ ∂(volume : Measure ℝ).restrict (Set.Ioo s t), d τ = g τ
     rw [ae_restrict_iff' measurableSet_Ioo]
     filter_upwards [hae] with τ hτ
     intro hmem
@@ -58,7 +59,7 @@ theorem v12_compact_test_time_identity (a b : ℝ) (v d g : ℝ → E)
     Ioo_ae_eq_Ioc
   rw [Measure.restrict_congr_set hsets] at heq
   have hg' : Integrable g ((volume : Measure ℝ).restrict (Set.Ioc s t)) := by
-    simpa only [intervalIntegrable_iff, Set.uIoc_of_le hst] using hint
+    simpa only [intervalIntegrable_iff, Set.uIoc_of_le hst, IntegrableOn] using hint
   have hd' : IntervalIntegrable d volume s t := by
     apply intervalIntegrable_iff.mpr
     rw [Set.uIoc_of_le hst]
@@ -98,11 +99,11 @@ theorem v12_time_identity_of_test_limit (u : ℝ → E) (g : ℝ → E)
       (fun R => ∫ τ in Set.Ioc s t, ‖gR R τ - g τ‖) atTop (𝓝 0)) :
     u t - u s = ∫ τ in s..t, g τ := by
   have hg' : Integrable g ((volume : Measure ℝ).restrict (Set.Ioc s t)) := by
-    simpa only [intervalIntegrable_iff, Set.uIoc_of_le hst] using hg
+    simpa only [intervalIntegrable_iff, Set.uIoc_of_le hst, IntegrableOn] using hg
   have hR' : ∀ R, Integrable (gR R)
       ((volume : Measure ℝ).restrict (Set.Ioc s t)) := by
     intro R
-    simpa only [intervalIntegrable_iff, Set.uIoc_of_le hst] using hR R
+    simpa only [intervalIntegrable_iff, Set.uIoc_of_le hst, IntegrableOn] using hR R
   have hlim := v12_integral_tendsto_of_norm_L1
     ((volume : Measure ℝ).restrict (Set.Ioc s t)) g gR hg' hR' hL1
   have hlim' : Tendsto (fun R => ∫ τ in s..t, gR R τ) atTop
@@ -149,12 +150,46 @@ theorem v12_BCF_time_identity_of_pointwise (u g : ℝ → V12BCF) (s t : ℝ)
     (hg : IntervalIntegrable g volume s t)
     (hid : ∀ x : V12Spatial, u t x - u s x = ∫ τ in s..t, g τ x) :
     u t - u s = ∫ τ in s..t, g τ := by
-  ext x
+  ext1 x
   change u t x - u s x = (∫ τ in s..t, g τ) x
   calc
     u t x - u s x = ∫ τ in s..t, g τ x := hid x
     _ = (∫ τ in s..t, g τ) x := by
       exact (BoundedContinuousFunction.evalCLM ℝ x).intervalIntegral_comp_comm hg
+
+
+/-- Composition of the weak compact-test identity, source limit, and BCF
+identification. All classical derivatives concern the finite spatial tests.
+No derivative or integral identity of the limiting BCF curve is assumed. -/
+theorem v12_BCF_time_identity_of_weak_test_limits
+    (a b : ℝ) (u g : ℝ → V12BCF)
+    (vR dR gR : ℕ → V12Spatial → ℝ → V12Field)
+    (hd : ∀ R x, LocallyIntegrableOn (dR R x) (Set.Ioo a b) volume)
+    (hgR : ∀ R x, LocallyIntegrableOn (gR R x) (Set.Ioo a b) volume)
+    (hweak : ∀ R x, ∀ φ : ℝ → ℝ,
+      ContDiff ℝ ∞ φ → HasCompactSupport φ → tsupport φ ⊆ Set.Ioo a b →
+        ∫ τ : ℝ, φ τ • (dR R x τ - gR R x τ) = 0)
+    (hclassical : ∀ R x, ∀ τ ∈ Set.Icc a b,
+      HasDerivAt (vR R x) (dR R x τ) τ)
+    {s t : ℝ} (hs : s ∈ Set.Icc a b) (ht : t ∈ Set.Icc a b) (hst : s ≤ t)
+    (hg : IntervalIntegrable g volume s t)
+    (hRint : ∀ R x, IntervalIntegrable (gR R x) volume s t)
+    (hus : ∀ x, Tendsto (fun R => vR R x s) atTop (𝓝 (u s x)))
+    (hut : ∀ x, Tendsto (fun R => vR R x t) atTop (𝓝 (u t x)))
+    (hL1 : ∀ x, Tendsto
+      (fun R => ∫ τ in Set.Ioc s t, ‖gR R x τ - g τ x‖) atTop (𝓝 0)) :
+    u t - u s = ∫ τ in s..t, g τ := by
+  apply v12_BCF_time_identity_of_pointwise u g s t hg
+  intro x
+  have hgx : IntervalIntegrable (fun τ => g τ x) volume s t := by
+    constructor
+    · exact (BoundedContinuousFunction.evalCLM ℝ x).integrable_comp hg.1
+    · exact (BoundedContinuousFunction.evalCLM ℝ x).integrable_comp hg.2
+  exact v12_time_identity_of_test_limit (fun τ => u τ x) (fun τ => g τ x)
+    (fun R => vR R x) (fun R => gR R x) s t hst hgx (fun R => hRint R x)
+    (fun R => v12_compact_test_time_identity a b (vR R x) (dR R x) (gR R x)
+      (hd R x) (hgR R x) (hweak R x) (hclassical R x) hs ht hst (hRint R x))
+    (hus x) (hut x) (hL1 x)
 
 #print axioms v12_weak_residual_ae_eq
 #print axioms v12_compact_test_time_identity
@@ -162,5 +197,6 @@ theorem v12_BCF_time_identity_of_pointwise (u g : ℝ → V12BCF) (s t : ℝ)
 #print axioms v12_time_identity_of_test_limit
 #print axioms v12_norm_increment_quarter_of_integral_identity_of_le
 #print axioms v12_BCF_time_identity_of_pointwise
+#print axioms v12_BCF_time_identity_of_weak_test_limits
 
 end SMScattering.W20Full
