@@ -19,6 +19,9 @@ on:
       - '.github/workflows/lean.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: sm-public-lean-${{ github.ref }}
   cancel-in-progress: true
@@ -29,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: whole-paper-lean
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Record actual checked revision
         run: |
@@ -65,20 +68,29 @@ jobs:
           set -uo pipefail
           status=0
           count=0
+          build_root="$PWD/.lake/build/lib/lean"
+          mkdir -p "$build_root"
+          # Local imports currently point only from V12_TimeSourceBridge to
+          # V12_FrequencyTightnessLimit, hence this order is topological.
           while IFS= read -r -d '' f; do
             count=$((count + 1))
             echo "==> $f"
             logfile="${RUNNER_TEMP}/sm-lean-${count}.log"
-            if lake env lean "$f" >"$logfile" 2>&1; then
+            outfile="$build_root/${f%.lean}.olean"
+            mkdir -p "$(dirname "$outfile")"
+            rm -f "$outfile"
+            if lake env bash -c 'export LEAN_PATH="$PWD/.lake/build/lib/lean${LEAN_PATH:+:$LEAN_PATH}"; exec lean -o "$1" "$2"' _ "$outfile" "$f" >"$logfile" 2>&1; then
               cat "$logfile"
               echo "COMPILE_OK $f"
             else
               cat "$logfile"
               echo "COMPILE_FAIL $f"
+              rm -f "$outfile"
               status=1
             fi
             if grep -q 'sorryAx' "$logfile"; then
               echo "FORBIDDEN_AXIOM_IN_OUTPUT $f"
+              rm -f "$outfile"
               status=1
             fi
           done < <(find lean -name '*.lean' -print0 | sort -z)
