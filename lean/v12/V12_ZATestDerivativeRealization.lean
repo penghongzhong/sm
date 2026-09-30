@@ -40,12 +40,18 @@ theorem v12_actual_test_first_L2_tendsto (m : V12Spatial) :
       (v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x)).toLp 2 (volume : Measure V12Spatial))
       atTop (𝓝 (v12_reflectedTranslate ((-∂_{m} k).toLp 2 (volume : Measure V12Spatial)) x)) := by
   let Ψ := fun R => v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x
-  apply v12_Lp_tendsto_of_ae_eLpNorm_error (E := ℂ) (volume : Measure V12Spatial) 2
-    (fun R => (∂_{m} (Ψ R)).toLp 2 (volume : Measure V12Spatial))
-    (v12_reflectedTranslate ((-∂_{m} k).toLp 2 (volume : Measure V12Spatial)) x)
-    (fun R y => (∂_{m} (Ψ R)) y) (fun y => (-∂_{m} k) (x-y))
-    (fun R => (∂_{m} (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial))
-    (v12_reflectedSchwartzL2_ae (-∂_{m} k) x)
+  let uR : ℕ → V12ScalarL2 := fun R =>
+    (∂_{m} (Ψ R)).toLp 2 (volume : Measure V12Spatial)
+  let u : V12ScalarL2 := v12_reflectedTranslate
+    ((-∂_{m} k).toLp 2 (volume : Measure V12Spatial)) x
+  have hR : ∀ R, (uR R : V12Spatial → ℂ) =ᵐ[volume] (∂_{m} (Ψ R)) := by
+    intro R
+    exact (∂_{m} (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial)
+  have hu : (u : V12Spatial → ℂ) =ᵐ[volume] (fun y => (-∂_{m} k) (x-y)) :=
+    v12_reflectedSchwartzL2_ae (-∂_{m} k) x
+  change Tendsto uR atTop (𝓝 u)
+  refine v12_Lp_tendsto_of_ae_eLpNorm_error (volume : Measure V12Spatial) 2
+    uR u (fun R y => (∂_{m} (Ψ R)) y) (fun y => (-∂_{m} k) (x-y)) hR hu ?_
   have hid : ∀ R y, (∂_{m} (Ψ R)) y - (-∂_{m} k) (x-y) =
       fderiv ℝ (v12_compactSpatialTest χ k R x) y m + (∂_{m} k) (x-y) := by
     intro R y
@@ -78,11 +84,18 @@ theorem v12_actual_test_laplacian_L2_tendsto :
       ((∂_{e 0} (∂_{e 0} k)) (x-y) + (∂_{e 1} (∂_{e 1} k)) (x-y)) = _
     dsimp only [H, Pi.add_apply]
     abel
-  apply v12_Lp_tendsto_of_ae_eLpNorm_error (E := ℂ) (volume : Measure V12Spatial) 2
-    (fun R => (Δ (Ψ R)).toLp 2 (volume : Measure V12Spatial)) (v12_reflectedTranslate ((Δ k).toLp 2 (volume : Measure V12Spatial)) x)
-    (fun R y => (Δ (Ψ R)) y) (fun y => (Δ k) (x-y))
-    (fun R => (Δ (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial))
-    (v12_reflectedSchwartzL2_ae (Δ k) x)
+  let uR : ℕ → V12ScalarL2 := fun R =>
+    (Δ (Ψ R)).toLp 2 (volume : Measure V12Spatial)
+  let u : V12ScalarL2 := v12_reflectedTranslate
+    ((Δ k).toLp 2 (volume : Measure V12Spatial)) x
+  have hR : ∀ R, (uR R : V12Spatial → ℂ) =ᵐ[volume] (Δ (Ψ R)) := by
+    intro R
+    exact (Δ (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial)
+  have hu : (u : V12Spatial → ℂ) =ᵐ[volume] (fun y => (Δ k) (x-y)) :=
+    v12_reflectedSchwartzL2_ae (Δ k) x
+  change Tendsto uR atTop (𝓝 u)
+  refine v12_Lp_tendsto_of_ae_eLpNorm_error (volume : Measure V12Spatial) 2
+    uR u (fun R y => (Δ (Ψ R)) y) (fun y => (Δ k) (x-y)) hR hu ?_
   simpa only [hid] using hsum
 
 end Kernels
