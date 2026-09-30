@@ -39,8 +39,8 @@ noncomputable def v12_testCutoff (χ : V12Spatial → ℝ) (R : ℕ)
 
 theorem v12_testCutoff_continuous (χ : V12Spatial → ℝ)
     (hχ : Continuous χ) (R : ℕ) : Continuous (v12_testCutoff χ R) := by
-  have hs : Continuous (fun y : V12Spatial => v12_testScale R • y) := by fun_prop
-  simpa only [v12_testCutoff, Function.comp_def] using hχ.comp hs
+  unfold v12_testCutoff
+  exact hχ.comp (show Continuous (fun y : V12Spatial => v12_testScale R • y) by fun_prop)
 
 theorem v12_testCutoff_tendsto (χ : V12Spatial → ℝ)
     (hχ : Continuous χ) (hχ0 : χ 0 = 1) (y : V12Spatial) :
@@ -57,9 +57,9 @@ theorem v12_testCutoff_compactSupport (χ : V12Spatial → ℝ)
 theorem v12_testCutoff_smooth (χ : V12Spatial → ℝ)
     (hχ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ) (R : ℕ) :
     ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (v12_testCutoff χ R) := by
-  have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun y : V12Spatial => v12_testScale R • y) := by fun_prop
-  simpa only [v12_testCutoff, Function.comp_def] using hχ.comp hs
+  unfold v12_testCutoff
+  exact hχ.comp (show ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+    (fun y : V12Spatial => v12_testScale R • y) by fun_prop)
 
 noncomputable def v12_compactSpatialTest (χ : V12Spatial → ℝ)
     (k : SchwartzMap V12Spatial ℂ) (R : ℕ) (x y : V12Spatial) : ℂ :=
@@ -75,14 +75,13 @@ theorem v12_compactSpatialTest_smooth (χ : V12Spatial → ℝ)
     (hχ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ)
     (k : SchwartzMap V12Spatial ℂ) (R : ℕ) (x : V12Spatial) :
     ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (v12_compactSpatialTest χ k R x) := by
-  have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun y : V12Spatial => x - y) := by fun_prop
+  unfold v12_compactSpatialTest
   have hk : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun y : V12Spatial => k (x - y)) := by
-    simpa only [Function.comp_def] using
-      (k.smooth ((⊤ : ℕ∞) : WithTop ℕ∞)).comp hs
-  simpa only [v12_compactSpatialTest, Pi.smul_apply] using
-    (v12_testCutoff_smooth χ hχ R).smul hk
+      (fun y : V12Spatial => k (x - y)) :=
+    (k.smooth (⊤ : ℕ∞)).comp
+      (show ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun y : V12Spatial => x - y) by fun_prop)
+  exact (v12_testCutoff_smooth χ hχ R).smul hk
 
 theorem v12_testCutoff_error_norm_le_one (χ : V12Spatial → ℝ)
     (hχ : ∀ y, 0 ≤ χ y ∧ χ y ≤ 1) (R : ℕ) (y : V12Spatial) :
