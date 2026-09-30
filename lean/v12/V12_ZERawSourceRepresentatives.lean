@@ -108,7 +108,7 @@ theorem v12_testSource_eq_raw_pde_derivative
   have hi : ∀ j : Fin 2, Integrable
       (fun y : V12Spatial => (∂_{e j} (∂_{e j} ψ)) y • q y) := by
     intro j
-    apply ((∂_{e j} (∂_{e j} ψ)).continuous.smul hq.continuous).integrable_of_hasCompactSupport
+    apply ((∂_{e j} (∂_{e j} ψ)).continuous.smul hq.continuous).integrable_of_hasCompactSupport (μ := (volume : Measure V12Spatial))
     exact ((hc.fderiv_apply ℝ (e j)).fderiv_apply ℝ (e j)).smul_right
   have hLap : (∫ y : V12Spatial, (Δ ψ) y • q y) =
       (∫ y : V12Spatial, (∂_{e 0} (∂_{e 0} ψ)) y • q y) +

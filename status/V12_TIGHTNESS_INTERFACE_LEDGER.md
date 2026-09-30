@@ -95,14 +95,13 @@ new PDE theorem.
 
 ## E. Compatibility and gluing
 
-The new public module `V12_LocalLimitCompatibility.lean` defines actual
-nested L2 restrictions between (D_S) and (D_R) for (Rle S), proves
-restriction composition, and proves that limits obtained from the same
-subsequence are compatible.
-
-After that machine result is green, only the measurable representative
-gluing on the countable exhaustion remains.  This is standard measure-theory
-gluing but is not yet represented as a compiled theorem.
+Correction (2026-09-30): the current source tree does not contain the
+previously claimed `V12_LocalLimitCompatibility.lean`. The actual
+`V12_FrequencyTightnessLimit.lean` explicitly leaves nested-limit compatibility
+open. Its checked theorem gives one subsequence and local L2 limits, not
+compatible measurable representatives. Both compatibility on overlapping
+cylinders and measurable gluing remain to be proved. A file mentioned in an
+old ledger is not compiler evidence.
 
 ## Certification boundary
 

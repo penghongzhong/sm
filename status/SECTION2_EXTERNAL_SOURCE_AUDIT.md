@@ -26,4 +26,16 @@ The following paper-specific components are already Lean-kernel checked at the s
 - coefficient constant `C_coeff`;
 - Mathlib `L^2` Plancherel registration.
 
-Therefore, under the user's declared verification foundation (standard analysis + exact published external theorems), Section 2 has **no remaining internal mathematical red point**.  The historical dedicated Section 2 CI did, however, fail on a redundant Lean tactic in `S2_Q0CompatibilityKernel.lean` (`field_simp` had already closed the goal before a trailing `ring`).  That implementation defect has now been repaired identically in the private source branch and public `whole-paper-lean` branch.  Fresh dedicated CI is required before machine-PASS promotion.
+## Certification correction (2026-09-30)
+
+The former claim that Section 2 had “no remaining internal mathematical red
+point” is withdrawn as a formal-verification claim. The compiled items above
+are algebraic kernels or individual standard-library applications. They do
+not establish the full smooth-field derivative/Hodge/HLS construction, its
+function-space conditions, or the concrete application hypotheses throughout
+Section 2. In particular a chapter/section citation without an exact theorem
+and checked hypotheses does not discharge the HLS application.
+
+The dedicated Q0 tactic repair is historical implementation evidence; it is
+not a certificate for these still-open analytic steps. Current authoritative
+scope is the whole-paper coverage ledger and semantic verification correction.

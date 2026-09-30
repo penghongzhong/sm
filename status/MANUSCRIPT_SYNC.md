@@ -76,3 +76,31 @@ TeX/PDF, private build artifacts and private Git history are not uploaded
 to this public repository. The original private repository and registered
 Library v4 files are unchanged. Only metadata about the new private build
 and the verified Lean work are recorded here.
+
+## 2026-09-30: private V7 spatial integration-by-parts expansion
+
+Private full V7 SpatialIBP TeX and PDF were built and saved. The PDF is
+137 pages; all 207 original theorem/lemma/proposition/corollary environments
+remain byte-identical to the full V6 source. The new equations 7.32–7.35
+on page 14 spell out compact product integrability, first and second spatial
+integration by parts, and the tested raw-PDE source. Intended Lean matches:
+`v12_compact_test_spatial_ibp`, `v12_compact_test_spatial_ibp_twice`, and
+`v12_compact_test_raw_pde_source` in ZC. These matches are not certification
+until the corresponding declaration compiles without recovery axioms.
+
+V7 TeX SHA256: cce7627d59799fc70b7c6561c8713de1a913a2e625abcd843b5edf47573af641.
+V7 PDF SHA256: 5af9cb8be95afedff9cea061bf4532f01903fd6b60dcf633521ce97ce40f0eb8.
+Final build: no overfull boxes, unresolved references or duplicate labels;
+1267 distinct labels. Changed pages 13–15 visually inspected. Three SymPy
+checks verify the first/second test derivative algebra and reflected sign;
+they do not certify analytic/PDE claims. Private manuscript files remain
+outside this public repository.
+
+Run 144 actually compiled ZA and ZB successfully; ZC still had a final
+basis-unfolding goal, blocking ZD–ZG. Run 145 tests that repair. The current
+coverage ledger supersedes the historical Run-123 frontier above.
+
+Run 145 subsequently compiled ZC and ZD with only the standard three axioms.
+The V7 equations 7.33–7.35 now have compiled spatial-IBP/raw-source matches.
+ZE still needs an explicit measure annotation; ZF/ZG remain dependency-blocked.
+This is not full-paper certification.
