@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v18 SpatialConstraints, 139 pages,
+Current generated private working expansion: v19 OriginalSourceBudgets, 140 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,31 +16,33 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run165 (partial, FAILURE)
+## Latest completed verification: Run166 (partial, FAILURE)
 
-Run36785327773/job110125247670 checked
-`0750f74cf376cd651098ebb8573fc4f5a840d13a`:123 COMPILE_OK,13 COMPILE_FAIL.
-NEW PASS: Fourier conjugation/reflection, real/even actual spatial Riesz
-multiplier, real spatial output. No previously passing file regressed.
-Four direct roots remain: A0 budget/weak-limit id unfolding, slab extension
-indicator/piecewise equality, local IBP Haar namespace, and actual scalar
-drift test local-finiteness instance. Nine imports failed.
+Run36787140296/job110131152550 checked
+`c45b359741d0820497447e4e4d609519154bf25b`:129 COMPILE_OK,12 COMPILE_FAIL.
+NEW PASS: actual slab locally-finite/compact-finite measure instances,
+closed-slab strongly measurable zero extension and original Hodge MZ,
+local first/second compact IBP, scalar AQ tests, same-Q actual curvature
+compact tests, and same-Q connection derivative tests. No old PASS regressed.
+Three direct roots: A0 expansion/budget/weak limit; original PDE integral
+splitting and ENNReal 4/3 comparison; first-order constraint Pi.add_apply.
+Nine additional imports failed. These failed proofs are not certified.
 
-Run166 candidates repair these actual errors and add proved standard slab
-local-finiteness instances, raw V representative/reality, actual curvature
-compact tests, actual connection derivative tests, and original torsion/
-divergence/curl compact closure. Original PDE distributional closure and
-exact original coefficient section applications remain unverified. No
+Next batch repairs those actual errors and adds original local first/second
+derivative preservation, canonical time/spatial chain-rule correspondence,
+original spatial A0 -> joint raw representative, actual V representative
+under original zero extension, and all original A/V/W coefficient Lp budgets.
+The ZM common-limit application derives all coefficient membership/budget
+inputs internally from the original same-Q formulas and M/Z bounds. Original
+smooth-gauge correspondence, geometric construction, concrete original PDE
+and full statement instantiation remain application obligations. No internal
 hIntegral/hCompact or coefficient/source convergence conclusion is an input.
-Full7.1/7.2 still requires original smooth-field applicability and exact
-canonical spatial/time directions, all candidates checked, and full7.2
-instantiation; subsequent whole-paper branches remain OPEN.
+All new modules remain CANDIDATE until an actual successful compiler run.
+Full7.1/7.2 and every later whole-paper branch remain OPEN.
 
 Precisely registered external HLS remains an explicit proposition parameter,
 not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge
 application passed157 and spacetime MZ passed159. No new external schema.
-Full7.1/7.2 still requires all candidates to compile, exact original
-coefficient correspondence and distributional constraints/PDE closure.
 No scattering or whole-paper certificate is claimed.
 
 ## Layers and remaining actual correspondence

@@ -71,7 +71,10 @@ theorem v12_original_scalar_compact_PDE
   have hp₀ := hint _ (hdp 0 e₀)
   have hp₁ := hint _ (hdp 1 e₁)
   have hig : Integrable (fun z => g z * ψ z) μ := by
-    have h := (hg.locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
+    have hp : (1 : ℝ≥0∞) ≤ 4 / 3 := by
+      apply (ENNReal.le_div_iff_mul_le (by norm_num) (by norm_num)).mpr
+      norm_num
+    have h := (hg.locallyIntegrable hp).integrable_smul_right_of_hasCompactSupport
       hψ.continuous hc
     simpa only [smul_eq_mul] using h
   have he : (∫ z, (Complex.I * fderiv ℝ f z vt +
@@ -91,10 +94,31 @@ theorem v12_original_scalar_compact_PDE
         by_contra hne
         exact hz (hs (subset_tsupport ψ hne))
       rw [hzero, mul_zero, mul_zero]
-  simp only [add_mul, mul_assoc] at he
-  rw [integral_add (hit.const_mul _) (hi₀.add hi₁), integral_add hi₀ hi₁,
-    integral_const_mul, integral_add ((hp₀.add hp₁).const_mul _) hig,
-    integral_const_mul, integral_add hp₀ hp₁] at he
+  have he' :
+      (∫ z, Complex.I * (fderiv ℝ f z vt * ψ z) +
+        (fderiv ℝ (fun x => fderiv ℝ f x e₀) z e₀ * ψ z +
+         fderiv ℝ (fun x => fderiv ℝ f x e₁) z e₁ * ψ z) ∂μ) =
+      ∫ z, (2 * Complex.I) *
+        (fderiv ℝ (fun x => A 0 x * f x) z e₀ * ψ z +
+         fderiv ℝ (fun x => A 1 x * f x) z e₁ * ψ z) + g z * ψ z ∂μ := by
+    calc
+      _ = (∫ z, (Complex.I * fderiv ℝ f z vt +
+          (fderiv ℝ (fun x => fderiv ℝ f x e₀) z e₀ +
+           fderiv ℝ (fun x => fderiv ℝ f x e₁) z e₁)) * ψ z ∂μ) := by
+        apply integral_congr_ae
+        exact Filter.Eventually.of_forall (fun z => by ring)
+      _ = (∫ z, ((2 * Complex.I) *
+          (fderiv ℝ (fun x => A 0 x * f x) z e₀ +
+           fderiv ℝ (fun x => A 1 x * f x) z e₁) + g z) * ψ z ∂μ) := he
+      _ = _ := by
+        apply integral_congr_ae
+        exact Filter.Eventually.of_forall (fun z => by ring)
+  have hsleft := integral_add (hit.const_mul Complex.I) (hi₀.add hi₁)
+  have hslap := integral_add hi₀ hi₁
+  have hsright := integral_add ((hp₀.add hp₁).const_mul (2 * Complex.I)) hig
+  have hsdrift := integral_add hp₀ hp₁
+  simp only [Pi.add_apply] at hsleft hslap hsright hsdrift
+  rw [hsleft, hslap, integral_const_mul, hsright, integral_const_mul, hsdrift] at he'
   have ht := v12_original_slab_compact_IBP a b f ψ hf hψ hc hs vt
   have h₀ := v12_original_slab_compact_second_IBP a b f ψ hf hψ hc hs e₀ e₀
   have h₁ := v12_original_slab_compact_second_IBP a b f ψ hf hψ hc hs e₁ e₁
@@ -106,8 +130,8 @@ theorem v12_original_scalar_compact_PDE
       -(∫ z, (A 0 z * f z) * fderiv ℝ ψ z e₀ ∂μ) := by rw [hp0, neg_neg]
   have hdp1 : (∫ z, fderiv ℝ (fun x => A 1 x * f x) z e₁ * ψ z ∂μ) =
       -(∫ z, (A 1 z * f z) * fderiv ℝ ψ z e₁ ∂μ) := by rw [hp1, neg_neg]
-  rw [hdt, h₀, h₁, hdp0, hdp1] at he
-  simpa only [mul_neg, neg_mul, ← neg_add] using he
+  rw [hdt, h₀, h₁, hdp0, hdp1] at he'
+  simpa only [mul_neg, neg_mul, ← neg_add] using he'
 
 #print axioms v12_spacetime_scalar_Coulomb_product_rule
 #print axioms v12_original_scalar_compact_PDE

@@ -257,3 +257,16 @@ Corresponding new Lean modules remain candidates pending actual compiler.
 TeX SHA256 de73499d4941d8890364a32cc1cc449c911d05e51f4ecc3261cc032bfd303675
 PDF SHA256 24f2eaeda37c42e90688d18debd80cf05bee39130e09212566e98b8b12fd8a3e
 Private TeX/PDF remain excluded from public Git history.
+
+## Private working v19 OriginalSourceBudgets
+
+140 pages; all207 original statement environments byte-identical to v18.
+Expanded zero-extension local first/second derivative preservation,
+measurable converse Fubini for original A0, exact raw V correspondence and
+same-Q A/V/W coefficient budgets used by the common-subsequence application.
+Three XeLaTeX passes and PDF conversion successful; page13 visually checked.
+Zero overfull boxes, unresolved references or duplicate labels; existing
+font fallback remains. New Lean correspondence modules are still candidates.
+TeX SHA256 ef4c9fbf6341d1e4a96da15a209a4bfc3aa86cec4e15b48b4fa0ff1e6b964002
+PDF SHA256 7b8f1a018779195975f01d7ac3fa42643952d5bea9aa9138895f4c8a9616d2ce
+Private TeX/PDF excluded from public Git history.

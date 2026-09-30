@@ -244,3 +244,12 @@ constraints. Full7.1/7.2 remains OPEN; candidates are not green.
 Run165 actual check:123/136, FAILURE. Full spatial Fourier reality module
 PASS. Four direct roots/nine imports remain. Run166 repairs and actual
 spatial-constraint closure applications are candidates, not green.
+
+Run166 actual check:129/141, FAILURE; three direct roots/nine imports.
+NEW PASS: YFFFiniteSlabMeasures, YWSmoothSlabExtension, YZZGLocalSmoothIntegration,
+YZZLScalarDriftTest (including ordinary scalar AQ tests), YZZPCurvatureTestLimits,
+YZZQActualConnectionTests. These replace only their own previous candidates.
+Next batch adds original slab derivative preservation, canonical coordinate
+chain rules, original A0/V representatives and internally derived A/V/W budgets,
+then ZM same-Q common-subsequence application. All additions remain candidates.
+Original physical geometry/gauge hypotheses and full7.1/7.2 remain OPEN.

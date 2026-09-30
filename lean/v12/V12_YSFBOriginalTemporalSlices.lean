@@ -92,7 +92,7 @@ theorem v12_actualTemporalCoulomb_fubini_formula
   have hsum (F : Fin 2 → Lp ℂ 2 (μ.prod (volume : Measure V12Spatial))) :
       v12_fubiniMap μ (∑ j, F j) = ∑ j, v12_fubiniMap μ (F j) :=
     map_sum (v12_fubiniL2Isometry μ) F Finset.univ
-  unfold v12_actualTemporalCoulombL2
+  rw [v12_actualTemporalCoulombL2_eq]
   rw [hsub, v12_fubiniMap_smul, v12_fubiniMap_smul, hsum]
   congr 2
   apply Finset.sum_congr rfl

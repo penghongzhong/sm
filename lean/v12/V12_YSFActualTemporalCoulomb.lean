@@ -61,6 +61,15 @@ noncomputable def v12_actualTemporalCoulombL2 (a b : ℝ)
     (2 : ℂ) • v12_massComplexL2Class
       (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) q hq
 
+theorem v12_actualTemporalCoulombL2_eq (a b : ℝ)
+    (q : V12Spacetime → V12Field) (hq : MemLp q 4 (v12_slab_measure a b)) :
+    v12_actualTemporalCoulombL2 a b q hq =
+      (4 : ℂ) • (∑ j, ∑ k, v12_spacetimeCoulombRieszOperator
+        ((volume : Measure ℝ).restrict (Set.Icc a b)) j k
+          (v12_SL2Class (v12_slab_measure a b) j k q hq)) -
+      (2 : ℂ) • v12_massComplexL2Class (v12_slab_measure a b) q hq := by
+  rfl
+
 theorem v12_actualTemporalCoulomb_L2_budget
     (a b : ℝ) (q : V12Spacetime → V12Field) (hq : MemLp q 4 (v12_slab_measure a b))
     (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : eLpNorm q 4 (v12_slab_measure a b) ≤ Z) :
@@ -89,9 +98,9 @@ theorem v12_actualTemporalCoulomb_L2_budget
         intro k hk
         exact (v12_spacetimeCoulombRieszOperator_bound _ j k _).trans (hS j k)
       _ = _ := by simp; ring
-  unfold v12_actualTemporalCoulombL2
+  rw [v12_actualTemporalCoulombL2_eq]
   apply (norm_sub_le _ _).trans
-  simp only [id_eq, norm_smul, Complex.norm_ofNat]
+  simp only [norm_smul, Complex.norm_ofNat]
   nlinarith
 
 theorem v12_actualTensorL2_dual_limit
@@ -178,7 +187,7 @@ theorem v12_actualTemporalCoulomb_weak_L2_limit
     (φ.comp (v12_spacetimeCoulombRieszOperator ((volume : Measure ℝ).restrict (Set.Icc a b)) j k))
   have hs := tendsto_finset_sum Finset.univ (fun j _ =>
     tendsto_finset_sum Finset.univ (fun k _ => hR j k))
-  simpa only [v12_actualTemporalCoulombL2, id_eq, map_sub, map_smul, map_sum,
+  simpa only [v12_actualTemporalCoulombL2_eq, map_sub, map_smul, map_sum,
     ContinuousLinearMap.comp_apply] using (hs.const_smul (4 : ℂ)).sub ((hm φ).const_smul (2 : ℂ))
 
 #print axioms v12_actualTemporalCoulomb_L2_budget
