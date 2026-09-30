@@ -44,7 +44,8 @@ theorem v12_compact_test_time_identity (a b : ℝ) (v d g : ℝ → E)
     (hg : LocallyIntegrableOn g (Set.Ioo a b) volume)
     (hweak : ∀ φ : ℝ → ℝ, ContDiff ℝ ∞ φ → HasCompactSupport φ →
       tsupport φ ⊆ Set.Ioo a b → ∫ τ : ℝ, φ τ • (d τ - g τ) = 0)
-    (hclassical : ∀ τ ∈ Set.Icc a b, HasDerivAt v (d τ) τ)
+    (hcont : ContinuousOn v (Set.Icc a b))
+    (hclassical : ∀ τ ∈ Set.Ioo a b, HasDerivAt v (d τ) τ)
     {s t : ℝ} (hs : s ∈ Set.Icc a b) (ht : t ∈ Set.Icc a b)
     (hst : s ≤ t) (hint : IntervalIntegrable g volume s t) :
     v t - v s = ∫ τ in s..t, g τ := by
@@ -64,13 +65,15 @@ theorem v12_compact_test_time_identity (a b : ℝ) (v d g : ℝ → E)
     apply intervalIntegrable_iff.mpr
     rw [Set.uIoc_of_le hst]
     exact hg'.congr heq.symm
-  have hder' : ∀ τ ∈ Set.uIcc s t, HasDerivAt v (d τ) τ := by
+  have hcont' : ContinuousOn v (Set.Icc s t) := hcont.mono (by
     intro τ hτ
-    rw [Set.uIcc_of_le hst] at hτ
-    exact hclassical τ ⟨hs.1.trans hτ.1, hτ.2.trans ht.2⟩
+    exact ⟨hs.1.trans hτ.1, hτ.2.trans ht.2⟩)
+  have hder' : ∀ τ ∈ Set.Ioo s t, HasDerivAt v (d τ) τ := by
+    intro τ hτ
+    exact hclassical τ ⟨hs.1.trans_lt hτ.1, hτ.2.trans_le ht.2⟩
   calc
     v t - v s = ∫ τ in s..t, d τ :=
-      (intervalIntegral.integral_eq_sub_of_hasDerivAt hder' hd').symm
+      (intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le hst hcont' hder' hd').symm
     _ = ∫ τ in s..t, g τ := by
       rw [intervalIntegral.integral_of_le hst, intervalIntegral.integral_of_le hst]
       exact integral_congr_ae heq
@@ -142,6 +145,30 @@ theorem v12_norm_increment_quarter_of_integral_identity_of_le
   simpa only [toReal_enorm, ENNReal.toReal_mul, ← ENNReal.toReal_rpow,
     ENNReal.toReal_ofReal (sub_nonneg.mpr hst)] using hreal
 
+
+/-- The symmetric quarter-Holder estimate follows from ordered time identities. -/
+theorem v12_norm_increment_quarter_of_integral_identities
+    (a b : ℝ) (u g : ℝ → E)
+    (hg : MemLp g ((4 : ℝ≥0∞) / 3) ((volume : Measure ℝ).restrict (Set.Icc a b)))
+    (C : ℝ≥0∞) (hC : C ≠ ⊤)
+    (hbound : eLpNorm g ((4 : ℝ≥0∞) / 3)
+      ((volume : Measure ℝ).restrict (Set.Icc a b)) ≤ C)
+    (hid : ∀ s ∈ Set.Icc a b, ∀ t ∈ Set.Icc a b, s ≤ t →
+      u t - u s = ∫ τ in s..t, g τ)
+    {s t : ℝ} (hs : s ∈ Set.Icc a b) (ht : t ∈ Set.Icc a b) :
+    ‖u t - u s‖ ≤ C.toReal * |t - s| ^ ((1 : ℝ) / 4) := by
+  rcases le_total s t with hst | hts
+  · simpa only [abs_of_nonneg (sub_nonneg.mpr hst)] using
+      v12_norm_increment_quarter_of_integral_identity_of_le a b u g hg C hC hbound
+        hs ht hst (hid s hs t ht hst)
+  · have h := v12_norm_increment_quarter_of_integral_identity_of_le
+      a b u g hg C hC hbound ht hs hts (hid t ht s hs hts)
+    rw [norm_sub_rev]
+    calc
+      ‖u s - u t‖ ≤ C.toReal * (s - t) ^ ((1 : ℝ) / 4) := h
+      _ = C.toReal * |t - s| ^ ((1 : ℝ) / 4) := by
+        rw [abs_sub_comm t s, abs_of_nonneg (sub_nonneg.mpr hts)]
+
 end Banach
 
 /-- Pointwise compact-test identities identify the same BCF-valued integral.
@@ -169,7 +196,8 @@ theorem v12_BCF_time_identity_of_weak_test_limits
     (hweak : ∀ R x, ∀ φ : ℝ → ℝ,
       ContDiff ℝ ∞ φ → HasCompactSupport φ → tsupport φ ⊆ Set.Ioo a b →
         ∫ τ : ℝ, φ τ • (dR R x τ - gR R x τ) = 0)
-    (hclassical : ∀ R x, ∀ τ ∈ Set.Icc a b,
+    (hcont : ∀ R x, ContinuousOn (vR R x) (Set.Icc a b))
+    (hclassical : ∀ R x, ∀ τ ∈ Set.Ioo a b,
       HasDerivAt (vR R x) (dR R x τ) τ)
     {s t : ℝ} (hs : s ∈ Set.Icc a b) (ht : t ∈ Set.Icc a b) (hst : s ≤ t)
     (hg : IntervalIntegrable g volume s t)
@@ -188,7 +216,7 @@ theorem v12_BCF_time_identity_of_weak_test_limits
   exact v12_time_identity_of_test_limit (fun τ => u τ x) (fun τ => g τ x)
     (fun R => vR R x) (fun R => gR R x) s t hst hgx (fun R => hRint R x)
     (fun R => v12_compact_test_time_identity a b (vR R x) (dR R x) (gR R x)
-      (hd R x) (hgR R x) (hweak R x) (hclassical R x) hs ht hst (hRint R x))
+      (hd R x) (hgR R x) (hweak R x) (hcont R x) (hclassical R x) hs ht hst (hRint R x))
     (hus x) (hut x) (hL1 x)
 
 #print axioms v12_weak_residual_ae_eq
@@ -196,6 +224,7 @@ theorem v12_BCF_time_identity_of_weak_test_limits
 #print axioms v12_integral_tendsto_of_norm_L1
 #print axioms v12_time_identity_of_test_limit
 #print axioms v12_norm_increment_quarter_of_integral_identity_of_le
+#print axioms v12_norm_increment_quarter_of_integral_identities
 #print axioms v12_BCF_time_identity_of_pointwise
 #print axioms v12_BCF_time_identity_of_weak_test_limits
 
