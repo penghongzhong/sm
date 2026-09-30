@@ -1,57 +1,51 @@
-# V12 cutoff time-source bridge — 2026-09-30
+# V12 cutoff time-source bridge — current status
 
-## Authority and repair
+## Verified code authority
 
-Work stays on `whole-paper-lean`; draft PR #6 remains unmerged.
-The manuscript remains private LeanSync v4 (135 pages); no TeX/PDF or private
-history is added to the public verification repository.
+Run 119 (36654904541), job 109697026316, SUCCESS.
+Actual CHECKED_SHA: c655aabab7c715fcc2bd1b0c8dfe281e7258f27b.
+40/40 public Lean files compiled; no compile failure. All printed axiom
+lists of the four new modules contain only the standard logical axioms.
+Read V12_RUN119_SUCCESS_20260930.md for the completed-log evidence.
+Draft PR #6 remains unmerged; no manuscript is published here.
 
-Run 116 checked 48cc9c20fa40dc9838f66caaaa5ba27eeb3ef4a7 and FAILED.
-Actual errors: ambiguous `k.toLp 2 (x-y)` used a spatial point as the optional
-measure argument; bare ENNReal `norm_num` did not prove Holder conjugacy;
-`v12_cutoffLineDerivBCFCLM` was used before its definition.
+## Repair history and retained declarations
 
-The core file is restored byte-for-byte to the Run-114 blob
-f658154bdf75ab078f1c85fef76d3c082d3d177c from commit
-857acba0cc922de825051734a5e6a84e39cc3a65. This retains the already-compiled
-real-to-ENNReal conjugacy proof. All Run-115 mathematical additions are
-moved to `lean/v12/V12_TimeSourceBridge.lean`, with their original names,
-explicit Lp typing and correct dependency order. No theorem is dropped.
+Run 116 failed on an ambiguous Schwartz-to-Lp measure argument, a regressed
+ENNReal conjugacy proof, and use of a source operator before its definition.
+The core was restored byte-for-byte to the Run-114 blob
+f658154bdf75ab078f1c85fef76d3c082d3d177c, preserving its compiled proofs.
+Run-115 additions were retained with their original theorem names.
 
-## New analytic chain
+The general Schwartz representative identity now lives in
+V12_KernelConvolutionIdentity.lean; derivative identities live in
+V12_TimeSourceBridge.lean after importing their actual operator definitions.
+Runs 117/118 located further elaboration, multiplication and rpow issues.
+They were fixed without deleting a theorem or adding a target-as-hypothesis.
 
-The new module defines the actual BCF source
+## Verified analytic modules
 
-`i (Delta K_N)*Q + 2 (partial_1 K_N)*F_1 + 2 (partial_2 K_N)*F_2 - i K_N*G`.
+V12_KernelConvolutionIdentity: actual integral/Lp/Schwartz identification.
+V12_SourceProducts: F_j=A_j Q and G=V Q+W conjugate(Q), with actual Holder
+product bounds and MemLp, including conjugation on the two-component field.
+V12_SpatialEquicontinuity: actual fixed-kernel convolution equicontinuity
+from uniform input L2 bounds and L2 translation continuity.
+V12_TimeSourceBridge: exact derivative source CLMs, source time-L43 budget,
+finite budget, source MemLp, FTC and a symmetric quarter-Holder estimate.
 
-It proves its time-L43 bound from the time-Linfinity spatial-L2 norm of Q,
-the time-L2 spatial-L2 norms of F, and the time-L43 spatial-L43 norm of G.
-The explicit budget retains measure(I)^(3/4) and measure(I)^(1/4).
-It then proves budget finiteness, source MemLp, FTC, the actual interval
-integral bound and the symmetric quarter-Holder increment inequality.
-The terminal field is the existing actual cutoff convolution representative,
-not an arbitrary abstract norm or an unspecified operator.
+The terminal time theorem applies to the actual cutoff representative,
+but still requires its exact Banach-valued derivative identity and source
+membership. Compiling this conditional theorem is not a full PDE certificate.
 
-## Remaining paper-specific hypotheses — NOT closed
+## Remaining paper-specific bridges
 
-- Construct the time-Lp classes from the same spacetime Coulomb fields.
-- Instantiate F_j=A_j Q and G=V Q+W conjugate(Q), with the actual M,Z bounds.
-- Derive the BCF derivative identity from the original distributional PDE,
-  including justified differentiation/convolution and time representatives.
-- Combine the time estimate with spatial equicontinuity and actual cylinder
-  representative identities to discharge fixed-cutoff hCompact.
-- Prove compatible measurable gluing and the Theorem-7.1 limit passage.
+- Hodge coefficient reconstruction estimates and their same-field M,Z inputs.
+- Spacetime-to-time-Lp realization of Q, A_j Q and VQ+W conjugate(Q).
+- Original distributional evolution to the cutoff time integral identity;
+  endpoint/all-time representative regularity must be justified.
+- Actual cylinder identification and fixed-cutoff hCompact.
+- Measurable local-limit gluing and the Theorem-7.1 passage to the limit.
 
-No conclusion of Theorem 7.2, compactness or scattering is an input to the
-new estimates. Nevertheless, compiling their explicit conditional statement
-is NOT a full PDE certificate. Earlier conversational estimates of 55–60%
-whole-paper coverage and 75% V12 coverage have no verified numerator and
-must not be used as certified completion figures.
-
-## CI boundary
-
-PENDING for this batch until a completed job log has been read. The workflow
-now checks an immutable event SHA and emits local .olean files so the new
-module imports the exact core instead of duplicating its definitions.
-No source is rewritten at build time, no file is excluded, and no additional
-write permission is granted to Actions.
+Private manuscript: LeanSync v4, unchanged at 135 pages. No new PDF compiled.
+The previous 55–60% whole-paper and 75% v12 estimates lack an audited
+full-theorem numerator and must not be used as completion certificates.
