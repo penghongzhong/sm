@@ -104,8 +104,15 @@ theorem v12_compactSpatialTest_second_fderiv_apply
       v12_testScale R •
         fderiv ℝ (v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x) y m -
         fderiv ℝ (v12_compactSpatialTest χ (∂_{m} k) R x) y m := by
-    simpa only [Pi.smul_apply, Pi.sub_apply, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.smul_apply] using he
+    change
+      (fderiv ℝ
+        (v12_testScale R •
+          v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x -
+          v12_compactSpatialTest χ (∂_{m} k) R x) y) m =
+        v12_testScale R •
+          (fderiv ℝ (v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x) y) m -
+          (fderiv ℝ (v12_compactSpatialTest χ (∂_{m} k) R x) y) m
+    exact he
   rw [hfun, hcalc, v12_compactSpatialTest_fderiv_apply, v12_compactSpatialTest_fderiv_apply]
   module
 
