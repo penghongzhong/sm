@@ -159,6 +159,7 @@ theorem v12_compact_test_raw_pde_source
     v12_compact_test_spatial_ibp ψ (F 0) hψ hc (hF 0) (e 0),
     v12_compact_test_spatial_ibp ψ (F 1) hψ hc (hF 1) (e 1)]
   simp only [smul_neg, neg_smul]
+  rfl
 
 #print axioms v12_compact_test_raw_pde_source
 #print axioms v12_compact_test_spatial_ibp
