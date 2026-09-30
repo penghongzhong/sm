@@ -1414,6 +1414,70 @@ theorem v12_enorm_intervalIntegral_le_fourThirds_quarter_of_le
 #print axioms v12_enorm_setIntegral_le_fourThirds_quarter
 #print axioms v12_enorm_intervalIntegral_le_fourThirds_quarter_of_le
 
+
+/-! ===== finite-measure L^2/L^infinity-to-L^(4/3) bridges ===== -/
+
+/-- Exact exponent order for the manuscript embedding L^2_t -> L^(4/3)_t. -/
+theorem v12_fourThirds_le_two_ENNReal :
+    (4 : ℝ≥0∞) / 3 ≤ (2 : ℝ≥0∞) := by
+  apply (ENNReal.div_le_iff (by norm_num) (by norm_num)).2
+  norm_num
+
+/-- The finite-measure exponent loss from L^2 to L^(4/3) is exactly 1/4. -/
+theorem v12_two_to_fourThirds_exponent :
+    1 / (((4 : ℝ≥0∞) / 3).toReal) -
+        1 / (2 : ℝ≥0∞).toReal =
+      (1 : ℝ) / 4 := by
+  norm_num [ENNReal.toReal_div]
+
+/-- The finite-measure exponent loss from L^infinity to L^(4/3) is exactly 3/4. -/
+theorem v12_top_to_fourThirds_exponent :
+    1 / (((4 : ℝ≥0∞) / 3).toReal) -
+        1 / (∞ : ℝ≥0∞).toReal =
+      (3 : ℝ) / 4 := by
+  norm_num [ENNReal.toReal_div]
+
+/-- On a finite measure space, L^2 controls L^(4/3) with the exact
+measure^(1/4) factor used for the divergence source in Theorem 7.2. -/
+theorem v12_eLpNorm_fourThirds_le_two_quarter
+    {Ω E : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E]
+    (μ : Measure Ω)
+    (G : Ω → E)
+    (hG : AEStronglyMeasurable G μ) :
+    eLpNorm G ((4 : ℝ≥0∞) / 3) μ ≤
+      eLpNorm G 2 μ *
+        μ Set.univ ^ ((1 : ℝ) / 4) := by
+  simpa only [v12_two_to_fourThirds_exponent] using
+    (eLpNorm_le_eLpNorm_mul_rpow_measure_univ
+      (p := ((4 : ℝ≥0∞) / 3))
+      (q := (2 : ℝ≥0∞))
+      v12_fourThirds_le_two_ENNReal hG)
+
+/-- On a finite measure space, L^infinity controls L^(4/3) with the exact
+measure^(3/4) factor used for the linear fixed-frequency source. -/
+theorem v12_eLpNorm_fourThirds_le_top_threeQuarter
+    {Ω E : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E]
+    (μ : Measure Ω)
+    (G : Ω → E)
+    (hG : AEStronglyMeasurable G μ) :
+    eLpNorm G ((4 : ℝ≥0∞) / 3) μ ≤
+      eLpNorm G ∞ μ *
+        μ Set.univ ^ ((3 : ℝ) / 4) := by
+  simpa only [v12_top_to_fourThirds_exponent] using
+    (eLpNorm_le_eLpNorm_mul_rpow_measure_univ
+      (p := ((4 : ℝ≥0∞) / 3))
+      (q := (∞ : ℝ≥0∞))
+      (le_top : ((4 : ℝ≥0∞) / 3) ≤ ∞) hG)
+
+#print axioms v12_fourThirds_le_two_ENNReal
+#print axioms v12_two_to_fourThirds_exponent
+#print axioms v12_top_to_fourThirds_exponent
+#print axioms v12_eLpNorm_fourThirds_le_two_quarter
+#print axioms v12_eLpNorm_fourThirds_le_top_threeQuarter
+
+
 /-! ===== exact L4-L^(4/3) cutoff convolution for the zero-order PDE source ===== -/
 
 abbrev V12ScalarL4 : Type := Lp (α := V12Spatial) ℂ 4
@@ -1526,6 +1590,119 @@ theorem v12_L4L43ConvolutionRep_norm_le
 #print axioms v12_holderConjugate_four_fourThirds
 #print axioms v12_continuous_reflectedTranslateL4
 #print axioms v12_L4L43ConvolutionRep_norm_le
+
+
+
+/-! ===== bounded-continuous realization of the L4-L^(4/3) convolution ===== -/
+
+/-- Bundle the L4-L^(4/3) convolution representative as a bounded continuous
+spatial field. -/
+noncomputable def v12_L4L43ConvolutionBCF
+    (k : V12ScalarL4) (f : V12SpatialLFourThirds) :
+    BoundedContinuousFunction V12Spatial V12Field :=
+  BoundedContinuousFunction.ofNormedAddCommGroup
+    (v12_L4L43ConvolutionRep k f)
+    (v12_continuous_L4L43ConvolutionRep k f)
+    (‖v12_L4L43ConvolutionPairing‖ * ‖k‖ * ‖f‖)
+    (fun x => v12_L4L43ConvolutionRep_norm_le k f x)
+
+@[simp]
+theorem v12_L4L43ConvolutionBCF_apply
+    (k : V12ScalarL4) (f : V12SpatialLFourThirds) (x : V12Spatial) :
+    v12_L4L43ConvolutionBCF k f x =
+      v12_L4L43ConvolutionRep k f x :=
+  rfl
+
+theorem v12_L4L43ConvolutionBCF_add
+    (k : V12ScalarL4) (f g : V12SpatialLFourThirds) :
+    v12_L4L43ConvolutionBCF k (f + g) =
+      v12_L4L43ConvolutionBCF k f + v12_L4L43ConvolutionBCF k g := by
+  ext x
+  simp [v12_L4L43ConvolutionBCF, v12_L4L43ConvolutionRep]
+
+theorem v12_L4L43ConvolutionBCF_smul
+    (k : V12ScalarL4) (a : ℂ) (f : V12SpatialLFourThirds) :
+    v12_L4L43ConvolutionBCF k (a • f) =
+      a • v12_L4L43ConvolutionBCF k f := by
+  ext x
+  simp [v12_L4L43ConvolutionBCF, v12_L4L43ConvolutionRep]
+
+/-- For fixed scalar L4 kernel, convolution is a continuous linear map from
+spatial L^(4/3) to bounded continuous vector fields. -/
+noncomputable def v12_L4L43ConvolutionBCFCLM
+    (k : V12ScalarL4) :
+    V12SpatialLFourThirds →L[ℂ]
+      BoundedContinuousFunction V12Spatial V12Field :=
+  LinearMap.mkContinuous
+    { toFun := v12_L4L43ConvolutionBCF k
+      map_add' := v12_L4L43ConvolutionBCF_add k
+      map_smul' := v12_L4L43ConvolutionBCF_smul k }
+    (‖v12_L4L43ConvolutionPairing‖ * ‖k‖)
+    (fun f => by
+      change
+        ‖BoundedContinuousFunction.ofNormedAddCommGroup
+            (v12_L4L43ConvolutionRep k f)
+            (v12_continuous_L4L43ConvolutionRep k f)
+            (‖v12_L4L43ConvolutionPairing‖ * ‖k‖ * ‖f‖)
+            (fun x => v12_L4L43ConvolutionRep_norm_le k f x)‖
+          ≤ (‖v12_L4L43ConvolutionPairing‖ * ‖k‖) * ‖f‖
+      exact BoundedContinuousFunction.norm_ofNormedAddCommGroup_le
+        (v12_continuous_L4L43ConvolutionRep k f)
+        (by positivity)
+        (fun x => by
+          simpa [mul_assoc] using
+            v12_L4L43ConvolutionRep_norm_le k f x))
+
+@[simp]
+theorem v12_L4L43ConvolutionBCFCLM_apply
+    (k : V12ScalarL4) (f : V12SpatialLFourThirds) (x : V12Spatial) :
+    v12_L4L43ConvolutionBCFCLM k f x =
+      v12_L4L43ConvolutionRep k f x :=
+  rfl
+
+theorem v12_L4L43ConvolutionBCFCLM_norm_le
+    (k : V12ScalarL4) :
+    ‖v12_L4L43ConvolutionBCFCLM k‖ ≤
+      ‖v12_L4L43ConvolutionPairing‖ * ‖k‖ := by
+  exact LinearMap.mkContinuous_norm_le _ (by positivity) _
+
+/-- The exact fixed-frequency cutoff kernel as an actual spatial L4 class. -/
+noncomputable def v12_cutoffKernelL4
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    V12ScalarL4 :=
+  (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N).toLp 4
+
+/-- The exact zero-order fixed-frequency source operator
+L_x^(4/3) -> C_b(R^2;C^2). -/
+noncomputable def v12_cutoffZeroOrderBCFCLM
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    V12SpatialLFourThirds →L[ℂ]
+      BoundedContinuousFunction V12Spatial V12Field :=
+  v12_L4L43ConvolutionBCFCLM
+    (v12_cutoffKernelL4 p hp_cpt hp_smooth N)
+
+theorem v12_cutoffZeroOrderBCFCLM_norm_le
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    ‖v12_cutoffZeroOrderBCFCLM p hp_cpt hp_smooth N‖ ≤
+      ‖v12_L4L43ConvolutionPairing‖ *
+        ‖v12_cutoffKernelL4 p hp_cpt hp_smooth N‖ := by
+  simpa [v12_cutoffZeroOrderBCFCLM] using
+    v12_L4L43ConvolutionBCFCLM_norm_le
+      (v12_cutoffKernelL4 p hp_cpt hp_smooth N)
+
+#print axioms v12_L4L43ConvolutionBCF_add
+#print axioms v12_L4L43ConvolutionBCF_smul
+#print axioms v12_L4L43ConvolutionBCFCLM_norm_le
+#print axioms v12_cutoffZeroOrderBCFCLM_norm_le
 
 
 /-! ===== exact first/second derivative cutoff kernels ===== -/
