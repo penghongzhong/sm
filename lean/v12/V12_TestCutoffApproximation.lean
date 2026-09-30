@@ -38,15 +38,16 @@ noncomputable def v12_testCutoff (χ : V12Spatial → ℝ) (R : ℕ)
     (y : V12Spatial) : ℝ := χ (v12_testScale R • y)
 
 theorem v12_testCutoff_continuous (χ : V12Spatial → ℝ)
-    (hχ : Continuous χ) (R : ℕ) : Continuous (v12_testCutoff χ R) :=
-  hχ.comp (continuous_const.smul continuous_id)
+    (hχ : Continuous χ) (R : ℕ) : Continuous (v12_testCutoff χ R) := by
+  have hs : Continuous (fun y : V12Spatial => v12_testScale R • y) := by fun_prop
+  simpa only [v12_testCutoff, Function.comp_def] using hχ.comp hs
 
 theorem v12_testCutoff_tendsto (χ : V12Spatial → ℝ)
     (hχ : Continuous χ) (hχ0 : χ 0 = 1) (y : V12Spatial) :
     Tendsto (fun R => v12_testCutoff χ R y) atTop (𝓝 1) := by
   have hy : Tendsto (fun R => v12_testScale R • y) atTop (𝓝 (0 : V12Spatial)) := by
     simpa only [zero_smul] using v12_testScale_tendsto.smul_const y
-  simpa only [v12_testCutoff, hχ0] using (hχ.tendsto 0).comp hy
+  simpa only [v12_testCutoff, hχ0, Function.comp_def] using (hχ.tendsto 0).comp hy
 
 theorem v12_testCutoff_compactSupport (χ : V12Spatial → ℝ)
     (hχ : HasCompactSupport χ) (R : ℕ) :
@@ -55,8 +56,10 @@ theorem v12_testCutoff_compactSupport (χ : V12Spatial → ℝ)
 
 theorem v12_testCutoff_smooth (χ : V12Spatial → ℝ)
     (hχ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ) (R : ℕ) :
-    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (v12_testCutoff χ R) :=
-  hχ.comp (contDiff_const.smul contDiff_id)
+    ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (v12_testCutoff χ R) := by
+  have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (fun y : V12Spatial => v12_testScale R • y) := by fun_prop
+  simpa only [v12_testCutoff, Function.comp_def] using hχ.comp hs
 
 noncomputable def v12_compactSpatialTest (χ : V12Spatial → ℝ)
     (k : SchwartzMap V12Spatial ℂ) (R : ℕ) (x y : V12Spatial) : ℂ :=
@@ -72,8 +75,14 @@ theorem v12_compactSpatialTest_smooth (χ : V12Spatial → ℝ)
     (hχ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ)
     (k : SchwartzMap V12Spatial ℂ) (R : ℕ) (x : V12Spatial) :
     ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (v12_compactSpatialTest χ k R x) := by
-  exact (v12_testCutoff_smooth χ hχ R).smul
-    (k.smooth.comp (contDiff_const.sub contDiff_id))
+  have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (fun y : V12Spatial => x - y) := by fun_prop
+  have hk : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (fun y : V12Spatial => k (x - y)) := by
+    simpa only [Function.comp_def] using
+      (k.smooth ((⊤ : ℕ∞) : WithTop ℕ∞)).comp hs
+  simpa only [v12_compactSpatialTest, Pi.smul_apply] using
+    (v12_testCutoff_smooth χ hχ R).smul hk
 
 theorem v12_testCutoff_error_norm_le_one (χ : V12Spatial → ℝ)
     (hχ : ∀ y, 0 ≤ χ y ∧ χ y ≤ 1) (R : ℕ) (y : V12Spatial) :
@@ -113,7 +122,7 @@ theorem v12_testCutoff_error_eLpNorm_tendsto
       (fun R => (hmeas R).enorm.pow_const p.toReal)
       (fun R => Filter.Eventually.of_forall (fun y => by
         apply ENNReal.rpow_le_rpow _ hp.le
-        simpa only [ENNReal.ofReal_norm] using ENNReal.ofReal_le_ofReal (hdom R y)))
+        simpa only [ofReal_norm] using ENNReal.ofReal_le_ofReal (hdom R y)))
       (lintegral_rpow_enorm_lt_top_of_eLpNorm_lt_top hp0 hpt hf).ne
       (Filter.Eventually.of_forall (fun y => by
         have hF : Tendsto (fun R => F R y) atTop (𝓝 (0 : E)) := by
@@ -121,13 +130,13 @@ theorem v12_testCutoff_error_eLpNorm_tendsto
         have he := continuous_enorm.continuousAt.tendsto.comp hF
         have hr := (show Continuous (fun z : ℝ≥0∞ => z ^ p.toReal) from
           ENNReal.continuous_rpow_const).continuousAt.tendsto.comp he
-        simpa [ENNReal.zero_rpow_of_pos hp] using hr))
+        simpa [Function.comp_def, ENNReal.zero_rpow_of_pos hp] using hr))
     simpa only [lintegral_zero] using h
   have hroot := (show Continuous (fun z : ℝ≥0∞ => z ^ (1 / p.toReal)) from
     ENNReal.continuous_rpow_const).continuousAt.tendsto.comp hpowlim
   have hroot' : Tendsto
       (fun R => (∫⁻ y, ‖F R y‖ₑ ^ p.toReal ∂μ) ^ (1 / p.toReal)) atTop (𝓝 0) := by
-    simpa only [ENNReal.zero_rpow_of_pos (one_div_pos.mpr hp)] using hroot
+    simpa only [Function.comp_def, ENNReal.zero_rpow_of_pos (one_div_pos.mpr hp)] using hroot
   convert hroot' using 1
   ext R
   exact (eLpNorm_eq_eLpNorm' hp0 hpt (hmeas R)).trans
