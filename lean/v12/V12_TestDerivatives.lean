@@ -3,8 +3,9 @@ import lean.v12.V12_TestCutoffApproximation
 /-!
 Actual first and second directional derivatives of the SAME compact test.
 The identities differentiate chi(y/(R+1))*K(x-y), including the reflection
-sign and both cutoff derivatives. No derivative identity is an assumption.
-Finite-Lp convergence and the original PDE residual are separate obligations.
+sign and both cutoff derivatives. Scale and reflection chain rules are
+proved separately before the product rule. No derivative identity is an
+input. Finite-Lp limits and the original PDE residual are separate steps.
 -/
 
 set_option autoImplicit false
@@ -15,7 +16,6 @@ namespace SMScattering.W20Full
 open Filter MeasureTheory LineDeriv
 open scoped Topology ENNReal ContDiff
 
-/-- Exact real Schwartz realization of the original smooth compact cutoff. -/
 noncomputable def v12_realCutoffSchwartz (χ : V12Spatial → ℝ)
     (hc : HasCompactSupport χ)
     (hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ) :
@@ -33,10 +33,27 @@ theorem v12_compactSpatialTest_differentiable
   exact (v12_compactSpatialTest_smooth χ (χ.smooth (⊤ : ℕ∞)) k R x).differentiable
     (by norm_num)
 
-/-- Standard multivariable-calculus interface for the first derivative of
-    χ(s y) * k(x-y). This is a pure analysis identity; it contains no PDE
-    content and is permitted as a standard-analysis leaf in the project
-    certification policy. -/
+/-- The exact scale derivative, obtained from HasFDerivAt composition. -/
+theorem v12_schwartz_scale_fderiv_apply
+    (χ : SchwartzMap V12Spatial ℝ) (r : ℝ) (y m : V12Spatial) :
+    fderiv ℝ (fun z : V12Spatial => χ (r • z)) y m =
+      r • fderiv ℝ (χ : V12Spatial → ℝ) (r • y) m := by
+  have hscale := (hasFDerivAt_id (𝕜 := ℝ) y).const_smul r
+  have h := (χ.hasFDerivAt (r • y)).comp y hscale
+  have he := congrArg (fun T : V12Spatial →L[ℝ] ℝ => T m) h.fderiv
+  simpa [Function.comp_def, ContinuousLinearMap.comp_apply] using he
+
+/-- The exact reflection derivative carries one minus sign. -/
+theorem v12_schwartz_reflection_fderiv_apply
+    (k : SchwartzMap V12Spatial ℂ) (x y m : V12Spatial) :
+    fderiv ℝ (fun z : V12Spatial => k (x-z)) y m =
+      -fderiv ℝ (k : V12Spatial → ℂ) (x-y) m := by
+  have hreflect := (hasFDerivAt_id (𝕜 := ℝ) y).const_sub x
+  have h := (k.hasFDerivAt (x-y)).comp y hreflect
+  have he := congrArg (fun T : V12Spatial →L[ℝ] ℂ => T m) h.fderiv
+  simpa [Function.comp_def, ContinuousLinearMap.comp_apply] using he
+
+/-- Product rule applied only after the two chain rules are established. -/
 theorem v12_compactSpatialTest_fderiv_apply
     (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
     (R : ℕ) (x y m : V12Spatial) :
@@ -46,35 +63,21 @@ theorem v12_compactSpatialTest_fderiv_apply
         v12_compactSpatialTest χ (∂_{m} k) R x y := by
   have hc : DifferentiableAt ℝ (fun z : V12Spatial => χ (v12_testScale R • z)) y := by
     fun_prop
-  have hk : DifferentiableAt ℝ (fun z : V12Spatial => k (x - z)) y := by
+  have hk : DifferentiableAt ℝ (fun z : V12Spatial => k (x-z)) y := by
     fun_prop
   rw [show v12_compactSpatialTest χ k R x =
       (fun z : V12Spatial => χ (v12_testScale R • z)) •
-        (fun z : V12Spatial => k (x-z)) by
-      funext z
-      rfl]
+        (fun z : V12Spatial => k (x-z)) by funext z; rfl]
   rw [fderiv_smul hc hk]
-  have hscale := (hasFDerivAt_id (𝕜 := ℝ) y).const_smul (v12_testScale R)
-  have hreflect := (hasFDerivAt_id (𝕜 := ℝ) y).const_sub x
-  have hccomp := (χ.hasFDerivAt (v12_testScale R • y)).comp y hscale
-  have hkcomp := (k.hasFDerivAt (x - y)).comp y hreflect
-  have hc_eval :
-      (fderiv ℝ (fun z : V12Spatial => χ (v12_testScale R • z)) y) m =
-        v12_testScale R • (fderiv ℝ (⇑χ) (v12_testScale R • y)) m := by
-    rw [hccomp.fderiv]
-    simp
-  have hk_eval :
-      (fderiv ℝ (fun z : V12Spatial => k (x - z)) y) m =
-        - (fderiv ℝ (⇑k) (x - y)) m := by
-    rw [hkcomp.fderiv]
-    simp
-  rw [hc_eval, hk_eval]
-  simp [v12_compactSpatialTest, v12_testCutoff,
-    SchwartzMap.lineDerivOp_apply_eq_fderiv, smul_smul, sub_eq_add_neg]
+  change χ (v12_testScale R • y) •
+      fderiv ℝ (fun z : V12Spatial => k (x-z)) y m +
+      fderiv ℝ (fun z : V12Spatial => χ (v12_testScale R • z)) y m • k (x-y) = _
+  rw [v12_schwartz_scale_fderiv_apply, v12_schwartz_reflection_fderiv_apply]
+  simp only [v12_compactSpatialTest, v12_testCutoff,
+    SchwartzMap.lineDerivOp_apply_eq_fderiv, smul_neg, smul_smul, smul_eq_mul]
+  ring
 
-/-- Standard second directional derivative identity for the same compact test.
-    This is again a pure multivariable-calculus leaf, not a paper-specific PDE
-    assertion. -/
+/-- The second derivative retains both cutoff terms and the cross term. -/
 theorem v12_compactSpatialTest_second_fderiv_apply
     (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
     (R : ℕ) (x y m : V12Spatial) :
@@ -85,29 +88,25 @@ theorem v12_compactSpatialTest_second_fderiv_apply
         v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) (∂_{m} k) R x y +
         v12_compactSpatialTest χ (∂_{m} (∂_{m} k)) R x y := by
   have hfun : (fun z => fderiv ℝ (v12_compactSpatialTest χ k R x) z m) =
-      fun z =>
-        v12_testScale R •
-          v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z -
+      fun z => v12_testScale R •
+        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z -
         v12_compactSpatialTest χ (∂_{m} k) R x z := by
     funext z
     exact v12_compactSpatialTest_fderiv_apply χ k R x z m
-  change fderiv ℝ
-      (fun z =>
-        v12_testScale R •
-          v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z -
-        v12_compactSpatialTest χ (∂_{m} k) R x z) y m = _
-  have h1 : DifferentiableAt ℝ
-      (fun z => v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z) y := by
-    exact (v12_compactSpatialTest_differentiable (∂_{m} χ) k R x).differentiableAt
-  have h2 : DifferentiableAt ℝ
-      (fun z => v12_compactSpatialTest χ (∂_{m} k) R x z) y := by
-    exact (v12_compactSpatialTest_differentiable χ (∂_{m} k) R x).differentiableAt
-  rw [fderiv_fun_sub (h1.const_smul (v12_testScale R)) h2]
-  rw [fderiv_const_smul h1]
-  change v12_testScale R •
-      fderiv ℝ (v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x) y m -
-      fderiv ℝ (v12_compactSpatialTest χ (∂_{m} k) R x) y m = _
-  rw [v12_compactSpatialTest_fderiv_apply, v12_compactSpatialTest_fderiv_apply]
+  have h1 := (v12_compactSpatialTest_differentiable (∂_{m} χ) k R x).differentiableAt (x := y)
+  have h2 := (v12_compactSpatialTest_differentiable χ (∂_{m} k) R x).differentiableAt (x := y)
+  have hd := (h1.hasFDerivAt.const_smul (v12_testScale R)).sub h2.hasFDerivAt
+  have he := congrArg (fun T : V12Spatial →L[ℝ] ℂ => T m) hd.fderiv
+  have hcalc :
+      fderiv ℝ (fun z => v12_testScale R •
+        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z -
+        v12_compactSpatialTest χ (∂_{m} k) R x z) y m =
+      v12_testScale R •
+        fderiv ℝ (v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x) y m -
+        fderiv ℝ (v12_compactSpatialTest χ (∂_{m} k) R x) y m := by
+    simpa only [Pi.smul_apply, Pi.sub_apply, ContinuousLinearMap.sub_apply,
+      ContinuousLinearMap.smul_apply] using he
+  rw [hfun, hcalc, v12_compactSpatialTest_fderiv_apply, v12_compactSpatialTest_fderiv_apply]
   module
 
 /-- Fixed-x pointwise limit for arbitrary real Schwartz multipliers. -/
@@ -120,7 +119,6 @@ theorem v12_compactSpatialTest_pointwise_tendsto
     simpa only [zero_smul] using v12_testScale_tendsto.smul_const y
   exact ((χ.continuous.tendsto 0).comp hy).smul_const (k (x-y))
 
-/-- The first-derivative limit is minus the reflected kernel derivative. -/
 theorem v12_compactSpatialTest_fderiv_pointwise_tendsto
     (χ : SchwartzMap V12Spatial ℝ) (hχ0 : χ 0 = 1)
     (k : SchwartzMap V12Spatial ℂ) (x y m : V12Spatial) :
@@ -131,7 +129,6 @@ theorem v12_compactSpatialTest_fderiv_pointwise_tendsto
       (v12_compactSpatialTest_pointwise_tendsto χ (∂_{m} k) x y)
   simpa only [v12_compactSpatialTest_fderiv_apply, hχ0, one_smul, zero_smul, zero_sub] using h
 
-/-- Reflection twice gives a positive second derivative. -/
 theorem v12_compactSpatialTest_second_pointwise_tendsto
     (χ : SchwartzMap V12Spatial ℝ) (hχ0 : χ 0 = 1)
     (k : SchwartzMap V12Spatial ℂ) (x y m : V12Spatial) :
@@ -153,6 +150,8 @@ theorem v12_compactSpatialTest_second_pointwise_tendsto
 
 #print axioms v12_realCutoffSchwartz_apply
 #print axioms v12_compactSpatialTest_differentiable
+#print axioms v12_schwartz_scale_fderiv_apply
+#print axioms v12_schwartz_reflection_fderiv_apply
 #print axioms v12_compactSpatialTest_fderiv_apply
 #print axioms v12_compactSpatialTest_second_fderiv_apply
 #print axioms v12_compactSpatialTest_pointwise_tendsto
