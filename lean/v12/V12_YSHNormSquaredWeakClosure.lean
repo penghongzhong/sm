@@ -30,7 +30,7 @@ theorem v12_normSqL1Class_ae {Ω : Type*} [MeasurableSpace Ω]
     (innerSL ℝ (E := E)).coeFn_holder (r := 1) f f] with z hc hi
   change v12_normSqL1Class μ f z = (((innerSL ℝ (E := E)).holder 1 f f) z : ℂ) at hc
   rw [hc, hi]
-  simp only [innerSL_apply_apply, real_inner_self_eq_norm_sq]
+  rfl
 
 theorem v12_normSq_memLp_two {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f : Ω → E) (hf : MemLp f 4 μ) :

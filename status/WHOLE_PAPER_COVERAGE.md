@@ -16,25 +16,19 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run161 (partial, FAILURE)
+## Latest completed verification: Run162 (partial, FAILURE)
 
-Run36765794627/job110059504523 checked
-`481f40e965145c3e0d0b5bf6148604392c06085b`:109 COMPILE_OK,11 COMPILE_FAIL.
-NEW PASS: generic scalar/vector Lp sections; actual W/mass L2 bounds;
-original curvature cutoff L1 convergence and uniform slice budget; actual
-Coulomb drift MZ^2 bound; same-field pointwise near/far error; actual Young
-spacetime L43 convergence. All five previous roots are fixed.
+Run36767912319/job110066626169 checked
+`55b241391b6b6b28dfa4d387f5ea3f12db2b6367`:115 COMPILE_OK,11 COMPILE_FAIL.
+NEW PASS: scalar spacetime Fubini isometry, actual W weak closure,
+curvature-to-Young application, actual Hodge near/far Lp approximation error,
+compact smooth distribution tests, and global varying L2 test construction.
 
-Five new roots: classical decidability in scalarSections; duplicate square
-helper in W weak closure; norm-square identity/continuity conversion;
-curvature cutoff pointwise equality; AE restriction and cutoff equality in
-Hodge approximation. Six downstream imports failed. Repairs await next run.
-
-Next candidates add Fourier conjugation/reflection via Schwartz density and
-real output of the actual spatial/joint Riesz operator, compact continuous
-and differentiated smooth tests, construction of global L2 varying tests,
-and original W conjugate(Q)/VQ compact-test limits. Actual V uniform budget
-is derived from A0, mass, and same-field Hodge MZ. None is marked green yet.
+Five direct failures: Fubini surjectivity zero-function simplification;
+norm-square raw representative reflexivity; Schwartz/raw Fourier coercions
+and negation AE transport; Hodge approximation error limit unfolding;
+componentwise Pi subtraction. Six downstream imports failed.
+Run163 candidates repair these actual errors. No candidate is marked green.
 
 Precisely registered external HLS remains an explicit proposition parameter,
 not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge

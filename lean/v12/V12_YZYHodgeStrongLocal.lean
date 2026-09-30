@@ -87,7 +87,7 @@ theorem v12_actual_Hodge_local_fourThirds_limit
     nlinarith [Nat.cast_nonneg (α := ℝ) R]
   have hδ : Tendsto δ atTop (𝓝 0) := by
     have hi := tendsto_inv_atTop_zero.comp (Filter.Tendsto.const_mul_atTop Real.pi_pos hLtop)
-    simpa only [mul_zero, zero_mul] using (hi.mul_const (4*M^2)).const_mul D.toReal
+    simpa only [δ, Function.comp_def, mul_zero, zero_mul] using (hi.mul_const (4*M^2)).const_mul D.toReal
   have hF := v12_limit_zero_from_uniform_approximants F G δ hδ hG herr
   have ht := hF.norm
   simpa only [F, Lp.norm_toLp, norm_zero] using ht

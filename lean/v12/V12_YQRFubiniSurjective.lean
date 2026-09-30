@@ -58,7 +58,7 @@ theorem v12_fubini_indicator_in_range (μ : Measure ℝ) [SFinite μ]
       (μ := (volume : Measure V12Spatial))] with x hfx hrx h0
     change f (t,x) = raw (t,x) at hrx
     rw [hfx, hrx, h0]
-    simp only [raw, Set.indicator_of_notMem (show (t,x) ∉ Prod.fst ⁻¹' s from htS)]
+    simp only [raw, Set.indicator_of_notMem (show (t,x) ∉ Prod.fst ⁻¹' s from htS), Pi.zero_apply]
 
 theorem v12_fubiniL2Isometry_surjective (μ : Measure ℝ) [SFinite μ] :
     Function.Surjective (v12_fubiniL2Isometry μ) := by
