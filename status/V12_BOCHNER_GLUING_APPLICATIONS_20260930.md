@@ -161,3 +161,17 @@ Reverse audit: the original closure theorem cannot bypass3-7 by importing a
 conclusion-valued interface; its reconstructed coefficients must be the same
 fields in the PDE and raw Hodge formulas. All later full-theorem branches
 remain uncertified until these and their own dependencies are checked.
+
+
+## Run156 superseding update
+
+Run156 actually checked 86/90 files. YHodgeInterpolation, YIYoungConvolution,
+YPDenseTestExtension, YQuadraticLocalLimits, YRActualCurvatureBounds,
+YSActualHodgeFarBounds and YHLSExternalStatement now PASS. The earlier
+candidate labels above are historical. YHodgeNearKernel already passed154;
+YNonlinearLocalProducts and YWeakStrongProducts passed155.
+Raw Young equality, finite-time upgrading and vector fractional domination
+have three root errors repaired in the next batch; actual HLS application
+remains import-blocked until that run. Inherited bounds, concrete compact
+Lp-test density, actual Fourier Riesz operators and mixed/Hodge budgets
+are new uncompiled candidates. Whole7.1/7.2 remains OPEN.

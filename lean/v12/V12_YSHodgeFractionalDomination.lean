@@ -28,7 +28,8 @@ theorem v12_hodge_integrable_fractional_bound
     (hi : Integrable (fun y => ‖B y‖ / ‖x-y‖) (volume : Measure V12Spatial)) :
     Integrable (fun y => B y • v12_hodgeKernel (x-y)) (volume : Measure V12Spatial) ∧
       ‖v12_rawHodgePotential B x‖ ≤ (2 * Real.pi)⁻¹ * v12_positiveFractionalPotential B x := by
-  have hm := hB.smul
+  have hm : AEStronglyMeasurable (fun y => B y • v12_hodgeKernel (x-y))
+      (volume : Measure V12Spatial) := hB.smul
     (v12_hodgeKernel_measurable.comp (measurable_const.sub measurable_id)).aestronglyMeasurable
   have hdom := hi.const_mul (2 * Real.pi)⁻¹
   have hb : ∀ᵐ y ∂(volume : Measure V12Spatial),

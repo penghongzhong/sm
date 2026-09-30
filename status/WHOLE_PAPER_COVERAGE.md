@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v11 HodgeBounds, 138 pages,
+Current generated private working expansion: v12 ClosureBounds, 138 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,26 +16,27 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run155 (partial, FAILURE)
+## Latest completed verification: Run156 (partial, FAILURE)
 
-Run36754225915/job110020249019 checked
-`0cba91cd1d65e6700feed862a33311f67a00f15e`:79 COMPILE_OK,6 COMPILE_FAIL.
-NEW PASS: actual strongL2 drift-product strongL1 limit and bounded-test
-integrals; weakL2/strongL2 varying-test integral limit. The raw original
-Coulomb -> compactness -> common measurable local-limit chain ZL stays green.
+Run36756096848/job110026598534 checked
+`b0cb5134d1146c1660e7083defcb033516e5af1f`:86 COMPILE_OK,4 COMPILE_FAIL.
+NEW PASS: actual Young Banach-space construction, Hodge interpolation,
+dense-test extension, quadratic local limits, actual curvature and far-field
+bounds, and precisely registered HLS exponent application conditions.
+The raw original Coulomb -> compactness -> common measurable local-limit
+chain ZL remains checked.
 
-Root failures: ENNReal real/natural powers and Pi-valued product unfolding
-in interpolation; translation-measure namespace and IntegrableOn unfolding
-in Young; a redundant tactic in dense-test extension; partial definitions,
-conjugation API and Pi.add_apply in quadratic coefficients. Curvature/far-
-application files remain import-blocked. Fixes are next-run candidates.
+Three root failures are the raw Young representative beta reduction/MemLp
+transport, ENNReal exponent comparison, and fractional-kernel measurability
+inference. Hodge HLS application was import-blocked. Repairs await next run.
+New candidates: inherited global spacetime/energy bounds, concrete compact
+test density, actual Fourier Riesz operators, mixed curvature budgets and
+Hodge energy/L4 application. These are not yet certified.
 
-The next batch also submits raw Young representative identification and
-finite-time norm upgrading. Precisely registered external HLS is represented
-by an explicit proposition parameter (not an axiom/instance); concrete
-exponents, vector-kernel domination and Hodge application are proved in
-separate candidates. The source is Tao Corollary1.11.18, n=2; no paper-specific
-budget or conclusion is part of that interface.
+External HLS is an explicit proposition parameter, not an axiom/instance:
+Tao, An Epsilon of Room I, Corollary1.11.18, n=2. Its source and exact
+hypotheses/conclusion are registered in SECTION2_EXTERNAL_SOURCE_AUDIT.md.
+No paper-specific budget or conclusion is put inside this interface.
 
 Original Hodge/MZ applications and Theorem7.1 nonlinear closure remain open.
 No full Theorem7.2, scattering or whole-paper certificate is claimed.

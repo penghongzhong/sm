@@ -56,7 +56,9 @@ theorem v12_finite_measure_L2_to_fourThirds_limit
     (h2 : ∀ n, MemLp (f n) 2 μ)
     (hlim : Tendsto (fun n => (eLpNorm (f n) 2 μ).toReal) atTop (𝓝 0)) :
     Tendsto (fun n => (eLpNorm (f n) ((4 : ℝ≥0∞) / 3) μ).toReal) atTop (𝓝 0) := by
-  have hp : (4 : ℝ≥0∞) / 3 ≤ 2 := by norm_num
+  have hp : (4 : ℝ≥0∞) / 3 ≤ 2 := by
+    apply (ENNReal.div_le_iff (by norm_num) (by norm_num)).2
+    norm_num
   let K := μ Set.univ ^ ((1 : ℝ) / 4)
   have hK : K ≠ ∞ := ENNReal.rpow_ne_top_of_nonneg (by norm_num) (measure_ne_top μ Set.univ)
   have hb : ∀ n, eLpNorm (f n) ((4 : ℝ≥0∞) / 3) μ ≤ eLpNorm (f n) 2 μ * K := by

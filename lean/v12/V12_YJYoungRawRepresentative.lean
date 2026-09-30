@@ -66,6 +66,8 @@ theorem v12_youngHodge_setIntegral_eq_raw
       apply integral_congr_ae
       apply Filter.Eventually.of_forall
       intro y
+      change L (B y • v12_translateKernel ((4 : ℝ≥0∞) / 3) K y) =
+        ∫ x in s, B y • ((Metric.ball (0 : V12Spatial) R).indicator v12_hodgeKernel) (x-y)
       rw [map_smul]
       change B y • (v12_hodgeSetIntegralCLM s hs hfin
         (v12_translateKernel ((4 : ℝ≥0∞) / 3) K y)) = _
@@ -101,7 +103,11 @@ theorem v12_rawNearHodge_memLp_bound
       (eLpNorm (v12_rawNearHodge R B) ((4 : ℝ≥0∞) / 3) (volume : Measure V12Spatial)).toReal ≤
         (∫ y, ‖B y‖) * ‖v12_truncatedHodgeKernelClass R‖ := by
   have hae := v12_youngHodge_raw_ae R B hB
-  refine ⟨(Lp.memLp _).congr hae, ?_⟩
+  have hm : MemLp (v12_rawNearHodge R B) ((4 : ℝ≥0∞) / 3) (volume : Measure V12Spatial) := by
+    change eLpNorm (v12_rawNearHodge R B) ((4 : ℝ≥0∞) / 3) volume < ∞
+    rw [← eLpNorm_congr_ae hae]
+    exact Lp.memLp _
+  refine ⟨hm, ?_⟩
   have hn := v12_truncatedHodge_young_bound R B hB
   rwa [Lp.norm_def, eLpNorm_congr_ae hae] at hn
 

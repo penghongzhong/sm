@@ -173,3 +173,14 @@ candidates pending CI; Hodge kernel itself passedRun153.
 TeX SHA256 c8fff49d67fbbad7625b20d9adb2eff8d8bbf98d967272ae1067d6566a77cd87
 PDF SHA256 fef8b666253488b025857ec9315e6cf69515cfca69ab2bc744b5d753ab3ecfdb
 Private TeX/PDF never included in public repository.
+
+## Private v12 ClosureBounds (2026-09-30)
+138pages, all207 original statement environments unchanged. Theorem7.1
+proof now gives explicit local subsequence/Fubini/Fatou and countable
+exhaustion for inherited M/Z bounds, without invoking unspecified weak-star
+compactness. ThreeTeXpasses/PDFconversion complete, pages11/12 visually
+checked, nooverfull or unresolved references. Lean counterparts YOInheritedBounds
+and YPInheritedEnergy are candidates, not yet compiled.
+TeX SHA256 f5f01522fb988eba5ee0db916d2d36a9270bc0e38e9498ae678a2870196ffe42
+PDF SHA256 7f070cf3a3294a399c246e17628495fc2dbb335488ad4c074d07b750a8486c7c
+Private manuscript files remain outside public Git history.
