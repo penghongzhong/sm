@@ -3,13 +3,11 @@ import lean.v12.V12_TestCutoffApproximation
 
 /-!
 W20 Theorem 7.2: transfer spatial kernel convergence to actual time-L1
-source convergence. The bilinear maps below are the existing L2-L2 and
-L4-L43 integral pairings. The signs are those of spatial integration by
-parts: i Delta_y(psi) Q - 2 sum_j partial_yj(psi) F_j - i psi G.
-
+source convergence. The bilinear maps are the existing L2-L2 and L4-L43
+integral pairings. Spatial testing has signs i, -2, -i.
 No time-L1 convergence is an input to the source-limit theorem. Spatial
-kernel convergence, and the same time-valued Q,F,G, are explicit inputs.
-The original PDE residual, actual derivative-kernel approximation and
+kernel convergence and the same time-valued Q,F,G are explicit inputs.
+The original PDE residual, derivative-kernel approximation and same-field
 Hodge/source realization remain separate obligations.
 -/
 
@@ -42,8 +40,9 @@ theorem v12_pairing_norm_L1_le
       apply integral_mono_ae hi (hf.norm.const_mul _)
       apply Filter.Eventually.of_forall
       intro t
+      change ‖B u (f t) - B v (f t)‖ ≤ (‖B‖ * ‖u - v‖) * ‖f t‖
       have heq : B u (f t) - B v (f t) = B (u - v) (f t) := by
-        simp only [map_sub, ContinuousLinearMap.sub_apply]
+        simp only [map_sub, sub_apply]
       rw [heq]
       exact ((B (u - v)).le_opNorm (f t)).trans
         (mul_le_mul_of_nonneg_right (B.le_opNorm (u - v)) (norm_nonneg _))
@@ -58,7 +57,7 @@ theorem v12_pairing_norm_L1_tendsto
     Tendsto (fun R => ∫ t, ‖B (kR R) (f t) - B k (f t)‖ ∂μ)
       atTop (𝓝 0) := by
   have hn : Tendsto (fun R => ‖kR R - k‖) atTop (𝓝 0) := by
-    simpa only [sub_self, norm_zero] using (hk.sub tendsto_const_nhds).norm
+    simpa only [sub_self, norm_zero] using (hk.sub_const k).norm
   have hlim : Tendsto
       (fun R => ‖B‖ * ‖kR R - k‖ * (∫ t, ‖f t‖ ∂μ)) atTop (𝓝 0) := by
     simpa only [mul_zero, zero_mul] using
@@ -111,7 +110,7 @@ noncomputable def v12_testZeroOrderPairing :
 
 /-- At fixed x, d is the L2 class of Delta_y psi, b_j of partial_yj psi,
 and k the L4 class of psi. The limiting b_j equals -partial_j K(x-·).
-The Fin 2 coordinates 0,1 correspond to manuscript coordinates 1,2. -/
+Fin 2 coordinates 0,1 correspond to manuscript coordinates 1,2. -/
 noncomputable def v12_testSourceFromLpKernels
     (d : V12ScalarL2) (b : Fin 2 → V12ScalarL2) (k : V12ScalarL4)
     (Q : ℝ → V12SpatialL2) (F : Fin 2 → ℝ → V12SpatialL2)
@@ -133,8 +132,7 @@ theorem v12_testSourceFromLpKernels_integrable
       ((v12_testGradientPairing (b 1)).integrable_comp (hF 1)) |>.add
       ((v12_testZeroOrderPairing k).integrable_comp hG)
 
-/-- The time-L1 source limit is PROVED from the spatial L2/L4 limits.
-No time-L1 convergence hypothesis is accepted. -/
+/-- The time-L1 source limit is proved from spatial L2/L4 limits. -/
 theorem v12_testSourceFromLpKernels_L1_tendsto
     (μ : Measure ℝ)
     (dR : ℕ → V12ScalarL2) (bR : ℕ → Fin 2 → V12ScalarL2)
@@ -182,8 +180,7 @@ theorem v12_testSourceFromLpKernels_L1_tendsto
     (fun R => ((hUi R).add (hVi 0 R)).add (hVi 1 R)) hWi
     ((hui.add (hvi 0)).add (hvi 1)) hwi h012 hW
 
-/-- Finite-interval specialization with precisely the manuscript time
-exponents: Linfty_t L2_x, L2_t L2_x and L43_t L43_x. -/
+/-- Precisely Linfty_t L2_x, L2_t L2_x and L43_t L43_x on finite time measure. -/
 theorem v12_testSourceFromLpKernels_L1_tendsto_of_MemLp
     (μ : Measure ℝ) [IsFiniteMeasure μ]
     (dR : ℕ → V12ScalarL2) (bR : ℕ → Fin 2 → V12ScalarL2)
@@ -204,22 +201,30 @@ theorem v12_testSourceFromLpKernels_L1_tendsto_of_MemLp
     (fun j => memLp_one_iff_integrable.mp ((hF j).mono_exponent (by norm_num)))
     (memLp_one_iff_integrable.mp (hG.mono_exponent v12_one_le_fourThirds_ENNReal))
 
-/-- The concrete compact tests converge to the actual bounded-continuous
-convolution representative, not merely to an unnamed integral. -/
+/-- Separate kernel-checked representative substitution avoids unfolding the
+entire convolution-to-BCF construction inside a limit proof. -/
+theorem v12_schwartzL2_convolutionRep_integral
+    (k : SchwartzMap V12Spatial ℂ) (f : V12SpatialL2) (x : V12Spatial) :
+    v12_L2ConvolutionRep (k.toLp 2) f x = ∫ y : V12Spatial, k (x-y) • f y := by
+  rw [v12_L2ConvolutionRep_eq_integral]
+  apply integral_congr_ae
+  have hk := (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae
+    (k.coeFn_toLp 2 (volume : Measure V12Spatial))
+  filter_upwards [hk] with y hy
+  change (k.toLp 2 : V12Spatial → ℂ) (x-y) • f y = k (x-y) • f y
+  rw [show (k.toLp 2 : V12Spatial → ℂ) (x-y) = k (x-y) by
+    simpa only [v12_subLeftFamily_apply] using hy]
+
+/-- Concrete compact tests converge to the actual BCF convolution value. -/
 theorem v12_compactSpatialTest_endpoint_to_BCF
     (χ : V12Spatial → ℝ) (hχc : Continuous χ) (hχ0 : χ 0 = 1)
     (hχb : ∀ y, 0 ≤ χ y ∧ χ y ≤ 1)
     (k : SchwartzMap V12Spatial ℂ) (x : V12Spatial) (f : V12SpatialL2) :
     Tendsto (fun R => ∫ y, v12_compactSpatialTest χ k R x y • f y)
       atTop (𝓝 (v12_L2ConvolutionBCFCLM (k.toLp 2) f x)) := by
-  have heq := v12_L2ConvolutionRep_eq_integral_of_ae (k.toLp 2) f k
-    (fun y => f y) (k.coeFn_toLp 2 (volume : Measure V12Spatial))
-    Filter.EventuallyEq.rfl x
-  change Tendsto (fun R => ∫ y, v12_compactSpatialTest χ k R x y • f y)
-    atTop (𝓝 (v12_L2ConvolutionRep (k.toLp 2) f x))
-  rw [heq]
-  exact v12_compactSpatialTest_endpoint_tendsto χ hχc hχ0 hχb k x
-    (fun y => f y) (Lp.memLp f)
+  simpa only [v12_L2ConvolutionBCFCLM_apply, v12_schwartzL2_convolutionRep_integral] using
+    v12_compactSpatialTest_endpoint_tendsto χ hχc hχ0 hχb k x
+      (fun y => f y) (Lp.memLp f)
 
 #print axioms v12_pairing_norm_L1_le
 #print axioms v12_pairing_norm_L1_tendsto
@@ -227,6 +232,7 @@ theorem v12_compactSpatialTest_endpoint_to_BCF
 #print axioms v12_testSourceFromLpKernels_integrable
 #print axioms v12_testSourceFromLpKernels_L1_tendsto
 #print axioms v12_testSourceFromLpKernels_L1_tendsto_of_MemLp
+#print axioms v12_schwartzL2_convolutionRep_integral
 #print axioms v12_compactSpatialTest_endpoint_to_BCF
 
 end SMScattering.W20Full
