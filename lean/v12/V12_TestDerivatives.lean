@@ -15,8 +15,7 @@ namespace SMScattering.W20Full
 open Filter MeasureTheory LineDeriv
 open scoped Topology ENNReal ContDiff
 
-/-- Any smooth compactly supported real cutoff has an exact real Schwartz
-realization, so the derivative formulas below apply to the original cutoff. -/
+/-- Exact real Schwartz realization of the original smooth compact cutoff. -/
 noncomputable def v12_realCutoffSchwartz (χ : V12Spatial → ℝ)
     (hc : HasCompactSupport χ)
     (hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ) :
@@ -39,33 +38,34 @@ theorem v12_compactSpatialTest_fderiv_apply
     (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
     (R : ℕ) (x y m : V12Spatial) :
     fderiv ℝ (v12_compactSpatialTest χ k R x) y m =
-      v12_testScale R • v12_compactSpatialTest (∂_{m} χ) k R x y -
+      v12_testScale R •
+        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x y -
         v12_compactSpatialTest χ (∂_{m} k) R x y := by
-  have hscale : HasFDerivAt (fun z : V12Spatial => v12_testScale R • z)
-      (v12_testScale R • ContinuousLinearMap.id ℝ V12Spatial) y :=
-    (hasFDerivAt_id y).const_smul (v12_testScale R)
-  have hreflect : HasFDerivAt (fun z : V12Spatial => x - z)
-      (-ContinuousLinearMap.id ℝ V12Spatial) y := by
-    simpa only [zero_sub] using (hasFDerivAt_const x y).sub (hasFDerivAt_id y)
+  have hscale := (hasFDerivAt_id (𝕜 := ℝ) y).const_smul (v12_testScale R)
+  have hreflect := (hasFDerivAt_id (𝕜 := ℝ) y).const_sub x
   have hc := (χ.hasFDerivAt (v12_testScale R • y)).comp y hscale
   have hk := (k.hasFDerivAt (x - y)).comp y hreflect
   have hp := hc.smul hk
+  have hder := hp.fderiv
+  dsimp only [Function.comp_def, Pi.smul_apply] at hder
   change fderiv ℝ (fun z : V12Spatial => χ (v12_testScale R • z) • k (x-z)) y m = _
-  rw [hp.fderiv]
+  rw [hder]
   simp [ContinuousLinearMap.comp_apply, v12_compactSpatialTest, v12_testCutoff,
     SchwartzMap.lineDerivOp_apply_eq_fderiv, smul_smul, smul_eq_mul, sub_eq_add_neg, add_comm]
 
-/-- Exact second derivative: both the cutoff Laplacian and the cross term
-are retained. The formula is for an arbitrary real direction m. -/
+/-- Exact second derivative retaining both cutoff and cross terms. -/
 theorem v12_compactSpatialTest_second_fderiv_apply
     (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
     (R : ℕ) (x y m : V12Spatial) :
     fderiv ℝ (fun z => fderiv ℝ (v12_compactSpatialTest χ k R x) z m) y m =
-      (v12_testScale R)^2 • v12_compactSpatialTest (∂_{m} (∂_{m} χ)) k R x y -
-        (2 * v12_testScale R) • v12_compactSpatialTest (∂_{m} χ) (∂_{m} k) R x y +
+      (v12_testScale R)^2 •
+        v12_compactSpatialTest (∂_{m} (∂_{m} χ) : SchwartzMap V12Spatial ℝ) k R x y -
+        (2 * v12_testScale R) •
+        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) (∂_{m} k) R x y +
         v12_compactSpatialTest χ (∂_{m} (∂_{m} k)) R x y := by
   have hfun : (fun z => fderiv ℝ (v12_compactSpatialTest χ k R x) z m) =
-      v12_testScale R • v12_compactSpatialTest (∂_{m} χ) k R x -
+      v12_testScale R •
+        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x -
         v12_compactSpatialTest χ (∂_{m} k) R x := by
     funext z
     exact v12_compactSpatialTest_fderiv_apply χ k R x z m
@@ -74,13 +74,12 @@ theorem v12_compactSpatialTest_second_fderiv_apply
   rw [hfun, fderiv_sub (h₁.const_smul (v12_testScale R)) h₂,
     fderiv_const_smul h₁]
   change v12_testScale R •
-      fderiv ℝ (v12_compactSpatialTest (∂_{m} χ) k R x) y m -
+      fderiv ℝ (v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x) y m -
       fderiv ℝ (v12_compactSpatialTest χ (∂_{m} k) R x) y m = _
   rw [v12_compactSpatialTest_fderiv_apply, v12_compactSpatialTest_fderiv_apply]
   module
 
-/-- The fixed-x pointwise limit for arbitrary real Schwartz multipliers;
-no condition at the origin is needed for this auxiliary identity. -/
+/-- Fixed-x pointwise limit for arbitrary real Schwartz multipliers. -/
 theorem v12_compactSpatialTest_pointwise_tendsto
     (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
     (x y : V12Spatial) :
@@ -115,7 +114,8 @@ theorem v12_compactSpatialTest_second_pointwise_tendsto
     (v12_compactSpatialTest_pointwise_tendsto (∂_{m} χ) (∂_{m} k) x y)
   have h₃ := v12_compactSpatialTest_pointwise_tendsto χ (∂_{m} (∂_{m} k)) x y
   have h := (h₁.sub (show Tendsto
-      (fun R => (2 * v12_testScale R) • v12_compactSpatialTest (∂_{m} χ) (∂_{m} k) R x y)
+      (fun R => (2 * v12_testScale R) •
+        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) (∂_{m} k) R x y)
       atTop (𝓝 ((2 * (0 : ℝ)) • ((∂_{m} χ) 0 • (∂_{m} k) (x-y)))) from h₂)).add h₃
   simpa only [v12_compactSpatialTest_second_fderiv_apply, hχ0, one_smul,
     zero_pow (by decide : (2 : ℕ) ≠ 0), mul_zero, zero_smul, sub_zero, zero_add] using h
