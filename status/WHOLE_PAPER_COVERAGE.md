@@ -16,19 +16,22 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run 153 (partial, FAILURE)
+## Latest completed verification: Run154 (partial, FAILURE)
 
-Run36751379248/job110010590902 checked
-`74a844e24fcd9758e31a578299a1b47bba9d3608`:73 COMPILE_OK,5 COMPILE_FAIL.
-NEW PASS: actual Hodge kernel measurability/norm/far-field integral estimate;
-zero-length slab and its common limit. ZI/ZJ raw-PDE compactness and gluing
-remain compiled. No hIntegral/hRep/hBudget/hCompact premise at ZJ.
+Run36752799679/job110015401536 checked
+`f67ecd20517d50ac1ae652d911a1401ce9f2c510`:77 COMPILE_OK,4 COMPILE_FAIL.
+NEW PASS: near Hodge kernel L^(4/3), raw cutoff tail identification, ZK actual
+source/time-object construction, ZL original Coulomb equation entry with a<=b.
+The actual original PDE -> compact tests/IBP -> source limits -> cutoff time
+identity -> fixed-frequency compactness -> common measurable local limit is
+now compiled. No hIntegral/hRep/hBudget/hCompact input at the ZL endpoint.
+Actual coefficient Hodge/MZ budgets remain explicit and not yet discharged.
 
-Root failures: near-kernel theorem argument order and exponent positivity;
-Holder continuity needs uncurry application unfolding; raw frequency-tail
-identification needs Pi.sub_apply. Quadratic and ZK import-blocked.
-Next batch repairs these and adds original Coulomb equation entry, actual
-curvature norm budgets and their far-field application. No candidate is green.
+Root failure: nonexistent Function.uncurry_apply identifier in the nonlinear
+Holder limit proof. Quadratic and actual curvature/far applications import-
+blocked. The next batch unfolds Function.uncurry directly and adds actual
+interpolation, Bochner Young, dense-test extension and weak-strong candidates.
+Only an actual later successful run can certify any new candidate.
 
 Original Hodge/MZ applications and Theorem7.1 nonlinear closure remain open.
 No full Theorem7.2, scattering or whole-paper certificate is claimed.
@@ -38,7 +41,7 @@ No full Theorem7.2, scattering or whole-paper certificate is claimed.
 | Layer | Verified support | Still open for full W20 statement |
 |---|---|---|
 | Section 2 | Algebra, geometry, Fourier symbols and actual Plancherel | Complete function/derivative/Hodge/HLS applications |
-| v12 Fourier/local L2 | Actual cutoff symbol/kernels, local restrictions, tail-sup adapter, common radius/frequency subsequence | Original raw tail identification candidate; exact Fourier profile instantiation |
+| v12 Fourier/local L2 | Actual cutoff symbol/kernels, local restrictions, tail-sup adapter, common radius/frequency subsequence | Raw tail identification PASS154; exact paper Fourier profile instantiation |
 | v12 source products | Actual A_j Q and VQ+W conjugate(Q), Holder estimates, MemLp | Hodge-defined coefficients and their actual M/Z bounds; Fubini time-Lp realization now compiled |
 | v12 time integration | Source L43 budget, interval Holder, weak-test residual and limit machinery | Original-system regularity, same-field time-Bochner realizations and Hodge/MZ hypotheses remain open; ZC–ZG compiled in Run 146 |
 | v12 fixed-cutoff compactness | NEW: actual cylinder representatives constructed; joint equicontinuity and L2 compact closure derived from energy/source integrals | ZI/ZJ now discharge budget/integral/representative/compactness internally; original Hodge/MZ field instance remains open |
@@ -53,7 +56,7 @@ No full Theorem7.2, scattering or whole-paper certificate is claimed.
 The ZJ endpoint now derives fixed-frequency compactness and a common strongly
 measurable local limit from the raw smooth divergence PDE and concrete
 representatives/time-source bounds. It does not assume hIntegral/hCompact.
-The next ZK candidate constructs all Q/F/G objects from the actual raw field,
+ZK (PASS154) constructs all Q/F/G objects from the actual raw field,
 a.e. energy and spacetime source estimates, and states frequency tightness on
 the raw convolution. The zero-length slab is treated separately.
 

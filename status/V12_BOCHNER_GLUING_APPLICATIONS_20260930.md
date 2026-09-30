@@ -128,3 +128,36 @@ in the declarations, not hidden interfaces. Original Hodge/MZ and nonlinear
 closure still need proof. New raw-tail identification and raw-source common
 limit candidates remove the supplied time-Lp objects; a separate zero-length
 slab proof prevents silently excluding degenerate finite intervals.
+
+## Actual Hodge/closure continuation (Run154 pending)
+
+The compactness endpoint ZL starts with the original i*dt+Laplacian Coulomb
+PDE and proves the drift rewrite; it constructs all source-time classes via
+ZK, then invokes compiled ZJ/ZI. Its coefficient MemLp/budget assumptions
+still require the original Hodge/MZ proof. The frequency-tail assumption is
+explicit in original Theorem7.2 and may be retained. Full7.2 also requires7.1.
+
+Forward dependency order for7.1:
+1. Raw local L2 convergence -> actual B,S,m,W strong local L1 (YQuadratic).
+2. Actual |B|<=2|Q|² -> spatial L1 and spacetime L2 budgets (YR).
+3. Exact Hodge kernel -> far integral bound (YHodgeFarField PASS153),
+   curvature-budget substitution (YS candidate), near kernel L^(4/3)
+   (YHodgeNearKernel repair pending).
+4. Near kernel Young: YIYoungConvolution constructs Lp-valued Bochner integral,
+   proves its Young budget, and proves raw convolution L1/AE existence.
+   **Raw convolution = constructed Lp class remains OPEN.** Neither is assumed
+   interchangeable. Time L1/Linfinity -> Lp convergence remains OPEN.
+5. YHodgeInterpolation candidate derives ||f||2²<=||f||43||f||4 and strongL2
+   from strongL43 plus uniformL4. Actual Hodge HLS/MZ L4 bound remains OPEN.
+6. YNonlinear drift product and YWeakStrongProducts handle actual product
+   integral limits. The latter requires the weak coefficient limit separately.
+7. YPDenseTestExtension candidate proves dense-test extension under uniform
+   operator bounds. Concrete density, actual local test limits, Riesz operators,
+   preserved M/Z bounds and distributional closure remain OPEN.
+
+The new interpolation, Young, dense-extension and weak-strong files are
+uncompiled candidates until a later actual run. No full7.1/7.2 label is green.
+Reverse audit: the original closure theorem cannot bypass3-7 by importing a
+conclusion-valued interface; its reconstructed coefficients must be the same
+fields in the PDE and raw Hodge formulas. All later full-theorem branches
+remain uncertified until these and their own dependencies are checked.
