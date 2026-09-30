@@ -50,7 +50,7 @@ theorem v12_compact_pairing_hasDerivAt
       fun y _ => ⟨ht, Set.mem_univ y⟩
     have hcont := hDQ.comp
       (continuous_const.prodMk continuous_id).continuousOn hmap
-    simpa only [continuousOn_univ, Function.comp_def] using hcont
+    simpa only [continuousOn_univ, Function.comp_def, Function.uncurry, id_eq] using hcont
   have hpsiint : Integrable ψ (volume : Measure V12Spatial) :=
     hψ.integrable_of_hasCompactSupport hc
   have hint : Integrable (fun y : V12Spatial => ψ y • Q t y) volume :=

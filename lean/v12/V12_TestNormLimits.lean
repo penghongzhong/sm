@@ -103,7 +103,7 @@ theorem v12_scaled_test_eLpNorm_tendsto
     simpa only [zero_smul] using
       hcoef.smul (v12_compactSpatialTest_pointwise_tendsto a k x y)
 
-/-- Addition with all measure, exponent and sequence types fixed. -/
+/-- Addition uses the order-topological sandwich theorem on ENNReal. -/
 theorem v12_eLpNorm_add_tendsto_zero
     (p : ℝ≥0∞) (hp : 1 ≤ p)
     (f g : ℕ → V12Spatial → ℂ)
@@ -118,14 +118,15 @@ theorem v12_eLpNorm_add_tendsto_zero
       eLpNorm (f R) p volume + eLpNorm (g R) p volume := by
     intro R
     exact eLpNorm_add_le (μ := (volume : Measure V12Spatial)) (f := f R) (g := g R) hp
-  exact squeeze_zero
-    (fun R : ℕ => (bot_le : (0 : ℝ≥0∞) ≤ eLpNorm (f R + g R) p volume)) hle hsum
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le
+    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0))
+    hsum (fun R => bot_le) hle
 
 /-- Pointwise negation is related to function negation before taking its norm. -/
 theorem v12_eLpNorm_pointwise_neg (p : ℝ≥0∞) (f : V12Spatial → ℂ) :
     eLpNorm (fun y => -(f y)) p volume = eLpNorm f p volume := by
   change eLpNorm (-f) p volume = eLpNorm f p volume
-  exact eLpNorm_neg
+  exact eLpNorm_neg f p (volume : Measure V12Spatial)
 
 /-- The exact first-derivative error, separated from the limit proof. -/
 theorem v12_test_first_error_decomposition
@@ -173,14 +174,7 @@ theorem v12_compactSpatialTest_fderiv_error_tendsto
       (fun y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))
       p volume) atTop (𝓝 0) := by
     simpa only [v12_eLpNorm_pointwise_neg] using htail
-  rw [show (fun R => eLpNorm
-      (fun y => fderiv ℝ (v12_compactSpatialTest χ k R x) y m + (∂_{m} k) (x-y)) p volume) =
-      (fun R => eLpNorm
-        ((fun y => (1 * (v12_testScale R)^1) •
-          v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x y) +
-        (fun y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))) p volume) from by
-    funext R
-    rw [v12_test_first_error_decomposition]]
+  simp_rw [v12_test_first_error_decomposition]
   exact v12_eLpNorm_add_tendsto_zero p hp _ _ hsmall hneg
 
 /-- All three second-derivative cutoff contributions are retained. -/
