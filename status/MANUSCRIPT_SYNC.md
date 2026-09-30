@@ -111,3 +111,26 @@ to existing labels v12:eq:localL2-compatible and v12:eq:localL2-gluing; the
 least containing cylinder is exactly the paper's disjoint annulus selector.
 These gluing candidates are pending compilation. No manuscript statement
 has been weakened to obtain these results.
+
+## Private V8 Bochner/Gluing build
+
+Full V8 was generated from saved V7 and compiled to 138 pages. All 207 original
+theorem-class environments remain byte-identical, with 1269 unique labels
+and no missing references, overfull boxes or duplicate-label warnings.
+Pages 13 and 16 were rendered and inspected. Inherited bookmark/font-substitution
+warnings remain; no missing glyph or clipping was observed.
+
+V8 TeX SHA256: ff22a5880c2f761ce02d71a157f52c6d7d2fa489b3a6500111e23276fe9c0119.
+V8 PDF SHA256: c1d6cb201368f7aadf582c37f85f2ad9d83e54d9baac066fa97d53975af7767e.
+
+New labels v8:eq:section-distance-measurable (7.22) and
+v8:eq:section-fubini-norm (7.23), page 13, correspond to the pending
+YMeasurableLpSections/YTBochnerSectionNorm declarations. The same page explains
+why the every-time energy representative also has Bochner measurability.
+Existing local compatibility/gluing labels (7.68–7.69), page 16, now explain
+least-cylinder selection and the strongly measurable representative.
+The original statements and the paper's hypotheses were not weakened.
+
+Run 147 compiled Coulomb RHS conversion and spatial Fubini slices; full
+Bochner and gluing modules are pending. Written mathematics and PDF generation
+do not imply a Lean pass. Private manuscript artifacts stay outside GitHub.

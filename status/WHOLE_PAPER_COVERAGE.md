@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v7 SpatialIBP, 137 pages,
+Current generated private working expansion: v8 BochnerGluing, 138 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,19 +16,17 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run 146 (partial, FAILURE)
+## Latest completed verification: Run 147 (partial, FAILURE)
 
-Run 36740897606 / job 109974714585, checked
-`8c5cc49ef0a2182ac1c9cd09a4c0bf67c8bbe9ad`: 57 COMPILE_OK, 2 COMPILE_FAIL.
-ZA–ZG and YC now passed, with standard-only printed axiom dependencies.
-The actual raw-PDE -> compact tests/IBP -> exact Lp source -> FTC -> cutoff
-BCF time identity chain is compiled. ZG takes no hIntegral/hFTC/kernel-limit/
-source-limit premise. It still requires concrete original-field regularity,
-same-field representatives and time-Lp conditions, all still to instantiate.
-YSpacetimeSlices had an identifier syntax error; ZH had a local-let unfolding
-rewrite failure. The next batch repairs these and tests new compatibility/
-measurable-gluing constructions. None is certified before actual compilation.
-No whole-repository success or full-paper certification is claimed.
+Run 36742383395 / job 109979814233, checked
+`e8833f6e69ffe6beec99a305d596719b78ed6d1e`: 59 COMPILE_OK, 2 COMPILE_FAIL.
+ZA–ZH, YC and YSpacetimeSlices passed. The actual raw-PDE-to-cutoff time
+identity, Coulomb product conversion and a.e. spatial Lp slices/scalar Fubini
+results now compile with standard-only printed axiom dependencies.
+YLocalLimitCompatibility failed only at a radius-cast inference; its downstream
+gluing module was blocked. Next batch supplies explicit real casts and tests
+three Bochner section/energy modules. These are not certified before compilation.
+No full Theorem 7.2/7.1, scattering or whole-paper certificate is claimed.
 
 ## Layers and remaining actual correspondence
 

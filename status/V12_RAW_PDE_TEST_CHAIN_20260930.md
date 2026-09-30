@@ -2,12 +2,15 @@
 
 ## Completed evidence
 
-Run 146 / 36740897606 / job 109974714585 checks
-`8c5cc49ef0a2182ac1c9cd09a4c0bf67c8bbe9ad`.
-ZA–ZG and YC COMPILE_OK, with only propext, Classical.choice, Quot.sound.
-YSpacetimeSlices FAIL: invalid identifier token; ZH FAIL: local-let unfolding.
-Whole run FAILURE (57/59 files passed). Next batch repairs those two leaves
-and submits local compatibility / measurable gluing. No full-paper certificate.
+Run 147 / 36742383395 / job 109979814233 checks
+`e8833f6e69ffe6beec99a305d596719b78ed6d1e`.
+ZA–ZH, YC and YSpacetimeSlices COMPILE_OK; printed axiom dependencies are
+standard-only. YLocalLimitCompatibility failed on radius-cast inference;
+gluing was dependency-blocked. Whole run FAILURE (59/61 files passed).
+Next batch repairs those casts and submits YMeasurableLpSections,
+YTBochnerSectionNorm, YUEveryTimeBochnerEnergy. These prove measurability,
+exact same-field norm transfer, actual source classes and every-time energy
+Bochner realization; their status is pending compiler verification.
 
 ## Forward and reverse correspondence
 
@@ -20,7 +23,7 @@ and submits local compatibility / measurable gluing. No full-paper certificate.
 | ZE (passed) | Lp source equals the raw tested PDE source | exact a.e. representatives of q,f,g, same test |
 | ZF (passed) | finite-test source integrability and time identity | above raw PDE/regularity/representatives; no tested identity input |
 | ZG (passed) | actual cutoff BCF time integral identity | above conditions, Q time-L∞, F time-L2, G time-L4/3, endpoint Q representatives |
-| YC (passed), ZH (repair pending) | product derivative, Coulomb divergence cancellation and raw RHS conversion | actual differentiability and div A=0 at the same spatial point |
+| YC, ZH (passed) | product derivative, Coulomb divergence cancellation and raw RHS conversion | actual differentiability and div A=0 at the same spatial point |
 
 The compiled ZG theorem accepts no hIntegral, hFTC, hCompact, kernel derivative
 limit or source L1 limit: these are derived using the preceding chain.

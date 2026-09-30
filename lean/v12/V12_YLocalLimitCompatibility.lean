@@ -19,7 +19,10 @@ theorem v12_cylinder_measure_mono (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
       (v12_slab_measure a b).restrict (v12_spatial_cylinder S) := by
   apply Measure.restrict_mono _ le_rfl
   intro z hz
-  exact lt_of_lt_of_le hz (add_le_add_right (by exact_mod_cast hRS) 1)
+  change ‖z.2‖ < (S : ℝ) + 1
+  change ‖z.2‖ < (R : ℝ) + 1 at hz
+  have hrs : (R : ℝ) ≤ (S : ℝ) := by exact_mod_cast hRS
+  exact hz.trans_le (add_le_add_right hrs 1)
 
 noncomputable def v12_nested_localize (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
     V12CylinderL2 a b S →L[ℝ] V12CylinderL2 a b R :=
