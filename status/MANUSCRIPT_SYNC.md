@@ -160,3 +160,16 @@ or missing references in the final log.
 TeX SHA256 d3577339c3fb30401eb0cad5ef6cde874b55a11717c348aa33ee920658e709cc
 PDF SHA256 1bc33e06fe8890978ba34038a95a071b701bae19c8b32bc1334d97c202c23081
 Privately saved; no TeX/PDF is included in this public repository.
+
+## Private v11 HodgeBounds (2026-09-30)
+
+138 pages; all207 original statement environments unchanged fromv10.
+Adds actual |B|<=2|Q|² and normalized far-field bound2M²/(pi L), plus
+near-kernel p<dimension2 check in Theorem7.1 proof. Label
+v11:eq:actual-Hodge-far=(7.6),page11, visually inspected.
+Three XeLaTeX passes/PDF conversion complete; no unresolved references,
+no overfull boxes. Corresponding curvature/far-application Lean files remain
+candidates pending CI; Hodge kernel itself passedRun153.
+TeX SHA256 c8fff49d67fbbad7625b20d9adb2eff8d8bbf98d967272ae1067d6566a77cd87
+PDF SHA256 fef8b666253488b025857ec9315e6cf69515cfca69ab2bc744b5d753ab3ecfdb
+Private TeX/PDF never included in public repository.

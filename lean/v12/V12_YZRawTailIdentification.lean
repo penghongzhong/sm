@@ -65,7 +65,7 @@ theorem v12_rawFrequencyTail_eq_class_norm
     v12_rawSlabClass_ae a b q hq Q hQ hrep,
     v12_spacetimeCutoffClass_raw_ae a b p hpc hps N q Q hQ hrep] with z hsub hraw hcut
   change q z.1 z.2 - v12_rawCutoffField p hpc hps N q z = _
-  rw [hsub, hraw, hcut]
+  rw [hsub, Pi.sub_apply, hraw, hcut]
   rfl
 
 #print axioms v12_spacetimeCutoffClass_raw_ae

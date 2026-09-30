@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v10 HLSSource, 138 pages,
+Current generated private working expansion: v11 HodgeBounds, 138 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,25 +16,20 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run 152 (partial, FAILURE)
+## Latest completed verification: Run 153 (partial, FAILURE)
 
-Run 36749557505 / job 110004370152, checked
-`84487d95576eaa949c8b6ad0457cb88158fe6dd5`: 71 COMPILE_OK, 4 COMPILE_FAIL.
-NEW PASS: actual spacetime cutoff class/norm (YW), raw Q/F/G time realizations
-(YZRawSourceTimeBounds), fixed-frequency compactness from raw PDE (ZI), and
-common strongly measurable local limit from raw PDE + actual class-frequency
-tail (ZJ). These construct integral identity, budget, cutoff representative,
-compact sets, compatibility and gluing internally. No hIntegral/hRep/hBudget/
-hCompact premise is present at the ZJ endpoint.
+Run36751379248/job110010590902 checked
+`74a844e24fcd9758e31a578299a1b47bba9d3608`:73 COMPILE_OK,5 COMPILE_FAIL.
+NEW PASS: actual Hodge kernel measurability/norm/far-field integral estimate;
+zero-length slab and its common limit. ZI/ZJ raw-PDE compactness and gluing
+remain compiled. No hIntegral/hRep/hBudget/hCompact premise at ZJ.
 
-Root failures: the new Hodge-kernel measurability proof needs typed scalar
-multiplication; drift-product continuity times out in definitional unfolding,
-and bounded-test convergence needs Function.comp unfolded. Near-kernel and
-quadratic-limit files are import-blocked. Their repairs use explicit proved
-application equalities, not increased axioms or weaker statements.
+Root failures: near-kernel theorem argument order and exponent positivity;
+Holder continuity needs uncurry application unfolding; raw frequency-tail
+identification needs Pi.sub_apply. Quadratic and ZK import-blocked.
+Next batch repairs these and adds original Coulomb equation entry, actual
+curvature norm budgets and their far-field application. No candidate is green.
 
-Next candidates identify class tails with raw convolution tails, eliminate all
-supplied Q/F/G time objects using their proved construction, and handle a=b.
 Original Hodge/MZ applications and Theorem7.1 nonlinear closure remain open.
 No full Theorem7.2, scattering or whole-paper certificate is claimed.
 

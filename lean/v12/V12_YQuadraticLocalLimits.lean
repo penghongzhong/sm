@@ -70,7 +70,7 @@ theorem v12_tensorL1Class_continuous
     (v12_componentL2 μ k).continuous
   have hr := (v12_componentL2 μ j).continuous
   have h := ((ContinuousLinearMap.mul ℝ ℂ).holderL μ 2 2 1).continuous₂.comp (hl.prodMk hr)
-  simpa only [Function.comp_def, ContinuousLinearMap.holderL_apply_apply,
+  simpa only [Function.comp_def, Function.uncurry_apply, ContinuousLinearMap.holderL_apply_apply,
     v12_tensorL1Class] using h
 
 noncomputable def v12_B_L1Class
@@ -186,7 +186,7 @@ theorem v12_W_strong_L1
     intro j
     have h := ((ContinuousLinearMap.mul ℂ ℂ).holderL μ 2 2 1).continuous₂.comp
       ((v12_componentL2 μ j).continuous.prodMk (v12_componentL2 μ j).continuous)
-    simpa only [Function.comp_def, ContinuousLinearMap.holderL_apply_apply,
+    simpa only [Function.comp_def, Function.uncurry_apply, ContinuousLinearMap.holderL_apply_apply,
       v12_squareL1Class] using h
   exact (((hs 0).tendsto Q |>.comp hQ).add ((hs 1).tendsto Q |>.comp hQ)).const_smul (2 : ℂ)
 

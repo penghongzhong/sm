@@ -33,7 +33,7 @@ theorem v12_strong_L2_drift_product_limit
       (𝓝 (v12_driftL1Class μ A Q)) := by
   let B : ℂ →L[ℂ] V12Field →L[ℂ] V12Field := ContinuousLinearMap.lsmul ℂ ℂ
   have h := ((B.holderL μ 2 2 1).continuous₂.tendsto (A,Q)).comp (hA.prodMk_nhds hQ)
-  simpa only [Function.comp_def, ContinuousLinearMap.holderL_apply_apply,
+  simpa only [Function.comp_def, Function.uncurry_apply, ContinuousLinearMap.holderL_apply_apply,
     v12_driftL1Class, B] using h
 
 /-- The same constructed L1 class agrees with the actual raw product. -/
