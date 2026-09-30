@@ -2,15 +2,15 @@
 
 ## Completed evidence
 
-Run 147 / 36742383395 / job 109979814233 checks
-`e8833f6e69ffe6beec99a305d596719b78ed6d1e`.
-ZA–ZH, YC and YSpacetimeSlices COMPILE_OK; printed axiom dependencies are
-standard-only. YLocalLimitCompatibility failed on radius-cast inference;
-gluing was dependency-blocked. Whole run FAILURE (59/61 files passed).
-Next batch repairs those casts and submits YMeasurableLpSections,
-YTBochnerSectionNorm, YUEveryTimeBochnerEnergy. These prove measurability,
-exact same-field norm transfer, actual source classes and every-time energy
-Bochner realization; their status is pending compiler verification.
+Run 148 / 36743902458 / job 109985075036 checks
+`a269cd6b429016cbd53e47c5b59715ae5355bee8`.
+Old ZA–ZH/YC/Fubini-slice code passed; 59/64 files passed, overall FAILURE.
+New compatibility and section-measurability modules had elaboration errors;
+gluing and Bochner norm/energy modules were dependency-blocked.
+Next batch repairs those errors, submits global/spacetime cutoff representatives,
+and generalizes ZF/ZG to the actual a.e.-time source representative hypotheses.
+ZF/ZG changes are pending fresh validation; their earlier all-time-source
+versions had passed Run 146. No mathematical conclusion is weakened.
 
 ## Forward and reverse correspondence
 
@@ -21,8 +21,8 @@ Bochner realization; their status is pending compiler verification.
 | ZC (passed) | compact test IBP twice and actual raw PDE tested source | smooth raw q,f; continuous g; actual pointwise divergence PDE |
 | ZD (passed) | raw tested curve continuity and FTC | joint raw q,dq continuity through endpoints, actual time derivative in interior |
 | ZE (passed) | Lp source equals the raw tested PDE source | exact a.e. representatives of q,f,g, same test |
-| ZF (passed) | finite-test source integrability and time identity | above raw PDE/regularity/representatives; no tested identity input |
-| ZG (passed) | actual cutoff BCF time integral identity | above conditions, Q time-L∞, F time-L2, G time-L4/3, endpoint Q representatives |
+| ZF (a.e.-time revision pending) | finite-test source integrability and time identity | above raw PDE/regularity/representatives; no tested identity input |
+| ZG (a.e.-time revision pending) | actual cutoff BCF time integral identity | above conditions, Q time-L∞, F time-L2, G time-L4/3, endpoint Q representatives |
 | YC, ZH (passed) | product derivative, Coulomb divergence cancellation and raw RHS conversion | actual differentiability and div A=0 at the same spatial point |
 
 The compiled ZG theorem accepts no hIntegral, hFTC, hCompact, kernel derivative

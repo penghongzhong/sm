@@ -16,16 +16,18 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run 147 (partial, FAILURE)
+## Latest completed verification: Run 148 (partial, FAILURE)
 
-Run 36742383395 / job 109979814233, checked
-`e8833f6e69ffe6beec99a305d596719b78ed6d1e`: 59 COMPILE_OK, 2 COMPILE_FAIL.
-ZA–ZH, YC and YSpacetimeSlices passed. The actual raw-PDE-to-cutoff time
-identity, Coulomb product conversion and a.e. spatial Lp slices/scalar Fubini
-results now compile with standard-only printed axiom dependencies.
-YLocalLimitCompatibility failed only at a radius-cast inference; its downstream
-gluing module was blocked. Next batch supplies explicit real casts and tests
-three Bochner section/energy modules. These are not certified before compilation.
+Run 36743902458 / job 109985075036, checked
+`a269cd6b429016cbd53e47c5b59715ae5355bee8`: 59 COMPILE_OK, 5 COMPILE_FAIL.
+Previously passed ZA–ZH, YC and YSpacetimeSlices remain passed. New nested
+compatibility failed on the addition-side lemma; Bochner measurability failed
+on namespace, Lp carrier and zero-representative elaboration; gluing, Bochner
+norm transfer and every-time Bochner energy were dependency-blocked.
+The next batch fixes these and supplies actual global/spacetime cutoff
+representatives. It also revises ZF/ZG to accept a.e.-time F/G representatives,
+matching the actual Fubini construction rather than demanding all-time source
+Lp membership. These changed ZF/ZG statements require fresh compilation.
 No full Theorem 7.2/7.1, scattering or whole-paper certificate is claimed.
 
 ## Layers and remaining actual correspondence

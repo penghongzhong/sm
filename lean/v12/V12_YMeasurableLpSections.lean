@@ -31,7 +31,7 @@ theorem v12_measurable_of_dist_to_points
     · intro x hx
       exact Set.mem_iUnion.mpr ⟨⟨x,hx⟩, Metric.mem_ball_self (hr ⟨x,hx⟩)⟩
   obtain ⟨T, hTcount, hT⟩ :=
-    isOpen_iUnion_countable (fun x : U => Metric.ball x.val (r x)) (fun _ => Metric.isOpen_ball)
+    TopologicalSpace.isOpen_iUnion_countable (fun x : U => Metric.ball x.val (r x)) (fun _ => Metric.isOpen_ball)
   rw [← hcover, ← hT]
   simp only [Set.preimage_iUnion]
   apply MeasurableSet.biUnion hTcount
@@ -45,7 +45,7 @@ theorem v12_stronglyMeasurable_Lp_sections
     (Q : ℝ → Lp V12Field p (volume : Measure V12Spatial))
     (hrep : ∀ t, (Q t : V12Spatial → V12Field) =ᵐ[volume] fun y => q (t,y)) :
     StronglyMeasurable Q := by
-  borelize (Lp V12Field p (volume : Measure V12Spatial))
+  borelize (Lp V12Field p (volume : Measure V12Spatial) : Type)
   have hp0 : p ≠ 0 := ne_of_gt (lt_of_lt_of_le zero_lt_one (Fact.out : 1 ≤ p))
   have hptop : p ≠ ∞ := Fact.out
   apply Measurable.stronglyMeasurable
@@ -95,9 +95,14 @@ theorem v12_aestronglyMeasurable_Lp_sections_of_measurable
       change (Q t : V12Spatial → V12Field) y = (Prod.fst ⁻¹' s).indicator q (t,y)
       rw [Set.indicator_of_mem (show (t,y) ∈ Prod.fst ⁻¹' s from ht)]
       exact hy
-    · have hz := (Lp.coeFn_zero (E := V12Field) (p := p)
-        (μ := (volume : Measure V12Spatial)))
-      simpa [Q', q', ht] using hz
+    · change ((s.indicator Q) t : V12Spatial → V12Field) =ᵐ[volume] _
+      rw [Set.indicator_of_notMem ht]
+      filter_upwards [Lp.coeFn_zero (E := V12Field) (p := p)
+        (μ := (volume : Measure V12Spatial))] with y hy
+      change (0 : Lp V12Field p (volume : Measure V12Spatial)) y =
+        (Prod.fst ⁻¹' s).indicator q (t,y)
+      rw [Set.indicator_of_notMem (show (t,y) ∉ Prod.fst ⁻¹' s from ht)]
+      exact hy
   have hstrong := v12_stronglyMeasurable_Lp_sections p q' hq' Q' hrep'
   apply hstrong.aestronglyMeasurable.congr
   filter_upwards [hsfull] with t ht
@@ -113,7 +118,7 @@ theorem v12_aestronglyMeasurable_Lp_sections
     AEStronglyMeasurable Q μ := by
   apply v12_aestronglyMeasurable_Lp_sections_of_measurable μ p (hq.mk q)
     hq.stronglyMeasurable_mk.measurable Q
-  filter_upwards [hrep, ae_ae_of_ae_prod hq.ae_eq_mk] with t ht hmk
+  filter_upwards [hrep, Measure.ae_ae_of_ae_prod hq.ae_eq_mk] with t ht hmk
   exact ht.trans hmk
 
 #print axioms v12_aestronglyMeasurable_Lp_sections_of_measurable

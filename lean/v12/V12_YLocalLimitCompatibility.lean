@@ -22,7 +22,7 @@ theorem v12_cylinder_measure_mono (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
   change ‖z.2‖ < (S : ℝ) + 1
   change ‖z.2‖ < (R : ℝ) + 1 at hz
   have hrs : (R : ℝ) ≤ (S : ℝ) := by exact_mod_cast hRS
-  exact hz.trans_le (add_le_add_right hrs 1)
+  exact hz.trans_le (add_le_add hrs le_rfl)
 
 noncomputable def v12_nested_localize (a b : ℝ) {R S : ℕ} (hRS : R ≤ S) :
     V12CylinderL2 a b S →L[ℝ] V12CylinderL2 a b R :=

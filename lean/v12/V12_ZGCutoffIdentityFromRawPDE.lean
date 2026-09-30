@@ -35,8 +35,10 @@ theorem v12_cutoff_time_identity_from_raw_pde
     (hf : ∀ τ ∈ Set.Ioo a b, ∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f j τ))
     (hg : ∀ τ ∈ Set.Ioo a b, Continuous (g τ))
     (hQr : ∀ τ ∈ Set.Icc a b, (Q τ : V12Spatial → V12Field) =ᵐ[volume] q τ)
-    (hFr : ∀ τ ∈ Set.Ioo a b, ∀ j, (F j τ : V12Spatial → V12Field) =ᵐ[volume] f j τ)
-    (hGr : ∀ τ ∈ Set.Ioo a b, (G τ : V12Spatial → V12Field) =ᵐ[volume] g τ)
+    (hFr : ∀ j, ∀ᵐ τ ∂(volume : Measure ℝ).restrict (Set.Icc a b),
+      (F j τ : V12Spatial → V12Field) =ᵐ[volume] f j τ)
+    (hGr : ∀ᵐ τ ∂(volume : Measure ℝ).restrict (Set.Icc a b),
+      (G τ : V12Spatial → V12Field) =ᵐ[volume] g τ)
     (hQ : MemLp Q ∞ ((volume : Measure ℝ).restrict (Set.Icc a b)))
     (hF : ∀ j, MemLp (F j) 2 ((volume : Measure ℝ).restrict (Set.Icc a b)))
     (hG : MemLp G ((4 : ℝ≥0∞) / 3) ((volume : Measure ℝ).restrict (Set.Icc a b)))
@@ -76,7 +78,8 @@ theorem v12_cutoff_time_identity_from_raw_pde
     exact v12_actual_test_pde_time_identity a b (Ψ R)
       (v12_compactSpatialTest_compactSupport χ hc k R x)
       q dq g f Q F G hqcont hdqcont hder hPDE hq hf hg
-      (fun τ hτ => hQr τ ⟨hτ.1.le, hτ.2.le⟩) hFr hGr hs ht hst
+      (ae_restrict_of_forall_mem measurableSet_Icc (fun τ hτ => hQr τ hτ))
+      hFr hGr hs ht hst
   have hend : ∀ τ ∈ Set.Icc a b, Tendsto (fun R => vR R τ) atTop
       (𝓝 (v12_cutoffTimeField p hpc hps N Q τ x)) := by
     intro τ hτ
