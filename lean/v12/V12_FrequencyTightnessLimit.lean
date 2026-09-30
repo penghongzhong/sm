@@ -930,6 +930,41 @@ theorem v12_L2ConvolutionRep_eq_integral
   rfl
 
 
+
+/-- For arbitrary scalar Schwartz kernel and vector-valued Schwartz input, the
+abstract L2 convolution representative is pointwise exactly Mathlib's Schwartz
+convolution.  This removes the semantic gap between the BCF source operators
+and the Fourier-multiplier identities below. -/
+theorem v12_schwartzKernel_rep_eq_schwartzConvolution
+    (k : SchwartzMap V12Spatial ℂ)
+    (f : SchwartzMap V12Spatial V12Field)
+    (x : V12Spatial) :
+    v12_L2ConvolutionRep (k.toLp 2) (f.toLp 2) x =
+      SchwartzMap.convolution
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        k f x := by
+  rw [v12_L2ConvolutionRep_eq_integral,
+    SchwartzMap.convolution_apply, MeasureTheory.convolution_eq_swap]
+  have hk0 :
+      (k.toLp 2 : V12Spatial → ℂ)
+        =ᵐ[(volume : Measure V12Spatial)] k := by
+    exact k.coeFn_toLp 2 (volume : Measure V12Spatial)
+  have hpull :=
+    (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae hk0
+  have hk :
+      ∀ᵐ y ∂(volume : Measure V12Spatial),
+        k.toLp 2 (x - y) = k (x - y) := by
+    filter_upwards [hpull] with y hy
+    simpa only [v12_subLeftFamily_apply] using hy
+  have hf := f.coeFn_toLp 2 (volume : Measure V12Spatial)
+  apply integral_congr_ae
+  filter_upwards [hk, hf] with y hky hfy
+  rw [hky, hfy]
+  rfl
+
+#print axioms v12_schwartzKernel_rep_eq_schwartzConvolution
+
 /-- For Schwartz input, the abstract L2 convolution representative is pointwise
 the same function as Mathlib's Schwartz convolution with the exact cutoff kernel. -/
 theorem v12_cutoffKernel_rep_eq_schwartzConvolution
@@ -1926,6 +1961,92 @@ theorem v12_cutoffKernelLineDerivSchwartz_apply
       fderiv ℝ (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N) x m := by
   exact SchwartzMap.lineDerivOp_apply_eq_fderiv
     m (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N) x
+
+
+/-- Exact Fourier symbol of the physical first-directional-derivative cutoff
+kernel:
+  F(∂_m K_N) = (2π i) <η,m> p_N(η).
+The multiplication is encoded by Mathlib's scalar Schwartz multiplier, so no
+informal gradient-symbol identification is used. -/
+theorem v12_cutoffKernelLineDeriv_fourier_eq
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial) :
+    𝓕 (v12_cutoffKernelLineDerivSchwartz
+        p hp_cpt hp_smooth N m) =
+      (2 * Real.pi * Complex.I) •
+        SchwartzMap.smulLeftCLM ℂ (inner ℝ · m)
+          (v12_scaledCutoffSchwartz p hp_cpt hp_smooth N) := by
+  rw [v12_cutoffKernelLineDerivSchwartz,
+    SchwartzMap.fourier_lineDerivOp_eq,
+    v12_cutoffKernelSchwartz,
+    fourier_fourierInv_eq]
+
+/-- The actual L2 Fourier multiplier determined by the exact derivative kernel.
+Its symbol is certified by the preceding Fourier identity. -/
+noncomputable def v12_cutoffLineDerivFourierMultiplier
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial) :
+    V12SpatialL2 →L[ℂ] V12SpatialL2 :=
+  v12_schwartzKernelFourierMultiplier
+    (v12_cutoffKernelLineDerivSchwartz
+      p hp_cpt hp_smooth N m)
+
+/-- On Schwartz input, the exact derivative-kernel Fourier multiplier is the
+same L2 element as convolution by the exact derivative cutoff kernel. -/
+theorem v12_cutoffLineDerivFourierMultiplier_on_schwartz_eq_convolution
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial)
+    (f : SchwartzMap V12Spatial V12Field) :
+    v12_cutoffLineDerivFourierMultiplier
+        p hp_cpt hp_smooth N m (f.toLp 2) =
+      (SchwartzMap.convolution
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        (v12_cutoffKernelLineDerivSchwartz
+          p hp_cpt hp_smooth N m)
+        f).toLp 2 := by
+  simpa [v12_cutoffLineDerivFourierMultiplier] using
+    v12_schwartzKernelFourierMultiplier_on_schwartz_eq_convolution
+      (v12_cutoffKernelLineDerivSchwartz
+        p hp_cpt hp_smooth N m) f
+
+/-- The bounded-continuous L2-to-Linfinity derivative source operator has the
+same pointwise Schwartz convolution representative as the exact derivative
+Fourier multiplier. -/
+theorem v12_cutoffLineDerivBCFCLM_on_schwartz_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial)
+    (f : SchwartzMap V12Spatial V12Field)
+    (x : V12Spatial) :
+    v12_cutoffLineDerivBCFCLM
+        p hp_cpt hp_smooth N m (f.toLp 2) x =
+      SchwartzMap.convolution
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        (v12_cutoffKernelLineDerivSchwartz
+          p hp_cpt hp_smooth N m)
+        f x := by
+  change
+    v12_L2ConvolutionRep
+        ((v12_cutoffKernelLineDerivSchwartz
+          p hp_cpt hp_smooth N m).toLp 2)
+        (f.toLp 2) x = _
+  exact
+    v12_schwartzKernel_rep_eq_schwartzConvolution
+      (v12_cutoffKernelLineDerivSchwartz
+        p hp_cpt hp_smooth N m) f x
+
+#print axioms v12_cutoffKernelLineDeriv_fourier_eq
+#print axioms v12_cutoffLineDerivFourierMultiplier_on_schwartz_eq_convolution
+#print axioms v12_cutoffLineDerivBCFCLM_on_schwartz_apply
 
 /-- Fixed-frequency first-derivative convolution maps spatial L2 continuously
 into bounded continuous fields. -/
