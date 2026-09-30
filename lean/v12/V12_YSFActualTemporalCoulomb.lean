@@ -52,8 +52,8 @@ theorem v12_massComplexL2Class_ae {Ω : Type*} [MeasurableSpace Ω]
     Complex.normSq_eq_norm_sq, Complex.ofReal_add]
 
 noncomputable def v12_actualTemporalCoulombL2 (a b : ℝ)
-    (q : V12Spacetime → V12Field) (hq : MemLp q 4 (v12_slab_measure a b)) :
-    Lp ℂ 2 (v12_slab_measure a b) := by
+    (q : V12Spacetime → V12Field) (hq : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) :
+    Lp ℂ 2 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) := by
   change Lp ℂ 2 (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
   exact (4 : ℂ) • (∑ j, ∑ k, v12_spacetimeCoulombRieszOperator
     ((volume : Measure ℝ).restrict (Set.Icc a b)) j k
@@ -62,19 +62,19 @@ noncomputable def v12_actualTemporalCoulombL2 (a b : ℝ)
       (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) q hq
 
 theorem v12_actualTemporalCoulombL2_eq (a b : ℝ)
-    (q : V12Spacetime → V12Field) (hq : MemLp q 4 (v12_slab_measure a b)) :
+    (q : V12Spacetime → V12Field) (hq : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) :
     v12_actualTemporalCoulombL2 a b q hq =
       (4 : ℂ) • (∑ j, ∑ k, v12_spacetimeCoulombRieszOperator
         ((volume : Measure ℝ).restrict (Set.Icc a b)) j k
-          (v12_SL2Class (v12_slab_measure a b) j k q hq)) -
-      (2 : ℂ) • v12_massComplexL2Class (v12_slab_measure a b) q hq := by
+          (v12_SL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) j k q hq)) -
+      (2 : ℂ) • v12_massComplexL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) q hq := by
   rfl
 
 theorem v12_actualTemporalCoulomb_L2_budget
-    (a b : ℝ) (q : V12Spacetime → V12Field) (hq : MemLp q 4 (v12_slab_measure a b))
-    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : eLpNorm q 4 (v12_slab_measure a b) ≤ Z) :
+    (a b : ℝ) (q : V12Spacetime → V12Field) (hq : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : eLpNorm q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) ≤ Z) :
     ‖v12_actualTemporalCoulombL2 a b q hq‖ ≤ 20 * Z.toReal^2 := by
-  let μ := v12_slab_measure a b
+  let μ := (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
   have hT (j k : Fin 2) := v12_tensorL2Class_budget μ j k q hq Z hZ hb
   have hS (j k : Fin 2) : ‖v12_SL2Class μ j k q hq‖ ≤ Z.toReal^2 := by
     unfold v12_SL2Class
@@ -105,17 +105,17 @@ theorem v12_actualTemporalCoulomb_L2_budget
 
 theorem v12_actualTensorL2_dual_limit
     (a b : ℝ) (qn : ℕ → V12Spacetime → V12Field) (q : V12Spacetime → V12Field)
-    (hn4 : ∀ n, MemLp (qn n) 4 (v12_slab_measure a b))
-    (hq4 : MemLp q 4 (v12_slab_measure a b))
-    (hn2 : ∀ R n, MemLp (qn n) 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
-    (hq2 : ∀ R, MemLp q 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
+    (hn4 : ∀ n, MemLp (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (hn2 : ∀ R n, MemLp (qn n) 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
+    (hq2 : ∀ R, MemLp q 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
     (hlim : ∀ R, Tendsto (fun n => (eLpNorm (fun z => qn n z - q z) 2
-      ((v12_slab_measure a b).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
-    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : ∀ n, eLpNorm (qn n) 4 (v12_slab_measure a b) ≤ Z) (j k : Fin 2) :
-    ∀ φ : Lp ℂ 2 (v12_slab_measure a b) →L[ℂ] ℂ,
-      Tendsto (fun n => φ (v12_tensorL2Class (v12_slab_measure a b) j k (qn n) (hn4 n))) atTop
-        (𝓝 (φ (v12_tensorL2Class (v12_slab_measure a b) j k q hq4))) := by
-  let μ := v12_slab_measure a b
+      (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
+    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : ∀ n, eLpNorm (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) ≤ Z) (j k : Fin 2) :
+    ∀ φ : Lp ℂ 2 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) →L[ℂ] ℂ,
+      Tendsto (fun n => φ (v12_tensorL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) j k (qn n) (hn4 n))) atTop
+        (𝓝 (φ (v12_tensorL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) j k q hq4))) := by
+  let μ := (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
   have hw (j k : Fin 2) : ∀ φ : Lp ℂ 2 μ →L[ℂ] ℂ,
       Tendsto (fun n => φ (v12_tensorL2Class μ j k (qn n) (hn4 n))) atTop
         (𝓝 (φ (v12_tensorL2Class μ j k q hq4))) := by
@@ -133,16 +133,16 @@ theorem v12_actualTensorL2_dual_limit
 
 theorem v12_actualMassL2_dual_limit
     (a b : ℝ) (qn : ℕ → V12Spacetime → V12Field) (q : V12Spacetime → V12Field)
-    (hn4 : ∀ n, MemLp (qn n) 4 (v12_slab_measure a b))
-    (hq4 : MemLp q 4 (v12_slab_measure a b))
-    (hn2 : ∀ R n, MemLp (qn n) 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
-    (hq2 : ∀ R, MemLp q 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
+    (hn4 : ∀ n, MemLp (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (hn2 : ∀ R n, MemLp (qn n) 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
+    (hq2 : ∀ R, MemLp q 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
     (hlim : ∀ R, Tendsto (fun n => (eLpNorm (fun z => qn n z - q z) 2
-      ((v12_slab_measure a b).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
-    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : ∀ n, eLpNorm (qn n) 4 (v12_slab_measure a b) ≤ Z) :
-    ∀ φ : Lp ℂ 2 (v12_slab_measure a b) →L[ℂ] ℂ,
-      Tendsto (fun n => φ (v12_massComplexL2Class (v12_slab_measure a b) (qn n) (hn4 n))) atTop
-        (𝓝 (φ (v12_massComplexL2Class (v12_slab_measure a b) q hq4))) := by
+      (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
+    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : ∀ n, eLpNorm (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) ≤ Z) :
+    ∀ φ : Lp ℂ 2 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) →L[ℂ] ℂ,
+      Tendsto (fun n => φ (v12_massComplexL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) (qn n) (hn4 n))) atTop
+        (𝓝 (φ (v12_massComplexL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) q hq4))) := by
   intro φ
   have h0 := v12_actualTensorL2_dual_limit a b qn q hn4 hq4 hn2 hq2 hlim Z hZ hb 0 0 φ
   have h1 := v12_actualTensorL2_dual_limit a b qn q hn4 hq4 hn2 hq2 hlim Z hZ hb 1 1 φ
@@ -150,17 +150,17 @@ theorem v12_actualMassL2_dual_limit
 
 theorem v12_actualTemporalCoulomb_weak_L2_limit
     (a b : ℝ) (qn : ℕ → V12Spacetime → V12Field) (q : V12Spacetime → V12Field)
-    (hn4 : ∀ n, MemLp (qn n) 4 (v12_slab_measure a b))
-    (hq4 : MemLp q 4 (v12_slab_measure a b))
-    (hn2 : ∀ R n, MemLp (qn n) 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
-    (hq2 : ∀ R, MemLp q 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
+    (hn4 : ∀ n, MemLp (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (hn2 : ∀ R n, MemLp (qn n) 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
+    (hq2 : ∀ R, MemLp q 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
     (hlim : ∀ R, Tendsto (fun n => (eLpNorm (fun z => qn n z - q z) 2
-      ((v12_slab_measure a b).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
-    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : ∀ n, eLpNorm (qn n) 4 (v12_slab_measure a b) ≤ Z) :
-    ∀ φ : Lp ℂ 2 (v12_slab_measure a b) →L[ℂ] ℂ,
+      (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
+    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : ∀ n, eLpNorm (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) ≤ Z) :
+    ∀ φ : Lp ℂ 2 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) →L[ℂ] ℂ,
       Tendsto (fun n => φ (v12_actualTemporalCoulombL2 a b (qn n) (hn4 n))) atTop
         (𝓝 (φ (v12_actualTemporalCoulombL2 a b q hq4))) := by
-  let μ := v12_slab_measure a b
+  let μ := (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
   have hw (j k : Fin 2) : ∀ φ : Lp ℂ 2 μ →L[ℂ] ℂ,
       Tendsto (fun n => φ (v12_tensorL2Class μ j k (qn n) (hn4 n))) atTop
         (𝓝 (φ (v12_tensorL2Class μ j k q hq4))) := by

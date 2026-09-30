@@ -14,7 +14,7 @@ theorem v12_open_eqOn_fderiv
     (f g : V12Spacetime → E) (he : Set.EqOn f g U) :
     Set.EqOn (fderiv ℝ f) (fderiv ℝ g) U := by
   intro z hz
-  have hn : f =ᶠ[nhds z] g := (hU.mem_nhds hz).mono (fun x hx => he hx)
+  have hn : f =ᶠ[nhds z] g := Filter.Eventually.mono (hU.mem_nhds hz) (fun x hx => he hx)
   exact hn.fderiv_eq
 
 theorem v12_open_eqOn_second_directional_derivative

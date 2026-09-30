@@ -12,43 +12,43 @@ open scoped Topology ENNReal
 
 theorem v12_actual_Hodge_memLp4 (hHLS : V12ExternalHLS2D) (a b : ℝ)
     (q : V12Spacetime → V12Field) (hmq : StronglyMeasurable q)
-    (hq4 : MemLp q 4 (v12_slab_measure a b)) (M : ℝ)
+    (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) (M : ℝ)
     (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M) :
-    MemLp (v12_spacetimeHodge q) 4 (v12_slab_measure a b) := by
+    MemLp (v12_spacetimeHodge q) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) := by
   obtain ⟨C, hC, hH⟩ := v12_actual_hodge_spacetime_MZ hHLS
   exact (hH a b q hmq hq4 (ENNReal.ofReal M) (by finiteness) hEq).1
 
 noncomputable def v12_actualPotentialL2Class (hHLS : V12ExternalHLS2D) (a b : ℝ)
     (q : V12Spacetime → V12Field) (hmq : StronglyMeasurable q)
-    (hq4 : MemLp q 4 (v12_slab_measure a b)) (M : ℝ)
+    (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) (M : ℝ)
     (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M) :
-    Lp ℂ 2 (v12_slab_measure a b) :=
+    Lp ℂ 2 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) :=
   -v12_actualTemporalCoulombL2 a b q hq4 +
-    v12_normSqL2Class (v12_slab_measure a b) (v12_spacetimeHodge q)
+    v12_normSqL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) (v12_spacetimeHodge q)
       (v12_actual_Hodge_memLp4 hHLS a b q hmq hq4 M hEq) -
-    (2 : ℂ) • v12_massComplexL2Class (v12_slab_measure a b) q hq4
+    (2 : ℂ) • v12_massComplexL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) q hq4
 
 theorem v12_actualPotential_weak_L2_limit
     (hHLS : V12ExternalHLS2D) (a b : ℝ)
     (qn : ℕ → V12Spacetime → V12Field) (q : V12Spacetime → V12Field)
     (hmn : ∀ n, StronglyMeasurable (qn n)) (hmq : StronglyMeasurable q)
-    (hn4 : ∀ n, MemLp (qn n) 4 (v12_slab_measure a b)) (hq4 : MemLp q 4 (v12_slab_measure a b))
-    (hn2 : ∀ R n, MemLp (qn n) 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
-    (hq2 : ∀ R, MemLp q 2 ((v12_slab_measure a b).restrict (v12_spatial_cylinder R)))
+    (hn4 : ∀ n, MemLp (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
+    (hn2 : ∀ R n, MemLp (qn n) 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
+    (hq2 : ∀ R, MemLp q 2 (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R)))
     (hlim : ∀ R, Tendsto (fun n => (eLpNorm (fun z => qn n z - q z) 2
-      ((v12_slab_measure a b).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
+      (((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))).restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0))
     (M : ℝ) (hM : 0 ≤ M)
     (hEn : ∀ n, ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       eLpNorm (fun x => qn n (t,x)) 2 volume ≤ ENNReal.ofReal M)
     (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M)
-    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hZq : ∀ n, eLpNorm (qn n) 4 (v12_slab_measure a b) ≤ Z) :
-    ∀ φ : Lp ℂ 2 (v12_slab_measure a b) →L[ℂ] ℂ,
+    (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hZq : ∀ n, eLpNorm (qn n) 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) ≤ Z) :
+    ∀ φ : Lp ℂ 2 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) →L[ℂ] ℂ,
       Tendsto (fun n => φ (v12_actualPotentialL2Class hHLS a b (qn n) (hmn n) (hn4 n) M (hEn n)))
         atTop (𝓝 (φ (v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq))) := by
-  let μ := v12_slab_measure a b
+  let μ := (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
   let hnA := fun n => v12_actual_Hodge_memLp4 hHLS a b (qn n) (hmn n) (hn4 n) M (hEn n)
   let hqA := v12_actual_Hodge_memLp4 hHLS a b q hmq hq4 M hEq
   have hnA2 : ∀ R n, MemLp (v12_spacetimeHodge (qn n)) 2 (μ.restrict (v12_spatial_cylinder R)) := by
@@ -77,16 +77,16 @@ theorem v12_actualPotential_weak_L2_limit
 
 theorem v12_actualPotential_L2_budget (hHLS : V12ExternalHLS2D) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (a b : ℝ) (q : V12Spacetime → V12Field)
-      (hmq : StronglyMeasurable q) (hq4 : MemLp q 4 (v12_slab_measure a b))
+      (hmq : StronglyMeasurable q) (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))))
       (M : ℝ) (hM : 0 ≤ M)
       (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
         eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M)
-      (Z : ℝ≥0∞) (hZ : Z ≠ ∞), eLpNorm q 4 (v12_slab_measure a b) ≤ Z →
+      (Z : ℝ≥0∞) (hZ : Z ≠ ∞), eLpNorm q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) ≤ Z →
       ‖v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq‖ ≤ (24+C*M^2)*Z.toReal^2 := by
   obtain ⟨C, hC, hH⟩ := v12_actual_hodge_spacetime_MZ hHLS
   refine ⟨C.toReal^2, sq_nonneg _, ?_⟩
   intro a b q hmq hq4 M hM hEq Z hZ hb
-  let μ := v12_slab_measure a b
+  let μ := (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
   have h0 := v12_actualTemporalCoulomb_L2_budget a b q hq4 Z hZ hb
   have hm : ‖v12_massComplexL2Class μ q hq4‖ ≤ 2*Z.toReal^2 := by
     apply (norm_add_le _ _).trans

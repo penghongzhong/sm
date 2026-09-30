@@ -16,34 +16,36 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run166 (partial, FAILURE)
+## Latest completed verification: Run167 (partial, FAILURE)
 
-Run36787140296/job110131152550 checked
-`c45b359741d0820497447e4e4d609519154bf25b`:129 COMPILE_OK,12 COMPILE_FAIL.
-NEW PASS: actual slab locally-finite/compact-finite measure instances,
-closed-slab strongly measurable zero extension and original Hodge MZ,
-local first/second compact IBP, scalar AQ tests, same-Q actual curvature
-compact tests, and same-Q connection derivative tests. No old PASS regressed.
-Three direct roots: A0 expansion/budget/weak limit; original PDE integral
-splitting and ENNReal 4/3 comparison; first-order constraint Pi.add_apply.
-Nine additional imports failed. These failed proofs are not certified.
+Run36789168870/job110137701656 checked
+`ad5c100e157e5fafe1e559a723a4471b906a3da5`:130 COMPILE_OK,17 COMPILE_FAIL.
+NEW PASS: YZZHOriginalCompactPDE. The original scalar PDE, local product
+rule, weighted source integrability and compact first/second IBP now produce
+an actual integral identity without hIntegral. No old PASS regressed.
+Three direct roots: A0 expanded/slab measure HSub synthesis; explicit
+Eventually.mono neighbourhood proof; first-order integral ENorm instance
+mismatch. Fourteen further imports failed. No failed proof is certified.
 
-Next batch repairs those actual errors and adds original local first/second
-derivative preservation, canonical time/spatial chain-rule correspondence,
-original spatial A0 -> joint raw representative, actual V representative
-under original zero extension, and all original A/V/W coefficient Lp budgets.
-The ZM common-limit application derives all coefficient membership/budget
-inputs internally from the original same-Q formulas and M/Z bounds. Original
-smooth-gauge correspondence, geometric construction, concrete original PDE
-and full statement instantiation remain application obligations. No internal
-hIntegral/hCompact or coefficient/source convergence conclusion is an input.
-All new modules remain CANDIDATE until an actual successful compiler run.
-Full7.1/7.2 and every later whole-paper branch remain OPEN.
+Next batch normalizes the A0/V reconstruction measures, proves first-order
+weighted integrability directly from local smoothness, and repairs the
+neighbourhood proof. New original applications derive component/second
+coordinate derivatives, the zero-extended canonical PDE with the actual V,
+and canonical div/curl/torsion from the original spatial equations.
+The original-local-closure candidate also constructs a strongly measurable
+limit representative from local L2 membership instead of assuming global
+measurability. Its time derivative is constructed from original smoothness.
+All original-data applications remain CANDIDATE until actual successful Lean
+execution. Original smooth-gauge and concrete statement applicability,
+pointwise/distributional equivalence, cofinal real cylinders and full7.2
+combined conclusions remain under audit. Full7.1/7.2 and later branches OPEN.
+No internal hIntegral/hCompact or source/coefficient convergence conclusion
+is a whole-theorem input. No scattering or whole-paper certificate is claimed.
 
-Precisely registered external HLS remains an explicit proposition parameter,
-not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge
-application passed157 and spacetime MZ passed159. No new external schema.
-No scattering or whole-paper certificate is claimed.
+The only registered external interface remains an explicit proposition
+parameter: Tao, An Epsilon of Room I, Corollary1.11.18 (n=2), with exact
+hypotheses/conclusion in SECTION2_EXTERNAL_SOURCE_AUDIT.md. No new axiom,
+instance, external schema or weakened paper statement.
 
 ## Layers and remaining actual correspondence
 

@@ -12,13 +12,13 @@ open scoped ENNReal
 
 theorem v12_actualPotentialL2Class_ae
     (hHLS : V12ExternalHLS2D) (a b : ℝ) (q : V12Spacetime → V12Field)
-    (hmq : StronglyMeasurable q) (hq4 : MemLp q 4 (v12_slab_measure a b)) (M : ℝ)
+    (hmq : StronglyMeasurable q) (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) (M : ℝ)
     (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M) :
-    (v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq : V12Spacetime → ℂ) =ᵐ[v12_slab_measure a b]
+    (v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq : V12Spacetime → ℂ) =ᵐ[(((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))]
       fun z => -v12_actualTemporalCoulombL2 a b q hq4 z +
         ((‖v12_spacetimeHodge q z‖^2 : ℝ) : ℂ) - (2 : ℂ) * ((‖q z‖^2 : ℝ) : ℂ) := by
-  let μ := v12_slab_measure a b
+  let μ := (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
   let A0 := v12_actualTemporalCoulombL2 a b q hq4
   let H := v12_normSqL2Class μ (v12_spacetimeHodge q)
     (v12_actual_Hodge_memLp4 hHLS a b q hmq hq4 M hEq)
@@ -35,10 +35,10 @@ theorem v12_actualPotentialL2Class_ae
 
 theorem v12_actualPotentialL2Class_real
     (hHLS : V12ExternalHLS2D) (a b : ℝ) (q : V12Spacetime → V12Field)
-    (hmq : StronglyMeasurable q) (hq4 : MemLp q 4 (v12_slab_measure a b)) (M : ℝ)
+    (hmq : StronglyMeasurable q) (hq4 : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) (M : ℝ)
     (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M) :
-    v12_LpIsReal (v12_slab_measure a b) (v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq) := by
+    v12_LpIsReal ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) (v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq) := by
   filter_upwards [v12_actualPotentialL2Class_ae hHLS a b q hmq hq4 M hEq,
     v12_actualTemporalCoulomb_real a b q hq4] with z hz ha
   rw [hz]

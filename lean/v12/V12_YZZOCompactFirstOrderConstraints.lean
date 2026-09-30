@@ -43,12 +43,12 @@ theorem v12_original_first_order_compact_constraint
         exact hz (hs (subset_tsupport ψ hne))
       rw [hzero, mul_zero, mul_zero]
   have hi : Integrable (fun z => (fderiv ℝ f z v + c * fderiv ℝ g z w) * ψ z) μ := by
-    simpa only [Pi.add_apply, add_mul, mul_assoc] using hiF.add (hiG.const_mul c)
+    exact v12_local_smooth_compact_product_integrable U hU _ ψ
+      (hdf.add (continuousOn_const.mul hdg)) hψ.continuous hc hs
   refine ⟨hi.congr hAE, ?_⟩
   have he := integral_congr_ae hAE
   simp only [add_mul, mul_assoc] at he
   have hsplit := integral_add hiF (hiG.const_mul c)
-  simp only [Pi.add_apply] at hsplit
   rw [hsplit, integral_const_mul] at he
   have hfI := v12_original_slab_compact_IBP a b f ψ hf hψ hc hs v
   have hgI := v12_original_slab_compact_IBP a b g ψ hg hψ hc hs w

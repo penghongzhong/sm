@@ -12,6 +12,20 @@ noncomputable def v12_timeDirection : V12Spacetime := (1,0)
 noncomputable def v12_spatialDirection (j : Fin 2) : V12Spacetime :=
   (0, EuclideanSpace.basisFun (Fin 2) ℝ j)
 
+theorem v12_joint_smooth_time_hasDerivAt
+    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (a b : ℝ) (f : V12Spacetime → E)
+    (hf : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f (Prod.fst ⁻¹' Set.Ioo a b))
+    (t : ℝ) (ht : t ∈ Set.Ioo a b) (x : V12Spatial) :
+    HasDerivAt (fun s => f (s,x)) (deriv (fun s => f (s,x)) t) t := by
+  have hU : IsOpen (Prod.fst ⁻¹' Set.Ioo a b : Set V12Spacetime) :=
+    isOpen_Ioo.preimage (continuous_fst : Continuous (Prod.fst : V12Spacetime → ℝ))
+  have hd : DifferentiableAt ℝ f (t,x) :=
+    (hf.differentiableOn (by simp)).differentiableAt (hU.mem_nhds ht)
+  have hi : HasDerivAt (fun s : ℝ => (s,x)) (1,0) t :=
+    (hasDerivAt_id' t).prodMk (hasDerivAt_const x t)
+  exact (hd.hasFDerivAt.comp_hasDerivAt t hi).differentiableAt.hasDerivAt
+
 theorem v12_joint_fderiv_spatial_slice
     {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : V12Spacetime → E) (t : ℝ) (x v : V12Spatial)

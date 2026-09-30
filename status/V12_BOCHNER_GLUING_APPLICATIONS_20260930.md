@@ -253,3 +253,10 @@ Next batch adds original slab derivative preservation, canonical coordinate
 chain rules, original A0/V representatives and internally derived A/V/W budgets,
 then ZM same-Q common-subsequence application. All additions remain candidates.
 Original physical geometry/gauge hypotheses and full7.1/7.2 remain OPEN.
+
+Run167 actual130/147 FAILURE: YZZHOriginalCompactPDE newly PASS. Three direct
+roots/fourteen imports: A0 expanded/slab HSub, neighbourhood membership
+mono notation, first-order Integrable ENorm instance. Next batch repairs
+these and adds original coordinate/component PDE and div/curl/torsion
+applications, original-local-closure with measurable limit representative
+and internally constructed time derivative. All additions remain candidates.
