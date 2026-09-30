@@ -44,7 +44,8 @@ theorem v12_actual_test_first_L2_tendsto (m : V12Spatial) :
     (∂_{m} (Ψ R)).toLp 2 (volume : Measure V12Spatial)
   let u : V12ScalarL2 := v12_reflectedTranslate
     ((-∂_{m} k).toLp 2 (volume : Measure V12Spatial)) x
-  have hR : ∀ R, (uR R : V12Spatial → ℂ) =ᵐ[volume] (∂_{m} (Ψ R)) := by
+  have hR : ∀ R, (uR R : V12Spatial → ℂ) =ᵐ[volume]
+      ((∂_{m} (Ψ R) : SchwartzMap V12Spatial ℂ) : V12Spatial → ℂ) := by
     intro R
     exact (∂_{m} (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial)
   have hu : (u : V12Spatial → ℂ) =ᵐ[volume] (fun y => (-∂_{m} k) (x-y)) :=
@@ -88,7 +89,8 @@ theorem v12_actual_test_laplacian_L2_tendsto :
     (Δ (Ψ R)).toLp 2 (volume : Measure V12Spatial)
   let u : V12ScalarL2 := v12_reflectedTranslate
     ((Δ k).toLp 2 (volume : Measure V12Spatial)) x
-  have hR : ∀ R, (uR R : V12Spatial → ℂ) =ᵐ[volume] (Δ (Ψ R)) := by
+  have hR : ∀ R, (uR R : V12Spatial → ℂ) =ᵐ[volume]
+      ((Δ (Ψ R) : SchwartzMap V12Spatial ℂ) : V12Spatial → ℂ) := by
     intro R
     exact (Δ (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial)
   have hu : (u : V12Spatial → ℂ) =ᵐ[volume] (fun y => (Δ k) (x-y)) :=

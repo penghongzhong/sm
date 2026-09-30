@@ -139,13 +139,13 @@ theorem v12_compact_test_raw_pde_source
     rw [hPDE]
     simp only [smul_add, smul_comm (ψ y), D2, e]
   rw [hexpand,
-    integral_add ((((hiD 0).add (hiD 1)).const_smul Complex.I).add
-      ((hiF 0).const_smul (2 : ℂ)) |>.add ((hiF 1).const_smul (2 : ℂ)))
-      (hiG.const_smul (-Complex.I)),
-    integral_add ((((hiD 0).add (hiD 1)).const_smul Complex.I).add
-      ((hiF 0).const_smul (2 : ℂ))) ((hiF 1).const_smul (2 : ℂ)),
-    integral_add (((hiD 0).add (hiD 1)).const_smul Complex.I)
-      ((hiF 0).const_smul (2 : ℂ))]
+    integral_add ((((hiD 0).add (hiD 1)).smul Complex.I).add
+      ((hiF 0).smul (2 : ℂ)) |>.add ((hiF 1).smul (2 : ℂ)))
+      (hiG.smul (-Complex.I)),
+    integral_add ((((hiD 0).add (hiD 1)).smul Complex.I).add
+      ((hiF 0).smul (2 : ℂ))) ((hiF 1).smul (2 : ℂ)),
+    integral_add (((hiD 0).add (hiD 1)).smul Complex.I)
+      ((hiF 0).smul (2 : ℂ))]
   simp only [integral_smul, integral_add (hiD 0) (hiD 1)]
   dsimp only [D2]
   rw [v12_compact_test_spatial_ibp_twice ψ Q hψ hc hQ (e 0),
