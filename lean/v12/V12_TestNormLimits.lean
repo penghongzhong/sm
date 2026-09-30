@@ -118,7 +118,12 @@ theorem v12_eLpNorm_add_tendsto_zero
       eLpNorm (f R) p volume + eLpNorm (g R) p volume := by
     intro R
     exact eLpNorm_add_le (μ := (volume : Measure V12Spatial)) (f := f R) (g := g R) hp
-  exact squeeze_zero (fun R => bot_le) hle hsum
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le
+    (f := fun R : ℕ => eLpNorm (f R + g R) p (volume : Measure V12Spatial))
+    (g := fun _ : ℕ => (0 : ℝ≥0∞))
+    (h := fun R : ℕ => eLpNorm (f R) p (volume : Measure V12Spatial) +
+      eLpNorm (g R) p (volume : Measure V12Spatial))
+    tendsto_const_nhds hsum (fun _ => bot_le) hle
 
 /-- Pointwise negation is related to function negation before taking its norm. -/
 theorem v12_eLpNorm_pointwise_neg (p : ℝ≥0∞) (f : V12Spatial → ℂ) :
