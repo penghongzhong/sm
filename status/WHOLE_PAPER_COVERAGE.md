@@ -1,58 +1,66 @@
 # Whole-paper Lean coverage ledger
 
-Authority: full W20 master, private LeanSync v4 (135 pages).
-Inventory: 207 proof-bearing environments, retained from the original
-133-page master. The 36-page Lean-min and T001–T094 are auxiliary references.
-The manuscript identity hashes remain in MANUSCRIPT_SYNC.md.
+Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
+environments. Registered Library baseline: private LeanSync v4, 135 pages.
+Current generated private working expansion: v6 CylinderBridge, 137 pages,
+all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
+explicit v4-based provenance, hashes, build checks and storage boundary.
+The 36-page Lean-min and T001-T094 remain auxiliary references only.
 
 ## Certification correction
 
-SEMANTIC_VERIFICATION_CORRECTION_20260928.md supersedes blanket full-node
-GREEN statements in historical component ledgers. A compiled scalar kernel,
-a propositional assembly or a list of external sources is not a complete
-formalization of the corresponding PDE theorem.
+SEMANTIC_VERIFICATION_CORRECTION_20260928.md supersedes historical blanket
+GREEN labels. Compiled scalar kernels, propositional assemblies and lists
+of external references are not complete formalizations of PDE statements.
+Allowed foundations remain Lean/Mathlib, standard analysis and precisely
+identified published results. Concrete applications and internal bridges
+must be checked; all standard analysis need not be rebuilt from scratch.
 
-The permitted foundation remains Lean/Mathlib, standard analysis and
-precisely identified published results. The missing work is the exact
-application to the paper's objects and its internal analytic bridges,
-not a requirement to rebuild all standard analysis from first principles.
+## Latest actual code verification: Run 123
 
-## Latest verified code: Run 119, 2026-09-30
+Run 36660803283 / job 109714901632: SUCCESS.
+CHECKED_SHA=2f9e348dad3f5d1c6f5a8db5d444d5c46c2738d2.
+42 files attempted, 42 COMPILE_OK, 0 COMPILE_FAIL. Completed log read.
+New cylinder-module printed axioms: only propext, Classical.choice,
+Quot.sound. Independent secondary checkers were not run.
+Read V12_RUN123_SUCCESS_20260930.md for declaration-level scope.
+A later metadata-only commit is not a separately compiled code revision.
 
-Run 36654904541 / job 109697026316: SUCCESS.
-CHECKED_SHA=c655aabab7c715fcc2bd1b0c8dfe281e7258f27b.
-40 public Lean files attempted, 40 COMPILE_OK, 0 COMPILE_FAIL.
-The completed log was read, including the new modules' printed axioms.
-This is file-level machine evidence, not 40 fully certified W20 theorems.
+## Layers and remaining actual correspondence
 
-## Actual layers and outstanding correspondence
-
-| Layer | Verified support now present | Full W20 obligation still open |
+| Layer | Verified support | Still open for full W20 statement |
 |---|---|---|
-| Section 2 | Algebra, geometry, Fourier-symbol and actual Plancherel kernels | Complete function/derivative/Hodge/HLS applications |
-| v12 Fourier/local L2 | Actual cutoff symbol and kernels; local Lp restrictions; tail-sup adapter; one common radius/frequency subsequence | Whole spacetime realization and precise field/operator hypotheses |
-| v12 source products | Actual A_j Q and VQ+W conjugate(Q), Holder estimates and MemLp | Hodge-defined coefficients and the same M,Z bounds; Fubini realization |
-| v12 regularity | Actual spatial equicontinuity; derivative source CLMs; time-L43 budget; FTC quarter-Holder theorem | Derive cutoff time integral identity from original distributional PDE and select valid time representatives |
-| v12 compactness | Actual Ascoli-to-local-L2 and common-subsequence theorems | Discharge fixed-cutoff hCompact, compatible measurable gluing and Theorem 7.1 |
-| v13–v20 | Existing scalar/finite/dependency kernels compile | Exact norm objects and transitive analytic hypotheses |
-| v19 Lemma 14.7 | Fixed-anchor phase support and dense-class/quantifier bridges compile | Actual Poincare measure-space and Fourier-operator instance |
-| W1–W3 | Existing kernels compile | Not a continuous full-theorem verified prefix |
-| Later W/RFCE/rigidity | No complete full-main-theorem certificate established | Full statement correspondence and reverse dependency audit |
+| Section 2 | Algebra, geometry, Fourier symbols and actual Plancherel | Complete function/derivative/Hodge/HLS applications |
+| v12 Fourier/local L2 | Actual cutoff symbol/kernels, local restrictions, tail-sup adapter, common radius/frequency subsequence | Whole-spacetime realization and precise same-field operator inputs |
+| v12 source products | Actual A_j Q and VQ+W conjugate(Q), Holder estimates, MemLp | Hodge-defined coefficients, M/Z bounds, Fubini time-Lp realization |
+| v12 time integration | Source L43 budget, interval Holder, weak-test residual and limit machinery | Concrete compact spatial tests, PDE residual and their approximation limits |
+| v12 fixed-cutoff compactness | NEW: actual cylinder representatives constructed; joint equicontinuity and L2 compact closure derived from energy/source integrals | Prove the terminal source/budget/integral/representative inputs from the original PDE; instantiate downstream common-subsequence theorem |
+| v12 local limits | Conditional common-subsequence/tail support | Compatible measurable gluing and exact Theorem-7.1 limit passage |
+| v13-v20 | Existing scalar/finite/dependency kernels | Exact norm objects and transitive analytic hypotheses |
+| v19 Lemma 14.7 | Fixed-anchor phase and dense-class/quantifier support | Actual Poincare measure-space and Fourier-operator instance |
+| W1-W3 | Existing kernels | Not a continuous full-theorem verified prefix |
+| Later W/RFCE/rigidity | No full-main-theorem certificate established | Full correspondence and reverse dependency audit |
 
-No audited full-theorem numerator is available; no whole-paper completion
-percentage is certified. Earlier conversational estimates of 55–60% full
-coverage and 75% v12 coverage are withdrawn as certification figures.
-This does not assert the mathematics false; it states the formal evidence.
+## Current next load-bearing leaves
 
-## Next load-bearing interface
+The new terminal cylinder theorem no longer requires hCompact, hEq, ambient
+spacetime continuity, or pointwise Banach-valued HasDerivAt. These were
+replaced by proved constructions, not suppressed assumptions.
 
-The actual Coulomb evolution must imply the cutoff time-integral identity
-for the same Q, F_j=A_j Q and G=VQ+W conjugate(Q). A pointwise Banach-valued
-HasDerivAt assumption is explicit in the verified time theorem; it is not
-already a proved consequence of the distributional PDE. After that identity
-and the time-Lp source realization, assemble actual cylinder compactness,
-common local limits, gluing and the Theorem-7.1 conclusion.
+It still requires the actual cutoff time integral identity and the actual
+local L2 representative equality. Prove these for the SAME spacetime Q,
+F_j=A_j Q, G=VQ+W conjugate(Q), with Hodge-defined coefficients and uniform
+M/Z bounds. Every-time energy must follow from a justified representative
+argument, not an a.e.-to-everywhere conversion by assertion. The v6 text
+spells out compact tests and approximation errors; those written derivations
+are not yet a complete Lean instance of the generic weak-test machinery.
 
-Full completion requires the actual W20 main statement with only the
-registered permitted foundations as remaining external inputs. A green
-40-file CI run alone does not meet that criterion.
+Then connect the verified compactness conclusion to common local limits,
+measurable gluing and Theorem 7.1, before auditing later dependencies.
+
+No audited full-theorem numerator is available, so no percentage is certified.
+Earlier 55-60% whole-paper / 75% v12 estimates remain withdrawn as certified
+figures. File count 42/42 is not a count of 207 verified paper environments.
+Full Theorem 7.2, scattering and complete TeX/PDF/Lean equivalence are not
+certified by this run. This describes available evidence, not a claim that
+the unformalized mathematics is false.
