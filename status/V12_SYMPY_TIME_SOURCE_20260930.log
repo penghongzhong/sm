@@ -1,0 +1,11 @@
+V12 finite algebra audit
+Executed with SymPy in the current working runtime.
+L43_to_L1_time_exponent: residual=0; PASS
+L2_to_L43_time_exponent: residual=0; PASS
+Linfty_to_L43_time_exponent: residual=0; PASS
+source_product_L4_times_L4_to_L2: residual=0; PASS
+source_product_L2_times_L4_to_L43: residual=0; PASS
+kernel_L4_times_L43_to_L1: residual=0; PASS
+linear_integrated_time_loss: residual=0; PASS
+divergence_integrated_time_loss: residual=0; PASS
+Scope: rational exponents only; not a Lean/PDE/compactness certificate.
