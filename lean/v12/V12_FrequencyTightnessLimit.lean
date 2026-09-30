@@ -503,6 +503,99 @@ theorem v12_symbolToLInf_ae
 #print axioms v12_symbolToLInf_ae
 
 
+
+/-! ===== generic Schwartz-kernel Fourier-multiplier identification ===== -/
+
+/-- The Fourier transform of a scalar Schwartz kernel, bundled as a bounded
+continuous frequency symbol. -/
+noncomputable def v12_schwartzKernelSymbolBCF
+    (k : SchwartzMap V12Spatial ℂ) :
+    BoundedContinuousFunction V12Spatial ℂ :=
+  (𝓕 k).toBoundedContinuousFunction
+
+/-- The same Schwartz-kernel Fourier symbol as an actual L-infinity class. -/
+noncomputable def v12_schwartzKernelSymbolLInf
+    (k : SchwartzMap V12Spatial ℂ) :
+    V12SymbolLInf :=
+  v12_symbolToLInf (v12_schwartzKernelSymbolBCF k)
+
+theorem v12_schwartzKernelSymbolLInf_ae
+    (k : SchwartzMap V12Spatial ℂ) :
+    (v12_schwartzKernelSymbolLInf k : V12Spatial → ℂ)
+      =ᵐ[volume] fun η => 𝓕 k η := by
+  simpa [v12_schwartzKernelSymbolLInf,
+    v12_schwartzKernelSymbolBCF] using
+      (v12_symbolToLInf_ae (v12_schwartzKernelSymbolBCF k))
+
+/-- On Schwartz Fourier data, multiplication by the L-infinity class of the
+Fourier transform of k is exactly the Schwartz pointwise pairing
+(F k) (F f), as the same L2 element. -/
+theorem v12_schwartzKernelMultiplier_on_fourierSchwartz
+    (k : SchwartzMap V12Spatial ℂ)
+    (f : SchwartzMap V12Spatial V12Field) :
+    v12_L2Multiplier
+        (v12_schwartzKernelSymbolLInf k)
+        ((𝓕 f).toLp 2) =
+      (SchwartzMap.pairing
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        (𝓕 k) (𝓕 f)).toLp 2 := by
+  apply Lp.ext_iff.2
+  filter_upwards [
+    v12_L2Multiplier_ae
+      (v12_schwartzKernelSymbolLInf k)
+      ((𝓕 f).toLp 2),
+    v12_schwartzKernelSymbolLInf_ae k,
+    (𝓕 f).coeFn_toLp 2 (volume : Measure V12Spatial),
+    (SchwartzMap.pairing
+      (ContinuousLinearMap.lsmul ℂ ℂ :
+        ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+      (𝓕 k) (𝓕 f)).coeFn_toLp 2
+        (volume : Measure V12Spatial)
+  ] with η hmul hsym hf hpair
+  rw [hmul, hpair, hsym, hf]
+  simp
+
+/-- The actual L2 Fourier multiplier whose symbol is exactly the Fourier
+transform of the scalar Schwartz kernel k. -/
+noncomputable def v12_schwartzKernelFourierMultiplier
+    (k : SchwartzMap V12Spatial ℂ) :
+    V12SpatialL2 →L[ℂ] V12SpatialL2 :=
+  v12_spatialFourierMultiplier
+    (v12_schwartzKernelSymbolLInf k)
+
+/-- Exact semantic identification: on Schwartz input, the Fourier multiplier
+with symbol F k is the same L2 element as convolution by k. -/
+theorem v12_schwartzKernelFourierMultiplier_on_schwartz_eq_convolution
+    (k : SchwartzMap V12Spatial ℂ)
+    (f : SchwartzMap V12Spatial V12Field) :
+    v12_schwartzKernelFourierMultiplier k (f.toLp 2) =
+      (SchwartzMap.convolution
+        (ContinuousLinearMap.lsmul ℂ ℂ :
+          ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+        k f).toLp 2 := by
+  rw [v12_schwartzKernelFourierMultiplier,
+    v12_spatialFourierMultiplier_apply,
+    SchwartzMap.toLp_fourier_eq,
+    v12_schwartzKernelMultiplier_on_fourierSchwartz]
+  have hSchwartz :
+      SchwartzMap.pairing
+          (ContinuousLinearMap.lsmul ℂ ℂ :
+            ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+          (𝓕 k) (𝓕 f) =
+        𝓕 (SchwartzMap.convolution
+          (ContinuousLinearMap.lsmul ℂ ℂ :
+            ℂ →L[ℂ] V12Field →L[ℂ] V12Field)
+          k f) := by
+    rw [SchwartzMap.fourier_convolution]
+  rw [hSchwartz, ← SchwartzMap.toLp_fourier_eq]
+  exact fourierInv_fourier_eq _
+
+#print axioms v12_schwartzKernelSymbolLInf_ae
+#print axioms v12_schwartzKernelMultiplier_on_fourierSchwartz
+#print axioms v12_schwartzKernelFourierMultiplier_on_schwartz_eq_convolution
+
+
 /-! ===== Actual manuscript cutoff symbol and Schwartz kernel ===== -/
 
 /-- Complexification of the manuscript's real smooth compactly supported cutoff. -/
