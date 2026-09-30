@@ -1,5 +1,6 @@
 import lean.v12.V12_YZZCCompactDistributionTests
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
+import Mathlib.MeasureTheory.Group.Prod
 
 /-! Compact-test integration by parts requires smoothness only on the
 open original time domain containing the test support. Integrability of
@@ -28,6 +29,8 @@ theorem v12_local_smooth_compact_IBP
     (hψ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ)
     (hc : HasCompactSupport ψ) (hs : tsupport ψ ⊆ U) (v : V12Spacetime) :
     (∫ z, f z * fderiv ℝ ψ z v) = -(∫ z, fderiv ℝ f z v * ψ z) := by
+  letI : IsAddHaarMeasure (volume : Measure V12Spacetime) :=
+    Measure.prod.instIsAddHaarMeasure (volume : Measure ℝ) (volume : Measure V12Spatial)
   have hdf : ContinuousOn (fun z => fderiv ℝ f z v) U :=
     (hf.continuousOn_fderiv_of_isOpen hU (by simp)).clm_apply continuousOn_const
   obtain ⟨hcd, hψd⟩ := v12_compact_spacetime_test_derivative ψ hψ hc v
@@ -68,14 +71,14 @@ theorem v12_original_slab_compact_IBP
     exact hz (Set.Ioo_subset_Icc_self (hs hmem))
   rw [v12_slab_compact_integral_eq_full a b _ (by
     intro z hz
-    rw [fderiv_of_notMem_tsupport (hzero z hz)]
+    rw [fderiv_of_notMem_tsupport ℝ (hzero z hz)]
     simp), v12_slab_compact_integral_eq_full a b _ (by
     intro z hz
     have hψz : ψ z = 0 := by
       by_contra hh
       exact hzero z hz (subset_tsupport ψ hh)
     rw [hψz, mul_zero])]
-  exact v12_local_smooth_compact_IBP _ (isOpen_Ioo.preimage continuous_fst) f ψ hf hψ hc hs v
+  exact v12_local_smooth_compact_IBP _ (isOpen_Ioo.preimage (continuous_fst : Continuous (Prod.fst : V12Spacetime → ℝ))) f ψ hf hψ hc hs v
 
 theorem v12_original_slab_compact_second_IBP
     (a b : ℝ) (f ψ : V12Spacetime → ℂ)
@@ -85,7 +88,7 @@ theorem v12_original_slab_compact_second_IBP
     (v w : V12Spacetime) :
     (∫ z, fderiv ℝ (fun y => fderiv ℝ f y v) z w * ψ z ∂v12_slab_measure a b) =
     ∫ z, f z * fderiv ℝ (fun y => fderiv ℝ ψ y w) z v ∂v12_slab_measure a b := by
-  have hU : IsOpen (Prod.fst ⁻¹' Set.Ioo a b) := isOpen_Ioo.preimage continuous_fst
+  have hU : IsOpen (Prod.fst ⁻¹' Set.Ioo a b) := isOpen_Ioo.preimage (continuous_fst : Continuous (Prod.fst : V12Spacetime → ℝ))
   have hdf : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => fderiv ℝ f z v)
       (Prod.fst ⁻¹' Set.Ioo a b) :=
     (hf.fderiv_of_isOpen hU (by simp)).clm_apply contDiffOn_const

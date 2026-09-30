@@ -233,3 +233,10 @@ Hodge local L43/L2 limits PASS. Five direct roots/four imports remain.
 Run164 adds exact same-Q A0 sections and local-domain smooth compact IBP,
 original scalar PDE tests and actual drift/zero-order test limits; candidates
 remain unverified. No new external schema or private manuscript file.
+
+Run164 actual check:122/131, FAILURE. Joint spacetime Riesz, norm-square
+weak closure, actual drift strong L1, scalar/W compact tests and vector
+drift derivative tests PASS. Three direct roots/six imports remain.
+Run165 candidates add original slab extension/MZ, actual source L43 testing,
+full actual PDE distributional passage and original first-order compact
+constraints. Full7.1/7.2 remains OPEN; candidates are not green.

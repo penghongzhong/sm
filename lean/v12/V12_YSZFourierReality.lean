@@ -35,6 +35,12 @@ noncomputable def v12_schwartzConj (f : SchwartzMap V12Spatial ℂ) : SchwartzMa
 noncomputable def v12_schwartzReflect (f : SchwartzMap V12Spatial ℂ) : SchwartzMap V12Spatial ℂ :=
   SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (LinearIsometryEquiv.neg ℝ (E := V12Spatial)) f
 
+theorem v12_schwartzReflect_apply (f : SchwartzMap V12Spatial ℂ) (x : V12Spatial) :
+    v12_schwartzReflect f x = f (-x) := rfl
+
+theorem v12_schwartzReflect_coe (f : SchwartzMap V12Spatial ℂ) :
+    (v12_schwartzReflect f : V12Spatial → ℂ) = (fun x => f (-x)) := rfl
+
 theorem v12_schwartzConj_toLp (f : SchwartzMap V12Spatial ℂ) :
     (v12_schwartzConj f).toLp 2 = v12_L2Conj (f.toLp 2) := by
   apply Lp.ext_iff.mpr
@@ -94,9 +100,8 @@ theorem v12_L2_conj_fourier (f : V12ScalarL2) :
 theorem v12_schwartz_reflect_fourier (f : SchwartzMap V12Spatial ℂ) :
     v12_schwartzReflect (𝓕 f) = 𝓕⁻ f := by
   ext ξ
-  simpa only [v12_schwartzReflect, SchwartzMap.compCLMOfContinuousLinearEquiv_apply,
-    LinearIsometryEquiv.coe_neg, Function.comp_def, SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe] using
-    (Real.fourierInv_eq_fourier_neg f ξ).symm
+  rw [v12_schwartzReflect_apply, SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe]
+  exact (Real.fourierInv_eq_fourier_neg f ξ).symm
 
 theorem v12_L2_reflect_fourier (f : V12ScalarL2) : v12_L2Reflect (𝓕 f) = 𝓕⁻ f := by
   apply DenseRange.induction_on (p := fun g : V12ScalarL2 => v12_L2Reflect (𝓕 g) = 𝓕⁻ g)
@@ -118,9 +123,8 @@ theorem v12_L2_fourier_reflect (f : V12ScalarL2) : 𝓕 (v12_L2Reflect f) = 𝓕
   rw [← v12_schwartzReflect_toLp, SchwartzMap.toLp_fourier_eq, SchwartzMap.toLp_fourierInv_eq]
   congr 1
   ext ξ
-  simpa only [v12_schwartzReflect, SchwartzMap.compCLMOfContinuousLinearEquiv_apply,
-    LinearIsometryEquiv.coe_neg, Function.comp_def, SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe] using
-    congrFun (Real.fourierInv_eq_fourier_comp_neg (g : V12Spatial → ℂ)).symm ξ
+  rw [SchwartzMap.fourier_coe, v12_schwartzReflect_coe, SchwartzMap.fourierInv_coe]
+  exact congrFun (Real.fourierInv_eq_fourier_comp_neg (g : V12Spatial → ℂ)).symm ξ
 
 theorem v12_coulombMultiplier_ae (j k : Fin 2) (f : V12ScalarL2) :
     (v12_scalarL2Multiplier (v12_coulombRieszSymbolClass j k) f : V12Spatial → ℂ)

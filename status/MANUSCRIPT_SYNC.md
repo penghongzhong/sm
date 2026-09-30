@@ -233,3 +233,15 @@ unverified candidates; this manuscript sync is not a Lean certificate.
 TeX SHA256 80cae09bb1593a7e073bfa3fe394d53788a705eaf8bfc249c720f1fd0dc9a23b
 PDF SHA256 00f706ef314d2d60b57968e4e7a5d8c967fc6ad87bc0e480d5902a6c15c9eba2
 Private manuscript files are excluded from public Git history.
+
+## Private working v17 SlabSourceClosure
+
+139 pages; all207 original statement environments byte-identical to v16.
+Added interval-only smooth-field zero extension, exact preservation of raw
+Q/Hodge/tensor/A0 on the slab, and actual zero-order weighted integrability.
+Three XeLaTeX passes/PDF conversion completed; pages12/13 visually checked.
+No overfull boxes or unresolved references; existing font fallback only.
+Pending Lean applications are not certified by this manuscript sync.
+TeX SHA256 94e6627adbf8108f9a347edebd1c21700dc8ec5f358028189fc60e4b826f3b78
+PDF SHA256 e43e1e968d6a4711a83d9b15389c78b12cef5c956d9f8030fb05aa99955ebc8d
+Private manuscript files remain excluded from public Git history.

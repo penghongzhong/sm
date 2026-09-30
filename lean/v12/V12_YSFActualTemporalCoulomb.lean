@@ -53,11 +53,13 @@ theorem v12_massComplexL2Class_ae {Ω : Type*} [MeasurableSpace Ω]
 
 noncomputable def v12_actualTemporalCoulombL2 (a b : ℝ)
     (q : V12Spacetime → V12Field) (hq : MemLp q 4 (v12_slab_measure a b)) :
-    Lp ℂ 2 (v12_slab_measure a b) :=
-  (4 : ℂ) • (∑ j, ∑ k, v12_spacetimeCoulombRieszOperator
+    Lp ℂ 2 (v12_slab_measure a b) := by
+  change Lp ℂ 2 (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))
+  exact (4 : ℂ) • (∑ j, ∑ k, v12_spacetimeCoulombRieszOperator
     ((volume : Measure ℝ).restrict (Set.Icc a b)) j k
-      (v12_SL2Class (v12_slab_measure a b) j k q hq)) -
-    (2 : ℂ) • v12_massComplexL2Class (v12_slab_measure a b) q hq
+      (v12_SL2Class (((volume : Measure ℝ).restrict (Set.Icc a b)).prod volume) j k q hq)) -
+    (2 : ℂ) • v12_massComplexL2Class
+      (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) q hq
 
 theorem v12_actualTemporalCoulomb_L2_budget
     (a b : ℝ) (q : V12Spacetime → V12Field) (hq : MemLp q 4 (v12_slab_measure a b))

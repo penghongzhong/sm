@@ -31,12 +31,12 @@ theorem v12_original_scalar_compact_PDE
     (g ψ : V12Spacetime → ℂ) (vt e₀ e₁ : V12Spacetime)
     (hf : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f (Prod.fst ⁻¹' Set.Ioo a b))
     (hA : ∀ j, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (A j) (Prod.fst ⁻¹' Set.Ioo a b))
-    (hg : ContinuousOn g (Prod.fst ⁻¹' Set.Ioo a b))
+    (hg : MemLp g ((4 : ℝ≥0∞)/3) (v12_slab_measure a b))
     (hψ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ) (hc : HasCompactSupport ψ)
     (hs : tsupport ψ ⊆ Prod.fst ⁻¹' Set.Ioo a b)
     (hdiv : ∀ z, z ∈ Prod.fst ⁻¹' Set.Ioo a b →
       fderiv ℝ (A 0) z e₀ + fderiv ℝ (A 1) z e₁ = 0)
-    (hPDE : ∀ z, z ∈ Prod.fst ⁻¹' Set.Ioo a b →
+    (hPDE : ∀ᵐ z ∂v12_slab_measure a b, z ∈ Prod.fst ⁻¹' Set.Ioo a b →
       Complex.I * fderiv ℝ f z vt +
       (fderiv ℝ (fun x => fderiv ℝ f x e₀) z e₀ +
        fderiv ℝ (fun x => fderiv ℝ f x e₁) z e₁) =
@@ -48,9 +48,9 @@ theorem v12_original_scalar_compact_PDE
       ((∫ z, (A 0 z * f z) * fderiv ℝ ψ z e₀ ∂v12_slab_measure a b) +
        (∫ z, (A 1 z * f z) * fderiv ℝ ψ z e₁ ∂v12_slab_measure a b)) +
       ∫ z, g z * ψ z ∂v12_slab_measure a b := by
-  let U := Prod.fst ⁻¹' Set.Ioo a b
+  let U : Set V12Spacetime := Prod.fst ⁻¹' Set.Ioo a b
   let μ := v12_slab_measure a b
-  have hU : IsOpen U := isOpen_Ioo.preimage continuous_fst
+  have hU : IsOpen U := isOpen_Ioo.preimage (continuous_fst : Continuous (Prod.fst : V12Spacetime → ℝ))
   have hdf (v : V12Spacetime) : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
       (fun z => fderiv ℝ f z v) U :=
     (hf.fderiv_of_isOpen hU (by simp)).clm_apply contDiffOn_const
@@ -70,7 +70,10 @@ theorem v12_original_scalar_compact_PDE
   have hi₁ := hint _ (hddf e₁)
   have hp₀ := hint _ (hdp 0 e₀)
   have hp₁ := hint _ (hdp 1 e₁)
-  have hig := hint g hg
+  have hig : Integrable (fun z => g z * ψ z) μ := by
+    have h := (hg.locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
+      hψ.continuous hc
+    simpa only [smul_eq_mul] using h
   have he : (∫ z, (Complex.I * fderiv ℝ f z vt +
       (fderiv ℝ (fun x => fderiv ℝ f x e₀) z e₀ +
        fderiv ℝ (fun x => fderiv ℝ f x e₁) z e₁)) * ψ z ∂μ) =
@@ -78,13 +81,12 @@ theorem v12_original_scalar_compact_PDE
         (fderiv ℝ (fun x => A 0 x * f x) z e₀ +
          fderiv ℝ (fun x => A 1 x * f x) z e₁) + g z) * ψ z ∂μ := by
     apply integral_congr_ae
-    apply Filter.Eventually.of_forall
-    intro z
+    filter_upwards [hPDE] with z hzPDE
     by_cases hz : z ∈ U
     · rw [v12_spacetime_scalar_Coulomb_product_rule A f z e₀ e₁
         (fun j => ((hA j).differentiableOn (by simp)).differentiableAt (hU.mem_nhds hz))
         ((hf.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hz)) (hdiv z hz)]
-      rw [hPDE z hz]
+      rw [hzPDE hz]
     · have hzero : ψ z = 0 := by
         by_contra hne
         exact hz (hs (subset_tsupport ψ hne))
