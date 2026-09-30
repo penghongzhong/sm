@@ -1,10 +1,7 @@
-import lean.v12.V12_FrequencyTightnessLimit
+import lean.v12.V12_KernelConvolutionIdentity
 
 /-!
 W20 Theorem 7.2: exact cutoff source operators and time integration.
-The imported core is the byte-identical Run-114 core. Run-115 additions
-are retained below, after their dependencies, with typed Lp evaluations.
-
 Certification boundary: the terminal theorem derives the time Holder bound
 from source MemLp and the explicit derivative identity of the actual cutoff
 field. The original distributional PDE must still supply that identity and
@@ -12,49 +9,12 @@ the coefficient source bounds; measurable limit gluing is not certified here.
 -/
 
 set_option autoImplicit false
--- Finite elaboration budget for Schwartz/Lp coercions; no proof-check bypass.
-set_option maxHeartbeats 2000000
+set_option maxHeartbeats 1000000
 
 namespace SMScattering.W20Full
 
 open Filter MeasureTheory FourierTransform LineDeriv Laplacian
 open scoped Topology ENNReal
-
-/-- General Schwartz convolution identity, with both Lp inputs typed before
-pointwise evaluation. -/
-theorem v12_schwartzKernel_rep_eq_schwartzConvolution
-    (k : SchwartzMap V12Spatial ℂ)
-    (f : SchwartzMap V12Spatial V12Field)
-    (x : V12Spatial) :
-    v12_L2ConvolutionRep (k.toLp 2) (f.toLp 2) x =
-      SchwartzMap.convolution
-        (ContinuousLinearMap.lsmul ℂ ℂ :
-          ℂ →L[ℂ] V12Field →L[ℂ] V12Field) k f x := by
-  let k₂ : V12ScalarL2 := k.toLp 2 (volume : Measure V12Spatial)
-  let f₂ : V12SpatialL2 := f.toLp 2 (volume : Measure V12Spatial)
-  have hk0 : (k₂ : V12Spatial → ℂ) =ᵐ[volume] k :=
-    k.coeFn_toLp 2 (volume : Measure V12Spatial)
-  have hpull :=
-    (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae hk0
-  have hk : ∀ᵐ y ∂(volume : Measure V12Spatial),
-      k₂ (x - y) = k (x - y) := by
-    filter_upwards [hpull] with y hy
-    simpa only [v12_subLeftFamily_apply] using hy
-  have hf : (f₂ : V12Spatial → V12Field) =ᵐ[volume] f :=
-    f.coeFn_toLp 2 (volume : Measure V12Spatial)
-  calc
-    v12_L2ConvolutionRep (k.toLp 2) (f.toLp 2) x
-        = ∫ y : V12Spatial, k₂ (x - y) • f₂ y :=
-      v12_L2ConvolutionRep_eq_integral k₂ f₂ x
-    _ = ∫ y : V12Spatial, k (x - y) • f y := by
-      apply integral_congr_ae
-      filter_upwards [hk, hf] with y hky hfy
-      rw [hky, hfy]
-    _ = SchwartzMap.convolution
-        (ContinuousLinearMap.lsmul ℂ ℂ :
-          ℂ →L[ℂ] V12Field →L[ℂ] V12Field) k f x := by
-      rw [SchwartzMap.convolution_apply, MeasureTheory.convolution_eq_swap]
-      rfl
 
 section DerivativeSemantics
 
@@ -88,7 +48,6 @@ theorem v12_cutoffLineDerivFourierMultiplier_on_schwartz_eq_convolution
     v12_schwartzKernelFourierMultiplier_on_schwartz_eq_convolution
       (v12_cutoffKernelLineDerivSchwartz p hp_cpt hp_smooth N m) f
 
-/-- Source CLM is defined in the imported core, before this use. -/
 theorem v12_cutoffLineDerivBCFCLM_on_schwartz_apply
     (m : V12Spatial) (f : SchwartzMap V12Spatial V12Field) (x : V12Spatial) :
     v12_cutoffLineDerivBCFCLM p hp_cpt hp_smooth N m (f.toLp 2) x =
@@ -133,7 +92,7 @@ theorem v12_L4L43ConvolutionRep_eq_integral
 
 abbrev V12BCF : Type := BoundedContinuousFunction V12Spatial V12Field
 
-/-- Four-term triangle inequality with explicit function arguments. -/
+/-- Four-term triangle inequality with explicit functions and add_le_add. -/
 theorem v12_eLpNorm_four_add_le
     {Ω E : Type*} [MeasurableSpace Ω] [NormedAddCommGroup E]
     (μ : Measure Ω) (q : ℝ≥0∞) (hq : 1 ≤ q)
@@ -149,7 +108,7 @@ theorem v12_eLpNorm_four_add_le
       eLpNorm ((f₀ + f₁) + f₂) q μ + eLpNorm f₃ q μ :=
     eLpNorm_add_le (f := (f₀ + f₁) + f₂) (g := f₃) hq
   exact h0123.trans
-    (add_le_add_right (h012.trans (add_le_add_right h01 _)) _)
+    (add_le_add (h012.trans (add_le_add h01 le_rfl)) le_rfl)
 
 section ActualCutoffSources
 
@@ -178,7 +137,6 @@ noncomputable def v12_cutoffTimeSource
     v12_timeGradientCLM p hp_cpt hp_smooth N 1 (F 1 t) +
     v12_timeZeroOrderCLM p hp_cpt hp_smooth N (G t)
 
-/-- Exact finite-measure source budget before taking toReal. -/
 noncomputable def v12_cutoffSourceBudget (μ : Measure ℝ)
     (Q : ℝ → V12SpatialL2) (F : Fin 2 → ℝ → V12SpatialL2)
     (G : ℝ → V12SpatialLFourThirds) : ℝ≥0∞ :=
@@ -244,14 +202,12 @@ theorem v12_cutoffTimeSource_memLp (μ : Measure ℝ) [IsFiniteMeasure μ]
       (lt_top_iff_ne_top.mpr
         (v12_cutoffSourceBudget_ne_top p hp_cpt hp_smooth N μ Q F G hQ hF hG))
 
-/-- Actual cutoff BCF representative. -/
 noncomputable def v12_cutoffTimeField (Q : ℝ → V12SpatialL2) (t : ℝ) : V12BCF :=
   v12_L2ConvolutionBCFCLM (v12_cutoffKernelL2 p hp_cpt hp_smooth N) (Q t)
 
 end ActualCutoffSources
 
-/-- FTC plus interval Holder. Neither a modulus nor an increment bound is an
-input. The derivative identity remains an explicit application obligation. -/
+/-- No modulus or increment bound is an input; the derivative is explicit. -/
 theorem v12_norm_increment_quarter_of_hasDerivAt_of_le
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
     (a b : ℝ) (u g : ℝ → E)
@@ -294,7 +250,6 @@ theorem v12_norm_increment_quarter_of_hasDerivAt_of_le
   simpa only [toReal_enorm, ENNReal.toReal_mul, ← ENNReal.toReal_rpow,
     ENNReal.toReal_ofReal (sub_nonneg.mpr hst)] using hreal
 
-/-- Symmetric endpoint form with one common budget. -/
 theorem v12_norm_increment_quarter_of_hasDerivAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
     (a b : ℝ) (u g : ℝ → E)
@@ -316,8 +271,7 @@ theorem v12_norm_increment_quarter_of_hasDerivAt
       _ = C.toReal * |t - s| ^ ((1 : ℝ) / 4) := by
         rw [abs_sub_comm t s, abs_of_nonneg (sub_nonneg.mpr hts)]
 
-/-- Original Coulomb evolution must still supply hder and the three source
-MemLp hypotheses from M,Z. This is not a full Theorem-7.2 certificate. -/
+/-- A conditional actual-field theorem, not a full Theorem-7.2 certificate. -/
 theorem v12_cutoff_time_holder_of_source_derivative
     (p : V12Spatial → ℝ) (hp_cpt : HasCompactSupport p)
     (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)

@@ -1,11 +1,7 @@
 import lean.v12.V12_FrequencyTightnessLimit
 
-/-!
-Actual spatial equicontinuity for a bounded family of L2 inputs.
-No spatial modulus, derivative bound or equicontinuity is assumed.
-The proof uses the already established L2 translation continuity of the
-fixed kernel and the actual convolution distance estimate.
--/
+/-! Actual spatial equicontinuity from a uniformly L2-bounded input family.
+No spatial modulus, derivative estimate or equicontinuity is an input. -/
 
 set_option autoImplicit false
 
@@ -14,8 +10,6 @@ namespace SMScattering.W20Full
 open Filter MeasureTheory
 open scoped Topology
 
-/-- Every uniformly L2-bounded input family has an equicontinuous family of
-actual convolution representatives for one fixed L2 kernel. -/
 theorem v12_L2ConvolutionRep_equicontinuous_of_uniform_bound
     {ι : Type*} (k : V12ScalarL2) (f : ι → V12SpatialL2)
     (M : ℝ) (hBound : ∀ i, ‖f i‖ ≤ M) :
@@ -33,13 +27,15 @@ theorem v12_L2ConvolutionRep_equicontinuous_of_uniform_bound
     (fun i => v12_L2ConvolutionRep k (f i))
   apply Filter.Eventually.of_forall
   intro x i
+  have hnonneg : 0 ≤ ‖v12_L2ConvolutionPairing‖ *
+      dist (v12_reflectedTranslate k x₀) (v12_reflectedTranslate k x) := by
+    exact mul_nonneg (norm_nonneg v12_L2ConvolutionPairing) dist_nonneg
   exact (v12_L2ConvolutionRep_dist_le k (f i) x₀ x).trans
-    (mul_le_mul_of_nonneg_left (hBound i)
-      (mul_nonneg (norm_nonneg _) dist_nonneg))
+    (mul_le_mul_of_nonneg_left (hBound i) hnonneg)
 
-/-- Specialization to the exact manuscript cutoff kernel. The indices may
-include both the sequence index and time, so a uniform energy bound supplies
-the common spatial equicontinuity required on every compact cylinder. -/
+/-- The index family may include time after choosing representatives for
+which the uniform energy bound holds. An a.e. time bound must not silently
+be promoted to a pointwise bound. -/
 theorem v12_cutoff_equicontinuous_of_uniform_L2
     {ι : Type*}
     (p : V12Spatial → ℝ) (hp_cpt : HasCompactSupport p)
