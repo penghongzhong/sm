@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v14 HodgeLocalLimit, 139 pages,
+Current generated private working expansion: v15 FubiniRiesz, 139 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,24 +16,29 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run159 (partial, FAILURE)
+## Latest completed verification: Run160 (partial, FAILURE)
 
-Run36761539790/job110045062180 checked
-`0cf430e54f1557d4e2910886a085688425302a90`:103 COMPILE_OK,7 COMPILE_FAIL.
-NEW PASS: inherited energy, tensor weak closure, integral/full-dual conversion,
-actual spacetime Hodge MZ estimate, exact near/far identity, approximation
-limit lemma. Five roots remain in generic sections, W algebra, curvature
-cutoff L1, actual drift and curvature near error; two downstream imports fail.
-Repairs and full same-field Hodge local43/local2 applications await next run.
-The next batch also constructs the scalar Fubini L2 equivalence by Mathlib
-simple-function density and the joint spacetime Riesz operator. These are
-candidates, not certified. No additional external interface was introduced.
+Run36763696758/job110052395966 checked
+`12b27da590f1fea0c974e13251c40c25b342f19a`:103 COMPILE_OK,12 COMPILE_FAIL.
+No previously passing file regressed. Five roots remain: generic Lp-section
+universe coercion, explicit complex square norm, indicator argument count,
+actual drift unfolding and near-error integrand equality. Seven downstream
+files were blocked by imports. The current repairs use explicit type/pointwise
+identifications; they await actual compilation.
+
+Additional unverified candidates reconstruct S/m/A0 from the original
+quadratic tensors and prove A0/W weak L2 limits, norm-square weak closure,
+actual A_j Q local strong L1 convergence, and full reconstructed V weak L2
+convergence. Fubini isometry/onto and same-field Hodge strong limits remain
+unverified until their root imports and own proofs compile.
 
 Precisely registered external HLS remains an explicit proposition parameter,
 not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge
-application passed157 and spacetime MZ passed159. Full original coefficient
-instantiation and distributional closure still require proofs.
-No full Theorem7.1/7.2, scattering or whole-paper certificate is claimed.
+application passed157 and spacetime MZ passed159. No new external schema.
+
+Full original coefficient correspondence (including real Fourier output),
+compact smooth tests and distributional closure remain open. No full
+Theorem7.1/7.2, scattering or whole-paper certificate is claimed.
 
 ## Layers and remaining actual correspondence
 

@@ -20,7 +20,7 @@ theorem v12_actualCoulombA_eLpNorm_le
     Complex.continuous_ofReal.comp (EuclideanSpace.proj (𝕜 := ℝ) j).continuous
   have hm := eLpNorm_mono_ae_real (μ := μ) (p := p) (f := v12_actualCoulombA q j) (g := fun z => ‖v12_spacetimeHodge q z‖) (hc.comp_stronglyMeasurable hA).aestronglyMeasurable
     (Filter.Eventually.of_forall (fun z => by
-      simpa only [Complex.norm_real] using PiLp.norm_apply_le (v12_spacetimeHodge q z) j))
+      simpa only [v12_actualCoulombA, Complex.norm_real] using PiLp.norm_apply_le (v12_spacetimeHodge q z) j))
   exact hm.trans_eq (eLpNorm_norm _ hA.aestronglyMeasurable)
 
 theorem v12_actualCoulomb_drift_MZZ (hHLS : V12ExternalHLS2D) :

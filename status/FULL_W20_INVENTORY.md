@@ -89,3 +89,15 @@ No overfull boxes or unresolved references. Existing font fallback unchanged.
 TeX SHA256 b1083bfae1ebbc11872ec5def2d5ea4e06b052ab9f051ead00f2ca04ed08b23a
 PDF SHA256 9177c8aa0e84afe9cba87955af63d37d024159591d9e19cbefa2ead5b0a0a121
 These private files are excluded from public Git history.
+
+## Private working v15 FubiniRiesz
+
+139 pages; all 207 original proof-bearing environments byte-identical.
+Expanded the scalar spacetime/Bochner L2 isometry, its onto proof by simple
+functions and closed range, joint Riesz realization and same-field S/m/A0
+weak closure. Three XeLaTeX passes/PDF conversion completed; pages12/13
+visually checked. No overfull boxes or unresolved references; existing font
+fallback unchanged. This text update does not mark candidate Lean files green.
+TeX SHA256 b187a1d2bc71f46648abbeae3125310ef50d98c89303fc3cacab11ea31b4324e
+PDF SHA256 4ba685851d4f7dbbedd260c0e3f4ebf14b9821251d2ff38c7a3b6ce33e162938
+Private manuscript files remain excluded from public Git history.

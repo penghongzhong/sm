@@ -22,7 +22,9 @@ theorem v12_WDensity_bound (q : V12Field) : ‖v12_WDensity q‖ ≤ 2*‖q‖^2
   unfold v12_WDensity
   rw [norm_mul, Complex.norm_ofNat]
   apply mul_le_mul_of_nonneg_left _ (by norm_num)
-  simpa only [Complex.norm_pow, he] using norm_add_le ((q 0)^2) ((q 1)^2)
+  calc
+    ‖(q 0)^2+(q 1)^2‖ ≤ ‖(q 0)^2‖+‖(q 1)^2‖ := norm_add_le _ _
+    _ = ‖q‖^2 := by rw [Complex.norm_pow, Complex.norm_pow, he]
 
 theorem v12_quadratic_map_L2_bound
     {Ω E : Type*} [MeasurableSpace Ω] [NormedAddCommGroup E]

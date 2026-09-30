@@ -89,7 +89,7 @@ theorem v12_curvature_difference_cutoff_energy
     _ ≤ ∫ y, ‖v12_curvatureDensity (qn y)‖ + ‖v12_curvatureDensity (q y)‖ := by
       apply integral_mono hid.norm (hin.norm.add hiq.norm)
       intro y
-      exact (norm_indicator_le_norm_self _ _ _).trans (norm_sub_le _ _)
+      exact (norm_indicator_le_norm_self _ _).trans (norm_sub_le _ _)
     _ = (∫ y, ‖v12_curvatureDensity (qn y)‖) + (∫ y, ‖v12_curvatureDensity (q y)‖) :=
       integral_add hin.norm hiq.norm
     _ ≤ 4*M^2 := by linarith

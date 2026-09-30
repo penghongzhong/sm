@@ -69,7 +69,7 @@ theorem v12_actual_Hodge_local_fourThirds_limit
     linarith [Nat.cast_nonneg (α := ℝ) k]
   have herr : ∀ k n, ‖F n - G k n‖ ≤ δ k := by
     intro k n
-    have hae : ((F n - G k n) : V12Spacetime → V12Spatial) =ᵐ[ν]
+    have hae : ((F n - G k n : Lp V12Spatial p ν) : V12Spacetime → V12Spatial) =ᵐ[ν]
         v12_HodgeApproxError ((R : ℝ)+1) (L k) (qn n) q := by
       apply (Lp.coeFn_sub _ _).trans
       exact (hf n).coeFn_toLp.sub (((hg k).1 n).restrict (v12_spatial_cylinder R)).coeFn_toLp

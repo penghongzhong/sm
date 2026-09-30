@@ -212,3 +212,10 @@ Same-field local Hodge convergence and Fubini isometry/surjectivity plus
 joint spacetime Riesz are unverified next-batch candidates. Reverse audit:
 full nonlinear coefficient reconstruction and distributional PDE closure
 remain prerequisites of7.1/7.2; no whole-theorem label changed to green.
+
+Run160 actual check:103/115, FAILURE. No new green files. Five roots plus
+seven missing-import failures. Next candidates add actual S/m/A0/W and V
+weak limits and A_j Q strong product, with own concrete hypotheses derived.
+Reverse obligations remain: compile the roots and applications; identify
+real Fourier outputs; build compact smooth distributional tests; pass the
+original constraints/PDE to the limit; connect full7.1/7.2, then later branches.
