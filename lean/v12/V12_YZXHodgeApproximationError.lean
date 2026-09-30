@@ -54,8 +54,8 @@ theorem v12_HodgeApproxError_ae_bound
     (v12_curvatureDensity_mixed_memLp volume _ hn2 hn4t)).1
   have hIq := (hH (fun x => v12_curvatureDensity (q (t,x)))
     (v12_curvatureDensity_mixed_memLp volume _ hq2 hq4t)).1
-  filter_upwards [hIn.restrict (s := Metric.ball (0 : V12Spatial) ((R : ℝ)+1)),
-    hIq.restrict (s := Metric.ball (0 : V12Spatial) ((R : ℝ)+1)),
+  filter_upwards [ae_restrict_of_ae (s := Metric.ball (0 : V12Spatial) ((R : ℝ)+1)) hIn,
+    ae_restrict_of_ae (s := Metric.ball (0 : V12Spatial) ((R : ℝ)+1)) hIq,
     ae_restrict_mem (μ := (volume : Measure V12Spatial)) measurableSet_ball] with x hin hiq hx
   have hxx : ‖x‖ ≤ (R : ℝ)+1 := by
     exact (show ‖x‖ < (R : ℝ)+1 by simpa only [Metric.mem_ball, dist_zero_right] using hx).le
@@ -65,8 +65,9 @@ theorem v12_HodgeApproxError_ae_bound
       (Metric.ball (0 : V12Spatial) L).indicator
         (fun y => v12_curvatureDensity (qn (t,y)) - v12_curvatureDensity (q (t,y))) := by
     funext y
-    simp only [v12_curvatureCutoffDifference, Set.indicator_apply,
-      Set.mem_setOf_eq, Metric.mem_ball, dist_zero_right]
+    by_cases hy : ‖y‖ < L <;>
+      simp [v12_curvatureCutoffDifference, Set.indicator_apply,
+        Metric.mem_ball, dist_zero_right, hy]
   change ‖(v12_rawHodgePotential (fun y => v12_curvatureDensity (qn (t,y))) x -
     v12_rawHodgePotential (fun y => v12_curvatureDensity (q (t,y))) x) -
     v12_rawNearHodge (((R : ℝ)+1)+L) (fun y => v12_curvatureCutoffDifference L qn q (t,y)) x‖ ≤ _

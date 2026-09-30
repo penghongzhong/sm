@@ -19,8 +19,9 @@ theorem v12_normSqL1Class_continuous {Ω : Type*} [MeasurableSpace Ω]
     (continuous_id.prodMk continuous_id)
   have hh := (Complex.ofRealCLM.compLpL 1 μ).continuous.comp h
   have hc (r : Lp ℝ 1 μ) : Complex.ofRealCLM.compLpL 1 μ r = Complex.ofRealCLM.compLp r := rfl
+  unfold v12_normSqL1Class
   simpa only [Function.comp_def, Function.uncurry, ContinuousLinearMap.holderL_apply_apply,
-    v12_normSqL1Class, hc] using hh
+    id_eq, hc] using hh
 
 theorem v12_normSqL1Class_ae {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f : Lp E 2 μ) :
@@ -29,13 +30,16 @@ theorem v12_normSqL1Class_ae {Ω : Type*} [MeasurableSpace Ω]
     (innerSL ℝ (E := E)).coeFn_holder (r := 1) f f] with z hc hi
   change v12_normSqL1Class μ f z = (((innerSL ℝ (E := E)).holder 1 f f) z : ℂ) at hc
   rw [hc, hi]
-  simp only [innerSL_apply, real_inner_self_eq_norm_sq]
+  simp only [innerSL_apply_apply, real_inner_self_eq_norm_sq]
 
 theorem v12_normSq_memLp_two {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f : Ω → E) (hf : MemLp f 4 μ) :
     MemLp (fun z => ((‖f z‖^2 : ℝ) : ℂ)) 2 μ := by
   have he : eLpNorm (fun z => ((‖f z‖^2 : ℝ) : ℂ)) 2 μ = (eLpNorm f 4 μ)^2 := by
-    rw [← eLpNorm_norm _ ((Complex.continuous_ofReal.comp (continuous_norm.pow 2)).comp_aestronglyMeasurable hf.aestronglyMeasurable)]
+    have hP : Continuous (fun x : E => ((‖x‖^2 : ℝ) : ℂ)) := by fun_prop
+    have hm : AEStronglyMeasurable (fun z => ((‖f z‖^2 : ℝ) : ℂ)) μ :=
+      hP.comp_aestronglyMeasurable hf.aestronglyMeasurable
+    rw [← eLpNorm_norm (fun z => ((‖f z‖^2 : ℝ) : ℂ)) hm]
     simp only [Complex.norm_real, Real.norm_of_nonneg (sq_nonneg _)]
     simpa only [Real.rpow_two, ENNReal.ofReal_ofNat, ENNReal.rpow_two,
       show (2 : ℝ≥0∞)*2=4 by norm_num] using
@@ -53,7 +57,10 @@ theorem v12_normSqL2Class_budget {Ω : Type*} [MeasurableSpace Ω]
     (Z : ℝ≥0∞) (hZ : Z ≠ ∞) (hb : eLpNorm f 4 μ ≤ Z) :
     ‖v12_normSqL2Class μ f hf‖ ≤ Z.toReal^2 := by
   have he : eLpNorm (fun z => ((‖f z‖^2 : ℝ) : ℂ)) 2 μ = (eLpNorm f 4 μ)^2 := by
-    rw [← eLpNorm_norm _ ((Complex.continuous_ofReal.comp (continuous_norm.pow 2)).comp_aestronglyMeasurable hf.aestronglyMeasurable)]
+    have hP : Continuous (fun x : E => ((‖x‖^2 : ℝ) : ℂ)) := by fun_prop
+    have hm : AEStronglyMeasurable (fun z => ((‖f z‖^2 : ℝ) : ℂ)) μ :=
+      hP.comp_aestronglyMeasurable hf.aestronglyMeasurable
+    rw [← eLpNorm_norm (fun z => ((‖f z‖^2 : ℝ) : ℂ)) hm]
     simp only [Complex.norm_real, Real.norm_of_nonneg (sq_nonneg _)]
     simpa only [Real.rpow_two, ENNReal.ofReal_ofNat, ENNReal.rpow_two,
       show (2 : ℝ≥0∞)*2=4 by norm_num] using

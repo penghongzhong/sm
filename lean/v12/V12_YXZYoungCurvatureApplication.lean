@@ -44,8 +44,9 @@ theorem v12_actual_curvature_near_spacetime_limit
     (fun x => qn n (t,x)) (fun x => q (t,x)) hn2 hq2 M hM htN htQ using 1
   congr 1
   funext y
-  simp only [v12_curvatureCutoffDifference, Set.indicator_apply,
-    Set.mem_setOf_eq, Metric.mem_ball, dist_zero_right]
+  by_cases hy : ‖y‖ < (R : ℝ)+1 <;>
+    simp [v12_curvatureCutoffDifference, Set.indicator_apply,
+      Metric.mem_ball, dist_zero_right, hy]
 
 #print axioms v12_actual_curvature_near_spacetime_limit
 end SMScattering.W20Full

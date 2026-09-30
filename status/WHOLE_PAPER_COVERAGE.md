@@ -16,29 +16,32 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run160 (partial, FAILURE)
+## Latest completed verification: Run161 (partial, FAILURE)
 
-Run36763696758/job110052395966 checked
-`12b27da590f1fea0c974e13251c40c25b342f19a`:103 COMPILE_OK,12 COMPILE_FAIL.
-No previously passing file regressed. Five roots remain: generic Lp-section
-universe coercion, explicit complex square norm, indicator argument count,
-actual drift unfolding and near-error integrand equality. Seven downstream
-files were blocked by imports. The current repairs use explicit type/pointwise
-identifications; they await actual compilation.
+Run36765794627/job110059504523 checked
+`481f40e965145c3e0d0b5bf6148604392c06085b`:109 COMPILE_OK,11 COMPILE_FAIL.
+NEW PASS: generic scalar/vector Lp sections; actual W/mass L2 bounds;
+original curvature cutoff L1 convergence and uniform slice budget; actual
+Coulomb drift MZ^2 bound; same-field pointwise near/far error; actual Young
+spacetime L43 convergence. All five previous roots are fixed.
 
-Additional unverified candidates reconstruct S/m/A0 from the original
-quadratic tensors and prove A0/W weak L2 limits, norm-square weak closure,
-actual A_j Q local strong L1 convergence, and full reconstructed V weak L2
-convergence. Fubini isometry/onto and same-field Hodge strong limits remain
-unverified until their root imports and own proofs compile.
+Five new roots: classical decidability in scalarSections; duplicate square
+helper in W weak closure; norm-square identity/continuity conversion;
+curvature cutoff pointwise equality; AE restriction and cutoff equality in
+Hodge approximation. Six downstream imports failed. Repairs await next run.
+
+Next candidates add Fourier conjugation/reflection via Schwartz density and
+real output of the actual spatial/joint Riesz operator, compact continuous
+and differentiated smooth tests, construction of global L2 varying tests,
+and original W conjugate(Q)/VQ compact-test limits. Actual V uniform budget
+is derived from A0, mass, and same-field Hodge MZ. None is marked green yet.
 
 Precisely registered external HLS remains an explicit proposition parameter,
 not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge
 application passed157 and spacetime MZ passed159. No new external schema.
-
-Full original coefficient correspondence (including real Fourier output),
-compact smooth tests and distributional closure remain open. No full
-Theorem7.1/7.2, scattering or whole-paper certificate is claimed.
+Full7.1/7.2 still requires all candidates to compile, exact original
+coefficient correspondence and distributional constraints/PDE closure.
+No scattering or whole-paper certificate is claimed.
 
 ## Layers and remaining actual correspondence
 

@@ -219,3 +219,11 @@ weak limits and A_j Q strong product, with own concrete hypotheses derived.
 Reverse obligations remain: compile the roots and applications; identify
 real Fourier outputs; build compact smooth distributional tests; pass the
 original constraints/PDE to the limit; connect full7.1/7.2, then later branches.
+
+Run161 actual check:109/120, FAILURE. Six new files PASS, including actual
+curvature cutoff and Young spacetime convergence, W/mass and drift budgets,
+near/far error, and generic Lp sections. Five new roots and six blocked imports
+remain. Fourier-real correspondence and concrete compact-test source limits
+are submitted next, not counted as coverage. Reverse obligations unchanged:
+exact same-field reconstruction, distributional closure, full7.1/7.2 and all
+later theorem branches. Private v15 remains the current synchronized text.

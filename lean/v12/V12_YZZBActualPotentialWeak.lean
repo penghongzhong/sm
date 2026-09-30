@@ -75,6 +75,39 @@ theorem v12_actualPotential_weak_L2_limit
   simpa only [v12_actualPotentialL2Class, map_sub, map_add, map_neg, map_smul] using
     ((h0.neg).add (hsq φ)).sub (hm.const_smul (2 : ℂ))
 
+theorem v12_actualPotential_L2_budget (hHLS : V12ExternalHLS2D) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (a b : ℝ) (q : V12Spacetime → V12Field)
+      (hmq : StronglyMeasurable q) (hq4 : MemLp q 4 (v12_slab_measure a b))
+      (M : ℝ) (hM : 0 ≤ M)
+      (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
+        eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M)
+      (Z : ℝ≥0∞) (hZ : Z ≠ ∞), eLpNorm q 4 (v12_slab_measure a b) ≤ Z →
+      ‖v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq‖ ≤ (24+C*M^2)*Z.toReal^2 := by
+  obtain ⟨C, hC, hH⟩ := v12_actual_hodge_spacetime_MZ hHLS
+  refine ⟨C.toReal^2, sq_nonneg _, ?_⟩
+  intro a b q hmq hq4 M hM hEq Z hZ hb
+  let μ := v12_slab_measure a b
+  have h0 := v12_actualTemporalCoulomb_L2_budget a b q hq4 Z hZ hb
+  have hm : ‖v12_massComplexL2Class μ q hq4‖ ≤ 2*Z.toReal^2 := by
+    apply (norm_add_le _ _).trans
+    simpa only [two_mul] using add_le_add
+      (v12_tensorL2Class_budget μ 0 0 q hq4 Z hZ hb)
+      (v12_tensorL2Class_budget μ 1 1 q hq4 Z hZ hb)
+  have hAb : eLpNorm (v12_spacetimeHodge q) 4 μ ≤ C*ENNReal.ofReal M*Z :=
+    ((hH a b q hmq hq4 (ENNReal.ofReal M) (by finiteness) hEq).2).trans
+      (mul_le_mul' le_rfl hb)
+  have hs := v12_normSqL2Class_budget μ (v12_spacetimeHodge q)
+    (v12_actual_Hodge_memLp4 hHLS a b q hmq hq4 M hEq)
+    (C*ENNReal.ofReal M*Z) (by finiteness) hAb
+  simp only [ENNReal.toReal_mul, ENNReal.toReal_ofReal hM, mul_pow] at hs
+  unfold v12_actualPotentialL2Class
+  apply (norm_sub_le _ _).trans
+  apply (add_le_add (norm_add_le _ _) le_rfl).trans
+  simp only [norm_neg, norm_smul, Complex.norm_ofNat]
+  nlinarith
+
+#print axioms v12_actualPotential_L2_budget
+
 #print axioms v12_actual_Hodge_memLp4
 #print axioms v12_actualPotential_weak_L2_limit
 end SMScattering.W20Full

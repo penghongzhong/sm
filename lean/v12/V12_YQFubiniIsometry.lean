@@ -8,9 +8,10 @@ namespace SMScattering.W20Full
 open MeasureTheory
 open scoped ENNReal
 
-noncomputable def v12_scalarSections (f : V12Spacetime → ℂ) (t : ℝ) : V12ScalarL2 :=
-  if h : MemLp (fun x => f (t,x)) 2 (volume : Measure V12Spatial)
-  then h.toLp (fun x => f (t,x)) else 0
+noncomputable def v12_scalarSections (f : V12Spacetime → ℂ) (t : ℝ) : V12ScalarL2 := by
+  classical
+  exact if h : MemLp (fun x => f (t,x)) 2 (volume : Measure V12Spatial)
+    then h.toLp (fun x => f (t,x)) else 0
 
 theorem v12_scalarSections_ae (μ : Measure ℝ) [SFinite μ]
     (f : V12Spacetime → ℂ) (hf : MemLp f 2 (μ.prod (volume : Measure V12Spatial))) :
