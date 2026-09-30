@@ -1478,6 +1478,78 @@ theorem v12_eLpNorm_fourThirds_le_top_threeQuarter
 #print axioms v12_eLpNorm_fourThirds_le_top_threeQuarter
 
 
+
+/-! ===== continuous-linear source maps in time L^(4/3) ===== -/
+
+/-- A continuous linear map acts boundedly on any eLp seminorm.  This is the
+generic time-variable bridge used for every fixed-frequency PDE source below. -/
+theorem v12_eLpNorm_compCLM_le
+    {Ω E F : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℂ E]
+    [NormedAddCommGroup F] [NormedSpace ℂ F]
+    (μ : Measure Ω)
+    (L : E →L[ℂ] F)
+    (G : Ω → E)
+    (q : ℝ≥0∞)
+    (hG : AEStronglyMeasurable G μ) :
+    eLpNorm (fun t => L (G t)) q μ ≤
+      ENNReal.ofReal ‖L‖ * eLpNorm G q μ := by
+  exact eLpNorm_le_mul_eLpNorm_of_ae_le_mul
+    (L.continuous.comp_aestronglyMeasurable hG)
+    (Filter.Eventually.of_forall (fun t => L.le_opNorm (G t)))
+    q
+
+/-- A spatial continuous linear source operator sends a time-L2 source into
+time-L^(4/3), with exactly the finite-measure quarter-power loss. -/
+theorem v12_eLpNorm_compCLM_fourThirds_of_two
+    {Ω E F : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℂ E]
+    [NormedAddCommGroup F] [NormedSpace ℂ F]
+    (μ : Measure Ω)
+    (L : E →L[ℂ] F)
+    (G : Ω → E)
+    (hG : AEStronglyMeasurable G μ) :
+    eLpNorm (fun t => L (G t)) ((4 : ℝ≥0∞) / 3) μ ≤
+      ENNReal.ofReal ‖L‖ *
+        (eLpNorm G 2 μ * μ Set.univ ^ ((1 : ℝ) / 4)) := by
+  calc
+    eLpNorm (fun t => L (G t)) ((4 : ℝ≥0∞) / 3) μ
+        ≤ ENNReal.ofReal ‖L‖ *
+            eLpNorm G ((4 : ℝ≥0∞) / 3) μ :=
+      v12_eLpNorm_compCLM_le μ L G ((4 : ℝ≥0∞) / 3) hG
+    _ ≤ ENNReal.ofReal ‖L‖ *
+          (eLpNorm G 2 μ * μ Set.univ ^ ((1 : ℝ) / 4)) := by
+      gcongr
+      exact v12_eLpNorm_fourThirds_le_two_quarter μ G hG
+
+/-- A spatial continuous linear source operator sends a time-Linfinity source
+into time-L^(4/3), with exactly the finite-measure three-quarter-power loss. -/
+theorem v12_eLpNorm_compCLM_fourThirds_of_top
+    {Ω E F : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup E] [NormedSpace ℂ E]
+    [NormedAddCommGroup F] [NormedSpace ℂ F]
+    (μ : Measure Ω)
+    (L : E →L[ℂ] F)
+    (G : Ω → E)
+    (hG : AEStronglyMeasurable G μ) :
+    eLpNorm (fun t => L (G t)) ((4 : ℝ≥0∞) / 3) μ ≤
+      ENNReal.ofReal ‖L‖ *
+        (eLpNorm G ∞ μ * μ Set.univ ^ ((3 : ℝ) / 4)) := by
+  calc
+    eLpNorm (fun t => L (G t)) ((4 : ℝ≥0∞) / 3) μ
+        ≤ ENNReal.ofReal ‖L‖ *
+            eLpNorm G ((4 : ℝ≥0∞) / 3) μ :=
+      v12_eLpNorm_compCLM_le μ L G ((4 : ℝ≥0∞) / 3) hG
+    _ ≤ ENNReal.ofReal ‖L‖ *
+          (eLpNorm G ∞ μ * μ Set.univ ^ ((3 : ℝ) / 4)) := by
+      gcongr
+      exact v12_eLpNorm_fourThirds_le_top_threeQuarter μ G hG
+
+#print axioms v12_eLpNorm_compCLM_le
+#print axioms v12_eLpNorm_compCLM_fourThirds_of_two
+#print axioms v12_eLpNorm_compCLM_fourThirds_of_top
+
+
 /-! ===== exact L4-L^(4/3) cutoff convolution for the zero-order PDE source ===== -/
 
 abbrev V12ScalarL4 : Type := Lp (α := V12Spatial) ℂ 4
