@@ -175,3 +175,17 @@ have three root errors repaired in the next batch; actual HLS application
 remains import-blocked until that run. Inherited bounds, concrete compact
 Lp-test density, actual Fourier Riesz operators and mixed/Hodge budgets
 are new uncompiled candidates. Whole7.1/7.2 remains OPEN.
+
+
+## Run157 superseding update
+
+93/96 files actually passed. YJYoungRawRepresentative, YKBoundedTimeUpgrade,
+YPCompactTestDensity, YSCurvatureMixedBounds, YSHodgeFractionalDomination,
+YTHodgeHLSApplication and YUHodgeEnergyL4Application PASS. YO exhaustion
+filter and YRiesz operator API repairs remain candidates; YPInheritedEnergy
+was import-blocked. New YQWeakClosureFromLocal and YRTensorWeakClosure derive
+actual weak integral convergence from local strong convergence and budgets;
+YSCoulombRieszTimeOperator and YVHodgeSpacetimeBudget are uncompiled.
+Reverse audit: global Hodge MZ, spacetime Riesz realization, near/far strong
+Hodge convergence, all actual zero-order coefficients, and distributional
+closure must still be connected before marking full7.1 or full7.2.

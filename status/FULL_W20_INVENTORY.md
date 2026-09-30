@@ -76,3 +76,5 @@ identity, fixed-frequency compactness, common subsequence and measurable
 gluing are compiled through ZL original Coulomb entry. The old v4 paragraph
 above describes the historical starting batch. Original Hodge/MZ and full7.1
 closure still block full7.2 and all dependent certifications.
+
+Current private v13 CoefficientClosure:139 pages, same207 original statements. Run157 actual93/96 files; no whole-paper coverage percentage.

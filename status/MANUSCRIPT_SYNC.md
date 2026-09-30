@@ -184,3 +184,15 @@ and YPInheritedEnergy are candidates, not yet compiled.
 TeX SHA256 f5f01522fb988eba5ee0db916d2d36a9270bc0e38e9498ae678a2870196ffe42
 PDF SHA256 7f070cf3a3294a399c246e17628495fc2dbb335488ad4c074d07b750a8486c7c
 Private manuscript files remain outside public Git history.
+
+
+## Private working v13 CoefficientClosure
+
+139 pages; all 207 original proof-bearing environments byte-identical to v12.
+Expanded the concrete dense-test weak closure and the exact zero-homogeneous
+Riesz multiplier normalization. Three XeLaTeX passes and PDF conversion
+completed; pages12/13 visually checked. No overfull boxes or unresolved
+references. Existing CJK bold-font fallback warning is unchanged.
+TeX SHA256 475e25e84e4203126cc90e6283433b7b4db6782cc71078401f36e5b621ce9303
+PDF SHA256 f6f4c32b021cc5a58c36e4350ac0ffe566b35dd45d44507b56a51fe5c2167ea7
+These private files are not included in this public repository.

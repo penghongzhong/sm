@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v12 ClosureBounds, 138 pages,
+Current generated private working expansion: v13 CoefficientClosure, 139 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,27 +16,26 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run156 (partial, FAILURE)
+## Latest completed verification: Run157 (partial, FAILURE)
 
-Run36756096848/job110026598534 checked
-`b0cb5134d1146c1660e7083defcb033516e5af1f`:86 COMPILE_OK,4 COMPILE_FAIL.
-NEW PASS: actual Young Banach-space construction, Hodge interpolation,
-dense-test extension, quadratic local limits, actual curvature and far-field
-bounds, and precisely registered HLS exponent application conditions.
-The raw original Coulomb -> compactness -> common measurable local-limit
-chain ZL remains checked.
+Run36758210089/job110033772738 checked
+`4b9929ab9fc987a5a559182729fa409224f38d92`:93 COMPILE_OK,3 COMPILE_FAIL.
+NEW PASS: raw Young convolution equals the constructed Lp representative;
+finite-time norm upgrading; concrete compact-continuous L2 test density;
+mixed curvature bound; fractional kernel domination; actual vector Hodge
+HLS and its spatial energy/L4 application. Existing raw Coulomb compactness
+and common strongly measurable local-limit chain remains checked.
 
-Three root failures are the raw Young representative beta reduction/MemLp
-transport, ENNReal exponent comparison, and fractional-kernel measurability
-inference. Hodge HLS application was import-blocked. Repairs await next run.
-New candidates: inherited global spacetime/energy bounds, concrete compact
-test density, actual Fourier Riesz operators, mixed curvature budgets and
-Hodge energy/L4 application. These are not yet certified.
+Root failures: exhaustion Fatou filter inference, scalar Riesz Holder exponent
+inference and inverse Fourier norm rewriting. Inherited energy was blocked.
+The next batch repairs these and adds actual local-to-global weak closure,
+raw tensor weak limits, time lifting of the Riesz operator, and the actual
+spacetime Hodge MZ bound. New candidates are not certified before their run.
 
-External HLS is an explicit proposition parameter, not an axiom/instance:
-Tao, An Epsilon of Room I, Corollary1.11.18, n=2. Its source and exact
-hypotheses/conclusion are registered in SECTION2_EXTERNAL_SOURCE_AUDIT.md.
-No paper-specific budget or conclusion is put inside this interface.
+External HLS remains an explicit precisely registered proposition parameter,
+not an axiom/instance: Tao, An Epsilon of Room I, Corollary1.11.18, n=2.
+The concrete spatial application now passed157. No paper-specific budget
+or conclusion is put inside that external interface.
 
 Original Hodge/MZ applications and Theorem7.1 nonlinear closure remain open.
 No full Theorem7.2, scattering or whole-paper certificate is claimed.

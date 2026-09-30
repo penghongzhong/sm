@@ -52,7 +52,7 @@ noncomputable def v12_scalarL2Multiplier (m : V12SymbolLInf) : V12ScalarL2 →L[
 theorem v12_scalarL2Multiplier_bound (m : V12SymbolLInf) (f : V12ScalarL2) :
     ‖v12_scalarL2Multiplier m f‖ ≤ ‖m‖ * ‖f‖ := by
   let B : ℂ →L[ℂ] ℂ →L[ℂ] ℂ := ContinuousLinearMap.lsmul ℂ ℂ
-  have h := B.norm_holder_apply_apply_le m f
+  have h := B.norm_holder_apply_apply_le (r := 2) m f
   have hB : ‖B‖ ≤ 1 := ContinuousLinearMap.opNorm_lsmul_le
   change ‖B.holder 2 m f‖ ≤ _
   apply h.trans
@@ -66,7 +66,11 @@ noncomputable def v12_coulombRieszOperator (j l : Fin 2) : V12ScalarL2 →L[ℂ]
 theorem v12_coulombRieszOperator_bound (j l : Fin 2) (f : V12ScalarL2) :
     ‖v12_coulombRieszOperator j l f‖ ≤ ‖f‖ := by
   change ‖𝓕⁻ (v12_scalarL2Multiplier (v12_coulombRieszSymbolClass j l) (𝓕 f))‖ ≤ ‖f‖
-  rw [(Lp.fourierTransformₗᵢ V12Spatial ℂ).symm.norm_map]
+  have hi (g : V12ScalarL2) : ‖𝓕⁻ g‖ = ‖g‖ := by
+    calc
+      ‖𝓕⁻ g‖ = ‖𝓕 (𝓕⁻ g)‖ := (Lp.norm_fourier_eq _).symm
+      _ = ‖g‖ := by rw [fourier_fourierInv_eq]
+  rw [hi]
   exact (v12_scalarL2Multiplier_bound _ _).trans
     (by simpa only [Lp.norm_fourier_eq, one_mul] using
       mul_le_mul_of_nonneg_right (v12_coulombRieszSymbolClass_norm j l) (norm_nonneg (𝓕 f)))

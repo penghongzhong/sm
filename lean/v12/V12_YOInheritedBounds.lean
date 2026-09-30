@@ -43,7 +43,7 @@ theorem v12_Lp_bound_of_measurable_exhaustion
     change eLpNorm ((s R).indicator u) p μ ≤ C
     rw [eLpNorm_indicator_eq_eLpNorm_restrict (hs R).nullMeasurableSet]
     exact hb R
-  apply Lp.eLpNorm_le_of_ae_tendsto (Filter.Eventually.of_forall hbn) hm hu
+  apply Lp.eLpNorm_le_of_ae_tendsto (u := (atTop : Filter ℕ)) (Filter.Eventually.of_forall hbn) hm hu
   apply Filter.Eventually.of_forall
   intro z
   obtain ⟨R0, hR0⟩ := hex z
