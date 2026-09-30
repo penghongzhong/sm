@@ -33,7 +33,9 @@ theorem v12_spatial_cylinder_iUnion :
 
 noncomputable def v12_glue_local_representatives (a b : ℝ)
     (q : ∀ R, V12CylinderL2 a b R) (z : V12Spacetime) : V12Field :=
-  q (Nat.find (v12_spatial_cylinder_exhausts z)) z
+  by
+  classical
+  exact q (Nat.find (v12_spatial_cylinder_exhausts z)) z
 
 theorem v12_glue_local_representatives_ae (a b : ℝ)
     (q : ∀ R, V12CylinderL2 a b R)
@@ -43,6 +45,7 @@ theorem v12_glue_local_representatives_ae (a b : ℝ)
     (R : ℕ) :
     v12_glue_local_representatives a b q
       =ᵐ[(v12_slab_measure a b).restrict (v12_spatial_cylinder R)] q R := by
+  classical
   have hpair : ∀ n : ℕ, ∀ᵐ z ∂v12_slab_measure a b,
       n ≤ R → z ∈ v12_spatial_cylinder n → q n z = q R z := by
     intro n

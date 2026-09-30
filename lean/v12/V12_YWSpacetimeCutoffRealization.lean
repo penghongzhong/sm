@@ -73,6 +73,49 @@ theorem v12_exists_spacetime_cutoff_realization
   intro R
   exact (v12_localize_coeFn a b R v).trans (ae_restrict_of_ae hv)
 
+/-- The actual slab cutoff class; its representative is fixed by the convolution. -/
+noncomputable def v12_spacetimeCutoffClass
+    (a b : ℝ)
+    (p : V12Spatial → ℝ) (hpc : HasCompactSupport p)
+    (hps : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p) (N : ℕ)
+    (Q : ℝ → V12SpatialL2)
+    (hQ : MemLp Q ∞ ((volume : Measure ℝ).restrict (Set.Icc a b))) : V12SlabL2 a b :=
+  Classical.choose (v12_exists_spacetime_cutoff_realization a b p hpc hps N Q hQ)
+
+theorem v12_spacetimeCutoffClass_ae
+    (a b : ℝ)
+    (p : V12Spatial → ℝ) (hpc : HasCompactSupport p)
+    (hps : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p) (N : ℕ)
+    (Q : ℝ → V12SpatialL2)
+    (hQ : MemLp Q ∞ ((volume : Measure ℝ).restrict (Set.Icc a b))) :
+    (v12_spacetimeCutoffClass a b p hpc hps N Q hQ : V12Spacetime → V12Field)
+      =ᵐ[v12_slab_measure a b] fun z =>
+        v12_L2ConvolutionRep (v12_cutoffKernelL2 p hpc hps N) (Q z.1) z.2 :=
+  (Classical.choose_spec
+    (v12_exists_spacetime_cutoff_realization a b p hpc hps N Q hQ)).1
+
+theorem v12_spacetimeCutoffClass_norm_le
+    (a b : ℝ)
+    (p : V12Spatial → ℝ) (hpc : HasCompactSupport p)
+    (hps : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p) (N : ℕ)
+    (Q : ℝ → V12SpatialL2)
+    (hQ : MemLp Q ∞ ((volume : Measure ℝ).restrict (Set.Icc a b))) :
+    ‖v12_spacetimeCutoffClass a b p hpc hps N Q hQ‖ ≤
+      ‖v12_cutoffN p hpc hps N‖ *
+        (eLpNorm Q 2 ((volume : Measure ℝ).restrict (Set.Icc a b))).toReal := by
+  let μ : Measure ℝ := volume.restrict (Set.Icc a b)
+  have hQ2 : MemLp Q 2 μ := hQ.mono_exponent le_top
+  have hfinite := hQ2.eLpNorm_ne_top
+  have hbound := (v12_spacetime_cutoff_memLp μ p hpc hps N Q hQ2).2
+  rw [Lp.norm_def, eLpNorm_congr_ae (v12_spacetimeCutoffClass_ae a b p hpc hps N Q hQ)]
+  have h := ENNReal.toReal_mono
+    (show ENNReal.ofReal ‖v12_cutoffN p hpc hps N‖ * eLpNorm Q 2 μ ≠ ∞ by finiteness)
+    hbound
+  simpa only [ENNReal.toReal_mul, ENNReal.toReal_ofReal (norm_nonneg _)] using h
+
+#print axioms v12_spacetimeCutoffClass_ae
+#print axioms v12_spacetimeCutoffClass_norm_le
+
 #print axioms v12_spacetime_cutoff_memLp
 #print axioms v12_exists_spacetime_cutoff_realization
 

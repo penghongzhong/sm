@@ -68,7 +68,9 @@ theorem v12_stronglyMeasurable_Lp_sections
       =ᵐ[volume] fun y => q (t,y) - fraw y := by
     filter_upwards [hrep t, hm.ae_eq_mk] with y hqy hfy
     rw [hqy, hfy]
-  rw [Lp.dist_def, eLpNorm_congr_ae heq]
+  rw [Lp.dist_def]
+  change (eLpNorm (fun y => (Q t : V12Spatial → V12Field) y - f y) p volume).toReal = _
+  rw [eLpNorm_congr_ae heq]
   have hsection : AEStronglyMeasurable (fun y => q (t,y) - fraw y)
       (volume : Measure V12Spatial) :=
     (hD.comp measurable_prodMk_left).aestronglyMeasurable

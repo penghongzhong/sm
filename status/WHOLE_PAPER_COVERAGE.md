@@ -69,3 +69,19 @@ figures. File compilation counts are not a count of 207 verified paper environme
 Full Theorem 7.2, scattering and complete TeX/PDF/Lean equivalence are not
 certified by this run. This describes available evidence, not a claim that
 the unformalized mathematics is false.
+
+## Run 149 evidence and next batch
+
+Commit 15dd0bc0c218ecb06191b523c00dfbe2807a4e4d, Run 149
+(36745397232), completed with failure. YLocalLimitCompatibility and
+YVGlobalCutoffRepresentative compiled; the revised ZF/ZG a.e.-time source
+statements also compiled. Measurable gluing needs classical decidability
+for Nat.find. Lp section measurability needs explicit pointwise subtraction
+before eLpNorm_congr_ae. The blocked Bochner norm / cutoff / energy modules
+are not certified.
+
+The next batch repairs these two roots and submits actual canonical cutoff
+classes, raw slab realization, and fixed-frequency compactness from the raw
+PDE. The latter constructs hIntegral, hRep and hBudget internally. Its
+upstream raw-system/Hodge/MZ applications remain open. All new declarations
+remain candidates until an actual successful run.
