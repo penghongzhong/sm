@@ -26,7 +26,8 @@ theorem v12_raw_component_L2_limit
   apply squeeze_zero (fun n => ENNReal.toReal_nonneg) _ hlim
   intro n
   apply ENNReal.toReal_mono ((hn n).sub hq).eLpNorm_ne_top
-  simpa only [PiLp.sub_apply, Pi.sub_apply] using v12_raw_component_eLpNorm_le μ 2
+  change eLpNorm (fun z => qn n z j-q z j) 2 μ ≤ eLpNorm (fun z => qn n z-q z) 2 μ
+  simpa only [PiLp.sub_apply] using v12_raw_component_eLpNorm_le μ 2
     (fun z => qn n z-q z) ((hn n).sub hq).aestronglyMeasurable j
 
 theorem v12_actual_WQ_compact_test_limit

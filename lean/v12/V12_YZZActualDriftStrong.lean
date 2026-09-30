@@ -34,6 +34,7 @@ theorem v12_raw_L2_drift_L1_limit
     congr 1
     apply eLpNorm_congr_ae
     exact (Lp.coeFn_sub _ _).trans ((hr (An n) (qn n) (hAn n) (hqn n)).sub (hr A q hA hq))
+  change Tendsto Fn atTop (𝓝 F) at ht
   have h := (ht.sub_const F).norm
   simpa only [sub_self, norm_zero, he] using h
 

@@ -46,9 +46,11 @@ theorem v12_schwartzConj_toLp (f : SchwartzMap V12Spatial ℂ) :
 theorem v12_schwartzReflect_toLp (f : SchwartzMap V12Spatial ℂ) :
     (v12_schwartzReflect f).toLp 2 = v12_L2Reflect (f.toLp 2) := by
   apply Lp.ext_iff.mpr
-  have hneg := (LinearIsometryEquiv.neg ℝ (E := V12Spatial)).measurePreserving
+  have hneg : MeasurePreserving (fun x : V12Spatial => -x)
+      (volume : Measure V12Spatial) volume :=
+    (LinearIsometryEquiv.neg ℝ (E := V12Spatial)).measurePreserving
   filter_upwards [(v12_schwartzReflect f).coeFn_toLp 2, v12_L2Reflect_ae (f.toLp 2),
-    hneg.quasiMeasurePreserving.ae (p := fun x : V12Spatial => (f.toLp 2 : V12Spatial → ℂ) x = f x) (f.coeFn_toLp 2 volume)] with x hr hn hf
+    hneg.quasiMeasurePreserving.ae (p := fun x : V12Spatial => (f.toLp 2 (volume : Measure V12Spatial) : V12Spatial → ℂ) x = f x) (f.coeFn_toLp 2 volume)] with x hr hn hf
   rw [hr, hn]
   exact hf.symm
 
@@ -68,8 +70,9 @@ theorem v12_raw_fourier_conj (f : V12Spatial → ℂ) (ξ : V12Spatial) :
 theorem v12_schwartz_fourier_conj (f : SchwartzMap V12Spatial ℂ) :
     𝓕 (v12_schwartzConj f) = v12_schwartzConj (𝓕⁻ f) := by
   ext ξ
-  simpa only [SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe,
-    v12_schwartzConj, SchwartzMap.postcompCLM_apply] using v12_raw_fourier_conj f ξ
+  change 𝓕 (fun x => star (f x)) ξ = star ((𝓕⁻ f) ξ)
+  rw [SchwartzMap.fourierInv_coe]
+  exact v12_raw_fourier_conj f ξ
 
 theorem v12_L2_fourier_conj (f : V12ScalarL2) :
     𝓕 (v12_L2Conj f) = v12_L2Conj (𝓕⁻ f) := by
@@ -92,7 +95,7 @@ theorem v12_schwartz_reflect_fourier (f : SchwartzMap V12Spatial ℂ) :
     v12_schwartzReflect (𝓕 f) = 𝓕⁻ f := by
   ext ξ
   simpa only [v12_schwartzReflect, SchwartzMap.compCLMOfContinuousLinearEquiv_apply,
-    LinearIsometryEquiv.neg_apply, SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe] using
+    LinearIsometryEquiv.coe_neg, Function.comp_def, SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe] using
     (Real.fourierInv_eq_fourier_neg f ξ).symm
 
 theorem v12_L2_reflect_fourier (f : V12ScalarL2) : v12_L2Reflect (𝓕 f) = 𝓕⁻ f := by
@@ -116,7 +119,7 @@ theorem v12_L2_fourier_reflect (f : V12ScalarL2) : 𝓕 (v12_L2Reflect f) = 𝓕
   congr 1
   ext ξ
   simpa only [v12_schwartzReflect, SchwartzMap.compCLMOfContinuousLinearEquiv_apply,
-    LinearIsometryEquiv.neg_apply, SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe] using
+    LinearIsometryEquiv.coe_neg, Function.comp_def, SchwartzMap.fourier_coe, SchwartzMap.fourierInv_coe] using
     congrFun (Real.fourierInv_eq_fourier_comp_neg (g : V12Spatial → ℂ)).symm ξ
 
 theorem v12_coulombMultiplier_ae (j k : Fin 2) (f : V12ScalarL2) :
@@ -144,7 +147,9 @@ theorem v12_coulombMultiplier_reflect (j k : Fin 2) (f : V12ScalarL2) :
     v12_L2Reflect (v12_scalarL2Multiplier (v12_coulombRieszSymbolClass j k) f) =
       v12_scalarL2Multiplier (v12_coulombRieszSymbolClass j k) (v12_L2Reflect f) := by
   apply Lp.ext_iff.mpr
-  have hneg := (LinearIsometryEquiv.neg ℝ (E := V12Spatial)).measurePreserving
+  have hneg : MeasurePreserving (fun x : V12Spatial => -x)
+      (volume : Measure V12Spatial) volume :=
+    (LinearIsometryEquiv.neg ℝ (E := V12Spatial)).measurePreserving
   filter_upwards [v12_L2Reflect_ae (v12_scalarL2Multiplier (v12_coulombRieszSymbolClass j k) f),
     hneg.quasiMeasurePreserving.ae (v12_coulombMultiplier_ae j k f),
     v12_coulombMultiplier_ae j k (v12_L2Reflect f), v12_L2Reflect_ae f] with ξ hn hm hmn hnf

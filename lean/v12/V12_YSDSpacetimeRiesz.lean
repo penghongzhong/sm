@@ -25,8 +25,8 @@ theorem v12_spacetimeCoulombRieszOperator_bound (μ : Measure ℝ) [SFinite μ]
   rw [(v12_fubiniL2Equiv μ).symm.norm_map]
   exact ((v12_timeCoulombRieszOperator μ j l).le_opNorm _).trans
     (by simpa only [one_mul, (v12_fubiniL2Equiv μ).norm_map] using
-      mul_le_mul_of_nonneg_right (v12_timeCoulombRieszOperator_bound μ j l)
-        (norm_nonneg (v12_fubiniL2Equiv μ f)))
+      (mul_le_mul_of_nonneg_right (v12_timeCoulombRieszOperator_bound μ j l)
+        (norm_nonneg (v12_fubiniL2Equiv μ f))))
 
 theorem v12_spacetimeCoulombRieszOperator_sections (μ : Measure ℝ) [SFinite μ]
     (j l : Fin 2) (f : Lp ℂ 2 (μ.prod (volume : Measure V12Spatial))) :

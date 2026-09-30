@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v15 FubiniRiesz, 139 pages,
+Current generated private working expansion: v16 OriginalTests, 139 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,19 +16,22 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run162 (partial, FAILURE)
+## Latest completed verification: Run163 (partial, FAILURE)
 
-Run36767912319/job110066626169 checked
-`55b241391b6b6b28dfa4d387f5ea3f12db2b6367`:115 COMPILE_OK,11 COMPILE_FAIL.
-NEW PASS: scalar spacetime Fubini isometry, actual W weak closure,
-curvature-to-Young application, actual Hodge near/far Lp approximation error,
-compact smooth distribution tests, and global varying L2 test construction.
+Run36781523914/job110112686954 checked
+`ff5148d411581cc92223c06d5abd1d75e3ce9144`:117 COMPILE_OK,9 COMPILE_FAIL.
+NEW PASS: scalar Fubini surjectivity/equivalence and actual same-field Hodge
+strong local L43/L2 limits. No previously passing file regressed.
+Five direct roots remain: joint Riesz bound term parsing, norm-square inner
+identity, raw/Schwartz Fourier coercions, drift Lp norm limit unfolding,
+and component raw-function norm identification. Four imports failed.
 
-Five direct failures: Fubini surjectivity zero-function simplification;
-norm-square raw representative reflexivity; Schwartz/raw Fourier coercions
-and negation AE transport; Hodge approximation error limit unfolding;
-componentwise Pi subtraction. Six downstream imports failed.
-Run163 candidates repair these actual errors. No candidate is marked green.
+Run164 candidates repair these actual errors and add exact original
+coefficient/A0 sections, original open-time-domain compact IBP (twice),
+original scalar Coulomb PDE compact testing with product-rule cancellation,
+and actual differentiated drift/combined zero-order test limits. Limit Q
+energy and L4 budgets are inherited, not supplied as internal conclusions.
+These candidates are unverified. Full7.1/7.2 and whole-paper closure OPEN.
 
 Precisely registered external HLS remains an explicit proposition parameter,
 not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge

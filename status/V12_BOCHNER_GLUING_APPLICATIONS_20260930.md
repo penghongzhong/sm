@@ -227,3 +227,9 @@ remain. Fourier-real correspondence and concrete compact-test source limits
 are submitted next, not counted as coverage. Reverse obligations unchanged:
 exact same-field reconstruction, distributional closure, full7.1/7.2 and all
 later theorem branches. Private v15 remains the current synchronized text.
+
+Run163 actual check:117/126, FAILURE. Fubini onto/equivalence and original
+Hodge local L43/L2 limits PASS. Five direct roots/four imports remain.
+Run164 adds exact same-Q A0 sections and local-domain smooth compact IBP,
+original scalar PDE tests and actual drift/zero-order test limits; candidates
+remain unverified. No new external schema or private manuscript file.

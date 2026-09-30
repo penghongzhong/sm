@@ -219,3 +219,17 @@ fallback unchanged. This text update does not mark candidate Lean files green.
 TeX SHA256 b187a1d2bc71f46648abbeae3125310ef50d98c89303fc3cacab11ea31b4324e
 PDF SHA256 4ba685851d4f7dbbedd260c0e3f4ebf14b9821251d2ff38c7a3b6ce33e162938
 Private manuscript files remain excluded from public Git history.
+
+## Private working v16 OriginalTests
+
+139 pages; all207 original theorem/lemma/proposition/corollary environments
+byte-identical to v15. Expanded exact original tensor/S/mass/Riesz section
+correspondence and local-domain compact-test integration by parts, including
+twice differentiating tests and proving weighted integrability from support.
+Three XeLaTeX passes/PDF conversion completed; pages13/14 visually checked.
+No overfull boxes or unresolved references; existing CJK font fallback only.
+Corresponding YSFBOriginalTemporalSlices and YZZGLocalSmoothIntegration are
+unverified candidates; this manuscript sync is not a Lean certificate.
+TeX SHA256 80cae09bb1593a7e073bfa3fe394d53788a705eaf8bfc249c720f1fd0dc9a23b
+PDF SHA256 00f706ef314d2d60b57968e4e7a5d8c967fc6ad87bc0e480d5902a6c15c9eba2
+Private manuscript files are excluded from public Git history.
