@@ -1527,6 +1527,119 @@ theorem v12_L4L43ConvolutionRep_norm_le
 #print axioms v12_continuous_reflectedTranslateL4
 #print axioms v12_L4L43ConvolutionRep_norm_le
 
+
+/-! ===== exact first/second derivative cutoff kernels ===== -/
+
+open LineDeriv Laplacian
+
+/-- The directional derivative of the exact inverse-Fourier cutoff kernel.
+This is the physical-space kernel for one directional derivative of the
+fixed-frequency cutoff. -/
+noncomputable def v12_cutoffKernelLineDerivSchwartz
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial) :
+    SchwartzMap V12Spatial ℂ :=
+  ∂_{m} (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+
+/-- The first-derivative cutoff kernel as an actual spatial L2 class. -/
+noncomputable def v12_cutoffKernelLineDerivL2
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial) :
+    V12ScalarL2 :=
+  (v12_cutoffKernelLineDerivSchwartz p hp_cpt hp_smooth N m).toLp 2
+
+/-- The Laplacian of the exact inverse-Fourier cutoff kernel.  This is the
+physical-space kernel for the fixed-frequency Laplacian term. -/
+noncomputable def v12_cutoffKernelLaplacianSchwartz
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    SchwartzMap V12Spatial ℂ :=
+  Δ (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N)
+
+/-- The Laplacian cutoff kernel as an actual spatial L2 class. -/
+noncomputable def v12_cutoffKernelLaplacianL2
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    V12ScalarL2 :=
+  (v12_cutoffKernelLaplacianSchwartz p hp_cpt hp_smooth N).toLp 2
+
+/-- The directional derivative kernel evaluates to the actual Fréchet
+derivative of the exact cutoff kernel in the chosen direction. -/
+theorem v12_cutoffKernelLineDerivSchwartz_apply
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m x : V12Spatial) :
+    v12_cutoffKernelLineDerivSchwartz p hp_cpt hp_smooth N m x =
+      fderiv ℝ (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N) x m := by
+  exact SchwartzMap.lineDerivOp_apply_eq_fderiv
+    m (v12_cutoffKernelSchwartz p hp_cpt hp_smooth N) x
+
+/-- Fixed-frequency first-derivative convolution maps spatial L2 continuously
+into bounded continuous fields. -/
+noncomputable def v12_cutoffLineDerivBCFCLM
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial) :
+    V12SpatialL2 →L[ℂ]
+      BoundedContinuousFunction V12Spatial V12Field :=
+  v12_L2ConvolutionBCFCLM
+    (v12_cutoffKernelLineDerivL2 p hp_cpt hp_smooth N m)
+
+/-- Fixed-frequency Laplacian convolution maps spatial L2 continuously into
+bounded continuous fields. -/
+noncomputable def v12_cutoffLaplacianBCFCLM
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    V12SpatialL2 →L[ℂ]
+      BoundedContinuousFunction V12Spatial V12Field :=
+  v12_L2ConvolutionBCFCLM
+    (v12_cutoffKernelLaplacianL2 p hp_cpt hp_smooth N)
+
+/-- Exact L2-to-Linfinity operator bound for one fixed directional derivative
+kernel. -/
+theorem v12_cutoffLineDerivBCFCLM_norm_le
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) (m : V12Spatial) :
+    ‖v12_cutoffLineDerivBCFCLM p hp_cpt hp_smooth N m‖ ≤
+      ‖v12_L2ConvolutionPairing‖ *
+        ‖v12_cutoffKernelLineDerivL2 p hp_cpt hp_smooth N m‖ := by
+  simpa [v12_cutoffLineDerivBCFCLM] using
+    v12_L2ConvolutionBCFCLM_norm_le
+      (v12_cutoffKernelLineDerivL2 p hp_cpt hp_smooth N m)
+
+/-- Exact L2-to-Linfinity operator bound for the fixed-frequency Laplacian
+kernel. -/
+theorem v12_cutoffLaplacianBCFCLM_norm_le
+    (p : V12Spatial → ℝ)
+    (hp_cpt : HasCompactSupport p)
+    (hp_smooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) p)
+    (N : ℕ) :
+    ‖v12_cutoffLaplacianBCFCLM p hp_cpt hp_smooth N‖ ≤
+      ‖v12_L2ConvolutionPairing‖ *
+        ‖v12_cutoffKernelLaplacianL2 p hp_cpt hp_smooth N‖ := by
+  simpa [v12_cutoffLaplacianBCFCLM] using
+    v12_L2ConvolutionBCFCLM_norm_le
+      (v12_cutoffKernelLaplacianL2 p hp_cpt hp_smooth N)
+
+#print axioms v12_cutoffKernelLineDerivSchwartz_apply
+#print axioms v12_cutoffLineDerivBCFCLM_norm_le
+#print axioms v12_cutoffLaplacianBCFCLM_norm_le
+
+
 /-! ===== compact-domain Arzela--Ascoli bridge ===== -/
 
 /--
