@@ -6,6 +6,7 @@ The derivative identities are proved in V12_TestDerivatives. Here dominated
 convergence controls the cutoff-derivative terms and reflected kernel tails.
 The conclusion includes p=2; p=infinity is expressly excluded.
 Limits are for fixed x, not uniform over all spatial translations.
+Exact function decompositions are separate proofs, not analytic hypotheses.
 -/
 
 set_option autoImplicit false
@@ -73,9 +74,11 @@ theorem v12_scaled_test_eLpNorm_tendsto
   have hH : MemLp H p volume := hk.norm.const_smul (‖c‖ * A)
   apply v12_dominated_eLpNorm_tendsto_zero volume p hp0 hpt _ H hH
   · intro R
-    have hc : Continuous (fun y =>
-        (c * (v12_testScale R)^d) • v12_compactSpatialTest a k R x y) :=
-      (v12_compactSpatialTest_smooth a (a.smooth (⊤ : ℕ∞)) k R x).continuous.const_smul _
+    have hc : Continuous (fun y : V12Spatial =>
+        (c * (v12_testScale R)^d) • v12_compactSpatialTest a k R x y) := by
+      change Continuous ((c * (v12_testScale R)^d) • v12_compactSpatialTest a k R x)
+      exact (v12_compactSpatialTest_smooth a (a.smooth (⊤ : ℕ∞)) k R x).continuous.const_smul
+        (c * (v12_testScale R)^d)
     exact hc.aestronglyMeasurable
   · intro R y
     have hr : ‖(v12_testScale R)^d‖ ≤ 1 := by
@@ -91,7 +94,7 @@ theorem v12_scaled_test_eLpNorm_tendsto
         simp only [v12_compactSpatialTest, v12_testCutoff, norm_smul, mul_assoc]
       _ ≤ (‖c‖ * A) * ‖k (x-y)‖ := by gcongr
       _ = ‖H y‖ := by
-        simp [H, Real.norm_eq_abs, abs_of_nonneg hA, abs_of_nonneg (norm_nonneg c)]
+        simp [H, Real.norm_eq_abs, abs_of_nonneg hA]
   · intro y
     have hcoef : Tendsto (fun R => c * (v12_testScale R)^d) atTop (𝓝 0) := by
       simpa only [zero_pow (Nat.ne_of_gt hd), mul_zero] using
@@ -100,15 +103,57 @@ theorem v12_scaled_test_eLpNorm_tendsto
     simpa only [zero_smul] using
       hcoef.smul (v12_compactSpatialTest_pointwise_tendsto a k x y)
 
-/-- Addition of two genuinely vanishing Lp errors. -/
+/-- Addition with all measure, exponent and sequence types fixed. -/
 theorem v12_eLpNorm_add_tendsto_zero
     (p : ℝ≥0∞) (hp : 1 ≤ p)
     (f g : ℕ → V12Spatial → ℂ)
     (hf : Tendsto (fun R => eLpNorm (f R) p volume) atTop (𝓝 0))
     (hg : Tendsto (fun R => eLpNorm (g R) p volume) atTop (𝓝 0)) :
     Tendsto (fun R => eLpNorm (f R + g R) p volume) atTop (𝓝 0) := by
-  apply squeeze_zero (fun _ => bot_le) (fun R => eLpNorm_add_le (f := f R) (g := g R) hp)
-  simpa only [zero_add] using hf.add hg
+  have hsum : Tendsto
+      (fun R : ℕ => eLpNorm (f R) p (volume : Measure V12Spatial) +
+        eLpNorm (g R) p (volume : Measure V12Spatial)) atTop (𝓝 0) := by
+    simpa only [zero_add] using hf.add hg
+  have hle : ∀ R : ℕ, eLpNorm (f R + g R) p (volume : Measure V12Spatial) ≤
+      eLpNorm (f R) p volume + eLpNorm (g R) p volume := by
+    intro R
+    exact eLpNorm_add_le (μ := (volume : Measure V12Spatial)) (f := f R) (g := g R) hp
+  exact squeeze_zero
+    (fun R : ℕ => (bot_le : (0 : ℝ≥0∞) ≤ eLpNorm (f R + g R) p volume)) hle hsum
+
+/-- Pointwise negation is related to function negation before taking its norm. -/
+theorem v12_eLpNorm_pointwise_neg (p : ℝ≥0∞) (f : V12Spatial → ℂ) :
+    eLpNorm (fun y => -(f y)) p volume = eLpNorm f p volume := by
+  change eLpNorm (-f) p volume = eLpNorm f p volume
+  exact eLpNorm_neg
+
+/-- The exact first-derivative error, separated from the limit proof. -/
+theorem v12_test_first_error_decomposition
+    (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
+    (R : ℕ) (x m : V12Spatial) :
+    (fun y => fderiv ℝ (v12_compactSpatialTest χ k R x) y m + (∂_{m} k) (x-y)) =
+      (fun y => (1 * (v12_testScale R)^1) •
+        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x y) +
+      (fun y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y))) := by
+  funext y
+  simp only [Pi.add_apply, v12_compactSpatialTest_fderiv_apply, pow_one, one_mul]
+  abel
+
+/-- All three second-derivative contributions, including the Hessian and cross term. -/
+theorem v12_test_second_error_decomposition
+    (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
+    (R : ℕ) (x m : V12Spatial) :
+    (fun y => fderiv ℝ (fun z => fderiv ℝ (v12_compactSpatialTest χ k R x) z m) y m -
+      (∂_{m} (∂_{m} k)) (x-y)) =
+      ((fun y => (1 * (v12_testScale R)^2) •
+        v12_compactSpatialTest (∂_{m} (∂_{m} χ) : SchwartzMap V12Spatial ℝ) k R x y) +
+       (fun y => ((-2 : ℝ) * (v12_testScale R)^1) •
+         v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) (∂_{m} k) R x y)) +
+      (fun y => v12_compactSpatialTest χ (∂_{m} (∂_{m} k)) R x y -
+        (∂_{m} (∂_{m} k)) (x-y)) := by
+  funext y
+  simp only [Pi.add_apply, v12_compactSpatialTest_second_fderiv_apply, pow_one, one_mul]
+  module
 
 /-- The gradient error is computed from its actual Frechet derivative. -/
 theorem v12_compactSpatialTest_fderiv_error_tendsto
@@ -120,25 +165,23 @@ theorem v12_compactSpatialTest_fderiv_error_tendsto
       (fun y => fderiv ℝ (v12_compactSpatialTest χ k R x) y m + (∂_{m} k) (x-y))
       p volume) atTop (𝓝 0) := by
   have hp0 : p ≠ 0 := ne_of_gt (lt_of_lt_of_le (by norm_num : (0 : ℝ≥0∞) < 1) hp)
-  have hsmall := v12_scaled_test_eLpNorm_tendsto p hp0 hpt (∂_{m} χ) k x 1 1 (by decide)
+  have hsmall := v12_scaled_test_eLpNorm_tendsto p hp0 hpt
+    (∂_{m} χ : SchwartzMap V12Spatial ℝ) k x 1 1 (by decide)
   have htail := v12_compactSpatialTest_error_tendsto p hp0 hpt χ χ.continuous hχ0 hχb
     (∂_{m} k) x
   have hneg : Tendsto (fun R => eLpNorm
       (fun y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))
       p volume) atTop (𝓝 0) := by
-    simpa only [eLpNorm_neg] using htail
-  have hsum := v12_eLpNorm_add_tendsto_zero p hp
-    (fun R y => (1 * (v12_testScale R)^1) •
-      v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x y)
-    (fun R y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))
-    hsmall hneg
-  convert hsum using 1
-  ext R
-  congr 1
-  funext y
-  rw [v12_compactSpatialTest_fderiv_apply]
-  simp only [pow_one, one_mul, Pi.add_apply]
-  abel
+    simpa only [v12_eLpNorm_pointwise_neg] using htail
+  rw [show (fun R => eLpNorm
+      (fun y => fderiv ℝ (v12_compactSpatialTest χ k R x) y m + (∂_{m} k) (x-y)) p volume) =
+      (fun R => eLpNorm
+        ((fun y => (1 * (v12_testScale R)^1) •
+          v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x y) +
+        (fun y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))) p volume) from by
+    funext R
+    rw [v12_test_first_error_decomposition]]
+  exact v12_eLpNorm_add_tendsto_zero p hp _ _ hsmall hneg
 
 /-- All three second-derivative cutoff contributions are retained. -/
 theorem v12_compactSpatialTest_second_error_tendsto
@@ -150,24 +193,23 @@ theorem v12_compactSpatialTest_second_error_tendsto
       (fun y => fderiv ℝ (fun z => fderiv ℝ (v12_compactSpatialTest χ k R x) z m) y m -
         (∂_{m} (∂_{m} k)) (x-y)) p volume) atTop (𝓝 0) := by
   have hp0 : p ≠ 0 := ne_of_gt (lt_of_lt_of_le (by norm_num : (0 : ℝ≥0∞) < 1) hp)
-  have h₁ := v12_scaled_test_eLpNorm_tendsto p hp0 hpt (∂_{m} (∂_{m} χ)) k x 1 2 (by decide)
-  have h₂ := v12_scaled_test_eLpNorm_tendsto p hp0 hpt (∂_{m} χ) (∂_{m} k) x (-2) 1 (by decide)
+  have h₁ := v12_scaled_test_eLpNorm_tendsto p hp0 hpt
+    (∂_{m} (∂_{m} χ) : SchwartzMap V12Spatial ℝ) k x 1 2 (by decide)
+  have h₂ := v12_scaled_test_eLpNorm_tendsto p hp0 hpt
+    (∂_{m} χ : SchwartzMap V12Spatial ℝ) (∂_{m} k) x (-2) 1 (by decide)
   have h₃ := v12_compactSpatialTest_error_tendsto p hp0 hpt χ χ.continuous hχ0 hχb
     (∂_{m} (∂_{m} k)) x
-  have hsum := v12_eLpNorm_add_tendsto_zero p hp _ _
+  simp_rw [v12_test_second_error_decomposition]
+  exact v12_eLpNorm_add_tendsto_zero p hp _ _
     (v12_eLpNorm_add_tendsto_zero p hp _ _ h₁ h₂) h₃
-  convert hsum using 1
-  ext R
-  congr 1
-  funext y
-  rw [v12_compactSpatialTest_second_fderiv_apply]
-  simp only [pow_one, one_mul, Pi.add_apply]
-  module
 
 #print axioms v12_dominated_eLpNorm_tendsto_zero
 #print axioms v12_testScale_le_one
 #print axioms v12_scaled_test_eLpNorm_tendsto
 #print axioms v12_eLpNorm_add_tendsto_zero
+#print axioms v12_eLpNorm_pointwise_neg
+#print axioms v12_test_first_error_decomposition
+#print axioms v12_test_second_error_decomposition
 #print axioms v12_compactSpatialTest_fderiv_error_tendsto
 #print axioms v12_compactSpatialTest_second_error_tendsto
 
