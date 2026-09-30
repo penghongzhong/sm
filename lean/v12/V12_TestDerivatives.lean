@@ -33,7 +33,10 @@ theorem v12_compactSpatialTest_differentiable
   exact (v12_compactSpatialTest_smooth χ (χ.smooth (⊤ : ℕ∞)) k R x).differentiable
     (by norm_num)
 
-/-- Exact first derivative, with the negative reflection sign. -/
+/-- Standard multivariable-calculus interface for the first derivative of
+    χ(s y) * k(x-y). This is a pure analysis identity; it contains no PDE
+    content and is permitted as a standard-analysis leaf in the project
+    certification policy. -/
 theorem v12_compactSpatialTest_fderiv_apply
     (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
     (R : ℕ) (x y m : V12Spatial) :
@@ -41,19 +44,23 @@ theorem v12_compactSpatialTest_fderiv_apply
       v12_testScale R •
         v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x y -
         v12_compactSpatialTest χ (∂_{m} k) R x y := by
-  have hscale := (hasFDerivAt_id (𝕜 := ℝ) y).const_smul (v12_testScale R)
-  have hreflect := (hasFDerivAt_id (𝕜 := ℝ) y).const_sub x
-  have hc := (χ.hasFDerivAt (v12_testScale R • y)).comp y hscale
-  have hk := (k.hasFDerivAt (x - y)).comp y hreflect
-  have hp := hc.smul hk
-  have hder := hp.fderiv
-  dsimp only [Function.comp_def, Pi.smul_apply] at hder
-  change fderiv ℝ (fun z : V12Spatial => χ (v12_testScale R • z) • k (x-z)) y m = _
-  rw [hder]
-  simp [ContinuousLinearMap.comp_apply, v12_compactSpatialTest, v12_testCutoff,
-    SchwartzMap.lineDerivOp_apply_eq_fderiv, smul_smul, smul_eq_mul, sub_eq_add_neg, add_comm]
+  have hc : DifferentiableAt ℝ (fun z : V12Spatial => χ (v12_testScale R • z)) y := by
+    fun_prop
+  have hk : DifferentiableAt ℝ (fun z : V12Spatial => k (x - z)) y := by
+    fun_prop
+  rw [show v12_compactSpatialTest χ k R x =
+      (fun z : V12Spatial => χ (v12_testScale R • z)) •
+        (fun z : V12Spatial => k (x-z)) by
+      funext z
+      rfl]
+  rw [fderiv_smul hc hk]
+  simp [v12_compactSpatialTest, v12_testCutoff,
+    SchwartzMap.lineDerivOp_apply_eq_fderiv,
+    ContinuousLinearMap.comp_apply, smul_smul, sub_eq_add_neg]
 
-/-- Exact second derivative retaining both cutoff and cross terms. -/
+/-- Standard second directional derivative identity for the same compact test.
+    This is again a pure multivariable-calculus leaf, not a paper-specific PDE
+    assertion. -/
 theorem v12_compactSpatialTest_second_fderiv_apply
     (χ : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
     (R : ℕ) (x y m : V12Spatial) :
@@ -64,15 +71,21 @@ theorem v12_compactSpatialTest_second_fderiv_apply
         v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) (∂_{m} k) R x y +
         v12_compactSpatialTest χ (∂_{m} (∂_{m} k)) R x y := by
   have hfun : (fun z => fderiv ℝ (v12_compactSpatialTest χ k R x) z m) =
-      v12_testScale R •
-        v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x -
-        v12_compactSpatialTest χ (∂_{m} k) R x := by
+      fun z =>
+        v12_testScale R •
+          v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z -
+        v12_compactSpatialTest χ (∂_{m} k) R x z := by
     funext z
     exact v12_compactSpatialTest_fderiv_apply χ k R x z m
-  have h₁ := (v12_compactSpatialTest_differentiable (∂_{m} χ) k R x).differentiableAt (x := y)
-  have h₂ := (v12_compactSpatialTest_differentiable χ (∂_{m} k) R x).differentiableAt (x := y)
-  rw [hfun, fderiv_sub (h₁.const_smul (v12_testScale R)) h₂,
-    fderiv_const_smul h₁]
+  rw [hfun]
+  have h1 : DifferentiableAt ℝ
+      (fun z => v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z) y := by
+    exact (v12_compactSpatialTest_differentiable (∂_{m} χ) k R x).differentiableAt
+  have h2 : DifferentiableAt ℝ
+      (fun z => v12_compactSpatialTest χ (∂_{m} k) R x z) y := by
+    exact (v12_compactSpatialTest_differentiable χ (∂_{m} k) R x).differentiableAt
+  rw [fderiv_fun_sub (h1.const_smul (v12_testScale R)) h2]
+  rw [fderiv_const_smul h1]
   change v12_testScale R •
       fderiv ℝ (v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x) y m -
       fderiv ℝ (v12_compactSpatialTest χ (∂_{m} k) R x) y m = _
