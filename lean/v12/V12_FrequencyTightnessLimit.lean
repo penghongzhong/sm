@@ -1688,18 +1688,8 @@ abbrev V12SpatialLFourThirds : Type :=
 
 theorem v12_holderConjugate_four_fourThirds :
     ENNReal.HolderConjugate (4 : ℝ≥0∞) ((4 : ℝ≥0∞) / 3) := by
-  have hreal :
-      Real.HolderConjugate (4 : ℝ) ((4 : ℝ) / 3) := by
-    rw [Real.holderConjugate_iff]
-    constructor <;> norm_num
-  have h4 :
-      ENNReal.ofReal (4 : ℝ) = (4 : ℝ≥0∞) := by
-    norm_num
-  have h43 :
-      ENNReal.ofReal ((4 : ℝ) / 3) = (4 : ℝ≥0∞) / 3 := by
-    rw [ENNReal.ofReal_div_of_pos (by norm_num : (0 : ℝ) < 3)]
-    norm_num
-  simpa only [h4, h43] using hreal.ennrealOfReal
+  rw [ENNReal.holderConjugate_iff]
+  norm_num
 
 instance v12_fact_one_le_four :
     Fact ((1 : ℝ≥0∞) ≤ (4 : ℝ≥0∞)) :=
