@@ -138,14 +138,20 @@ theorem v12_compact_test_raw_pde_source
     funext y
     rw [hPDE]
     simp only [smul_add, smul_comm (ψ y), D2, e]
-  rw [hexpand,
-    integral_add ((((hiD 0).add (hiD 1)).smul Complex.I).add
-      ((hiF 0).smul (2 : ℂ)) |>.add ((hiF 1).smul (2 : ℂ)))
-      (hiG.smul (-Complex.I)),
-    integral_add ((((hiD 0).add (hiD 1)).smul Complex.I).add
-      ((hiF 0).smul (2 : ℂ))) ((hiF 1).smul (2 : ℂ)),
-    integral_add (((hiD 0).add (hiD 1)).smul Complex.I)
-      ((hiF 0).smul (2 : ℂ))]
+  let A : V12Spatial → V12Field := fun y => Complex.I • (ψ y • D2 0 y + ψ y • D2 1 y)
+  let B : V12Spatial → V12Field := fun y => (2 : ℂ) • (ψ y • fderiv ℝ (F 0) y (e 0))
+  let C : V12Spatial → V12Field := fun y => (2 : ℂ) • (ψ y • fderiv ℝ (F 1) y (e 1))
+  let D : V12Spatial → V12Field := fun y => (-Complex.I) • (ψ y • G y)
+  have hA : Integrable A := ((hiD 0).add (hiD 1)).smul Complex.I
+  have hB : Integrable B := (hiF 0).smul (2 : ℂ)
+  have hC : Integrable C := (hiF 1).smul (2 : ℂ)
+  have hD : Integrable D := hiG.smul (-Complex.I)
+  rw [hexpand]
+  change (∫ y : V12Spatial, A y + B y + C y + D y) = _
+  rw [integral_add (f := fun y => A y + B y + C y) (g := D) ((hA.add hB).add hC) hD,
+    integral_add (f := fun y => A y + B y) (g := C) (hA.add hB) hC,
+    integral_add (f := A) (g := B) hA hB]
+  dsimp only [A, B, C, D]
   simp only [integral_smul, integral_add (hiD 0) (hiD 1)]
   dsimp only [D2]
   rw [v12_compact_test_spatial_ibp_twice ψ Q hψ hc hQ (e 0),

@@ -26,8 +26,8 @@ theorem v12_reflectedSchwartzL2_neg
   filter_upwards [v12_reflectedSchwartzL2_ae (-k) x,
     Lp.coeFn_neg (v12_reflectedTranslate (k.toLp 2) x),
     v12_reflectedSchwartzL2_ae k x] with y hneg hcoe hpos
-  rw [hneg, hcoe, hpos]
-  rfl
+  rw [hneg, hcoe]
+  simp only [Pi.neg_apply, SchwartzMap.neg_apply, hpos]
 
 /-- Both signs are retained until the exact equality is proved. -/
 theorem v12_testGradient_reflection_sign
