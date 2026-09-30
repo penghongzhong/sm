@@ -196,3 +196,14 @@ references. Existing CJK bold-font fallback warning is unchanged.
 TeX SHA256 475e25e84e4203126cc90e6283433b7b4db6782cc71078401f36e5b621ce9303
 PDF SHA256 f6f4c32b021cc5a58c36e4350ac0ffe566b35dd45d44507b56a51fe5c2167ea7
 These private files are not included in this public repository.
+
+## Private working v14 HodgeLocalLimit
+
+139 pages; all 207 original proof-bearing environments byte-identical.
+Expanded the same-field near/far argument at p=4/3: actual cutoff density,
+Young convolution, time-norm upgrade, and explicit finite-cylinder far error.
+Three XeLaTeX passes and PDF conversion completed; pages12/13 visually checked.
+No overfull boxes or unresolved references. Existing font fallback unchanged.
+TeX SHA256 b1083bfae1ebbc11872ec5def2d5ea4e06b052ab9f051ead00f2ca04ed08b23a
+PDF SHA256 9177c8aa0e84afe9cba87955af63d37d024159591d9e19cbefa2ead5b0a0a121
+These private files are excluded from public Git history.

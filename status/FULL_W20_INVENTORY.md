@@ -78,3 +78,14 @@ above describes the historical starting batch. Original Hodge/MZ and full7.1
 closure still block full7.2 and all dependent certifications.
 
 Current private v13 CoefficientClosure:139 pages, same207 original statements. Run157 actual93/96 files; no whole-paper coverage percentage.
+
+## Private working v14 HodgeLocalLimit
+
+139 pages; all 207 original proof-bearing environments byte-identical.
+Expanded the same-field near/far argument at p=4/3: actual cutoff density,
+Young convolution, time-norm upgrade, and explicit finite-cylinder far error.
+Three XeLaTeX passes and PDF conversion completed; pages12/13 visually checked.
+No overfull boxes or unresolved references. Existing font fallback unchanged.
+TeX SHA256 b1083bfae1ebbc11872ec5def2d5ea4e06b052ab9f051ead00f2ca04ed08b23a
+PDF SHA256 9177c8aa0e84afe9cba87955af63d37d024159591d9e19cbefa2ead5b0a0a121
+These private files are excluded from public Git history.

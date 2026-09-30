@@ -17,7 +17,7 @@ theorem v12_generic_stronglyMeasurable_Lp_sections
     (Q : ℝ → Lp E p (volume : Measure V12Spatial))
     (hrep : ∀ t, (Q t : V12Spatial → E) =ᵐ[volume] fun y => q (t,y)) :
     StronglyMeasurable Q := by
-  borelize (Lp E p (volume : Measure V12Spatial) : Type)
+  borelize (Lp E p (volume : Measure V12Spatial) : Type*)
   have hp0 : p ≠ 0 := ne_of_gt (lt_of_lt_of_le zero_lt_one (Fact.out : 1 ≤ p))
   have hptop : p ≠ ∞ := Fact.out
   apply Measurable.stronglyMeasurable

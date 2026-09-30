@@ -22,6 +22,9 @@ theorem v12_actual_curvature_near_spacetime_limit
       eLpNorm (fun x => qn n (t,x)) 2 volume ≤ ENNReal.ofReal M)
     (hEq : ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       eLpNorm (fun x => q (t,x)) 2 volume ≤ ENNReal.ofReal M) :
+    (∀ n, MemLp (v12_spacetimeNearHodge K
+      (v12_curvatureCutoffDifference ((R : ℝ)+1) (qn n) q)) ((4 : ℝ≥0∞) / 3)
+      (v12_slab_measure a b)) ∧
     Tendsto (fun n => (eLpNorm (v12_spacetimeNearHodge K
       (v12_curvatureCutoffDifference ((R : ℝ)+1) (qn n) q)) ((4 : ℝ≥0∞) / 3)
       (v12_slab_measure a b)).toReal) atTop (𝓝 0) := by
@@ -30,7 +33,7 @@ theorem v12_actual_curvature_near_spacetime_limit
     ((volume : Measure ℝ).restrict (Set.Icc a b)) K
     (fun n => v12_curvatureCutoffDifference ((R : ℝ)+1) (qn n) q)
     (fun n => v12_curvatureCutoffDifference_stronglyMeasurable _ _ _ (hmn n) hmq)
-    hi (4*M^2) (by positivity) ?_ ht).2
+    hi (4*M^2) (by positivity) ?_ ht)
   intro n
   filter_upwards [hEn n, hEq] with t htN htQ
   have hn2 : MemLp (fun x => qn n (t,x)) 2 (volume : Measure V12Spatial) :=

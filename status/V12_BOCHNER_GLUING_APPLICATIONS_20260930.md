@@ -205,3 +205,10 @@ representative for time-lifted Riesz outputs and exact S/A0/V/W reconstruction,
 original fields' measurability on the restricted time interval (no stronger
 unmentioned global regularity assumption), final near/far strongL2 convergence,
 and testing every original constraint and PDE. Full7.1/7.2 stays OPEN.
+
+Run159 actual check:103/110, FAILURE. Energy/tensor weak closure/full-dual
+conversion/Hodge spacetime MZ/exact near-far/approximation limit PASS.
+Same-field local Hodge convergence and Fubini isometry/surjectivity plus
+joint spacetime Riesz are unverified next-batch candidates. Reverse audit:
+full nonlinear coefficient reconstruction and distributional PDE closure
+remain prerequisites of7.1/7.2; no whole-theorem label changed to green.

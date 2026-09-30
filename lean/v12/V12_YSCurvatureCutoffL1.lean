@@ -27,7 +27,7 @@ theorem v12_raw_curvature_L1_limit
     rw [hz, hqz]
     rfl
   have hd (n : ℕ) :
-      ((v12_B_L1Class μ (Qn n) - v12_B_L1Class μ Q) : Ω → ℝ) =ᵐ[μ]
+      ((v12_B_L1Class μ (Qn n) - v12_B_L1Class μ Q : Lp ℝ 1 μ) : Ω → ℝ) =ᵐ[μ]
         fun z => v12_curvatureDensity (qn n z) - v12_curvatureDensity (q z) :=
     (Lp.coeFn_sub _ _).trans ((hr (qn n) (hn n)).sub (hr q hq))
   refine ⟨?_, ?_⟩
@@ -71,7 +71,7 @@ theorem v12_curvatureCutoffDifference_L1_limit
         (∫ z, ‖v12_curvatureCutoffDifference ((R : ℝ)+1) (qn n) q z‖ ∂v12_slab_measure a b) =
           ∫ z, ‖v12_curvatureDensity (qn n z) - v12_curvatureDensity (q z)‖
             ∂(v12_slab_measure a b).restrict (v12_spatial_cylinder R) := by
-      simp only [v12_curvatureCutoffDifference, Set.norm_indicator_eq_indicator_norm]
+      simp only [v12_curvatureCutoffDifference, norm_indicator_eq_indicator_norm]
       exact integral_indicator (v12_spatial_cylinder_measurable R)
     simpa only [he] using ht
 
@@ -84,12 +84,12 @@ theorem v12_curvature_difference_cutoff_energy
       (fun y => v12_curvatureDensity (qn y) - v12_curvatureDensity (q y)) y‖) ≤ 4*M^2 := by
   obtain ⟨hin, hbn⟩ := v12_actual_curvature_integral_bound qn hn M hM hEn
   obtain ⟨hiq, hbq⟩ := v12_actual_curvature_integral_bound q hq M hM hEq
-  have hid := (hin.sub hiq).indicator measurableSet_ball
+  have hid := (hin.sub hiq).indicator (measurableSet_ball (x := (0 : V12Spatial)) (ε := L))
   calc
     _ ≤ ∫ y, ‖v12_curvatureDensity (qn y)‖ + ‖v12_curvatureDensity (q y)‖ := by
       apply integral_mono hid.norm (hin.norm.add hiq.norm)
       intro y
-      exact (Set.norm_indicator_le_norm_self _ _ _).trans (norm_sub_le _ _)
+      exact (norm_indicator_le_norm_self _ _ _).trans (norm_sub_le _ _)
     _ = (∫ y, ‖v12_curvatureDensity (qn y)‖) + (∫ y, ‖v12_curvatureDensity (q y)‖) :=
       integral_add hin.norm hiq.norm
     _ ≤ 4*M^2 := by linarith

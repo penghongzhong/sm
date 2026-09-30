@@ -28,7 +28,7 @@ theorem v12_actual_curvature_near_error
   obtain ⟨hBn, hnB⟩ := v12_actual_curvature_integral_bound qn hn M hM hEn
   obtain ⟨hB, hqB⟩ := v12_actual_curvature_integral_bound q hq M hM hEq
   have hid : Integrable (fun y => (Bn y - B y) • v12_hodgeKernel (x-y)) volume := by
-    simpa only [sub_smul, Bn, B] using hin.sub hiq
+    simpa only [Pi.sub_apply, sub_smul, Bn, B] using hin.sub hiq
   have he : v12_rawHodgePotential (fun y => Bn y - B y) x =
       v12_rawHodgePotential Bn x - v12_rawHodgePotential B x := by
     unfold v12_rawHodgePotential

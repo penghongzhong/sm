@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v13 CoefficientClosure, 139 pages,
+Current generated private working expansion: v14 HodgeLocalLimit, 139 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,30 +16,24 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run158 (partial, FAILURE)
+## Latest completed verification: Run159 (partial, FAILURE)
 
-Run36759628253/job110038571528 checked
-`df1bab6e3451d831d481a54177fb64c4e5a52810`:97 COMPILE_OK,3 COMPILE_FAIL.
-NEW PASS: inherited global Lp budget by local Fatou/exhaustion; actual
-compact-test localL1 -> global weakL2 extension; actual spatial Fourier
-Riesz multiplier, its time lifting, norm<=1 and frequency homogeneity.
-
-Remaining roots: inherited energy's measure alias in ofReal/toReal rewrite;
-tensor weak closure's raw representative unfolding; NNReal notation and
-ENNReal power order in the Hodge spacetime bound. Repairs await next run.
-The next batch also submits concrete near/far Hodge identity, original
-curvature cutoff L1 convergence/slice budget, actual Young spacetime limit,
-and its same-field curvature application. Generic scalar/vector Bochner
-sections, weak-integral/full-dual conversion, actual drift and W/mass bounds
-are candidates, not yet certified.
+Run36761539790/job110045062180 checked
+`0cf430e54f1557d4e2910886a085688425302a90`:103 COMPILE_OK,7 COMPILE_FAIL.
+NEW PASS: inherited energy, tensor weak closure, integral/full-dual conversion,
+actual spacetime Hodge MZ estimate, exact near/far identity, approximation
+limit lemma. Five roots remain in generic sections, W algebra, curvature
+cutoff L1, actual drift and curvature near error; two downstream imports fail.
+Repairs and full same-field Hodge local43/local2 applications await next run.
+The next batch also constructs the scalar Fubini L2 equivalence by Mathlib
+simple-function density and the joint spacetime Riesz operator. These are
+candidates, not certified. No additional external interface was introduced.
 
 Precisely registered external HLS remains an explicit proposition parameter,
-not an axiom/instance: Tao Corollary1.11.18 (n=2). Its concrete spatial Hodge
-application passed157; full spacetime MZ/application chain is still being
-checked. No paper-specific conclusion is in the external schema.
-
-Original Hodge/MZ applications and Theorem7.1 nonlinear closure remain open.
-No full Theorem7.2, scattering or whole-paper certificate is claimed.
+not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge
+application passed157 and spacetime MZ passed159. Full original coefficient
+instantiation and distributional closure still require proofs.
+No full Theorem7.1/7.2, scattering or whole-paper certificate is claimed.
 
 ## Layers and remaining actual correspondence
 
