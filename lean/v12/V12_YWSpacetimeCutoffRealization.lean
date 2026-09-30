@@ -45,6 +45,7 @@ theorem v12_spacetime_cutoff_memLp
     Filter.Eventually.of_forall (fun t => v12_cutoffN_ae_continuousRep p hpc hps N (Q t))
   have hn := v12_eLpNorm_sections_eq_spacetime μ 2 r hr (fun t => P (Q t)) hrep
   refine ⟨hn.symm.trans_lt hPQ, ?_⟩
+  change eLpNorm r 2 (μ.prod (volume : Measure V12Spatial)) ≤ _
   rw [← hn]
   exact v12_eLpNorm_compCLM_le μ P Q 2 hQ.aestronglyMeasurable
 
@@ -111,7 +112,7 @@ theorem v12_spacetimeCutoffClass_norm_le
   have h := ENNReal.toReal_mono
     (show ENNReal.ofReal ‖v12_cutoffN p hpc hps N‖ * eLpNorm Q 2 μ ≠ ∞ by finiteness)
     hbound
-  simpa only [ENNReal.toReal_mul, ENNReal.toReal_ofReal (norm_nonneg _)] using h
+  simpa only [v12_slab_measure, μ, ENNReal.toReal_mul, ENNReal.toReal_ofReal (norm_nonneg _)] using h
 
 #print axioms v12_spacetimeCutoffClass_ae
 #print axioms v12_spacetimeCutoffClass_norm_le

@@ -8,6 +8,7 @@ convergence is a hypothesis. Obtaining the strong L2 Hodge-potential limit
 from the original Q sequence is a separate, still-open obligation.
 -/
 set_option autoImplicit false
+set_option maxHeartbeats 2000000
 namespace SMScattering.W20Full
 open Filter MeasureTheory
 open scoped Topology ENNReal
@@ -42,6 +43,18 @@ theorem v12_driftL1Class_raw_rep
     (v12_driftL1Class μ A Q : Ω → V12Field) =ᵐ[μ] fun z => a z • q z := by
   filter_upwards [v12_driftL1Class_ae μ A Q, hA, hQ] with z hz ha hq
   rw [hz, ha, hq]
+
+/-- Strong L1 convergence passes the actual integral against bounded tests. -/
+theorem v12_L1_bounded_test_limit
+    {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    (φ : Lp ℂ ∞ μ) (Fn : ℕ → Lp V12Field 1 μ) (F : Lp V12Field 1 μ)
+    (hF : Tendsto Fn atTop (𝓝 F)) :
+    Tendsto (fun n => ∫ z, φ z • Fn n z ∂μ) atTop (𝓝 (∫ z, φ z • F z ∂μ)) := by
+  let B : ℂ →L[ℂ] V12Field →L[ℂ] V12Field := ContinuousLinearMap.lsmul ℂ ℂ
+  have h := ((B.lpPairing μ ∞ 1 φ).continuous.tendsto F).comp hF
+  simpa only [ContinuousLinearMap.lpPairing_eq_integral] using h
+
+#print axioms v12_L1_bounded_test_limit
 
 #print axioms v12_driftL1Class_ae
 #print axioms v12_driftL1Class_raw_rep

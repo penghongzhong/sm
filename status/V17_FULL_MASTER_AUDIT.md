@@ -1,5 +1,13 @@
 # W20 v17 full-master audit
 
+> **Historical audit — certification withdrawn.** The GREEN labels and
+> whole-block conclusions below record an earlier, insufficient standard of
+> evidence. They are not current full-statement certificates. See
+> `SEMANTIC_VERIFICATION_CORRECTION_20260928.md` and
+> `WHOLE_PAPER_COVERAGE.md`; actual objects, internal proof steps and concrete
+> external-theorem hypotheses must still be checked against the full manuscript.
+
+
 Authority: synchronized 133-page W20 manuscript.
 
 Exact v17 proof-bearing inventory: **7 nodes**.

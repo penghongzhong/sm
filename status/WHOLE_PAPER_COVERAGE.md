@@ -16,22 +16,24 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run 150 (partial, FAILURE)
+## Latest completed verification: Run 151 (partial, FAILURE)
 
-Run 36746798597 / job 109994918397, checked
-`bfb411e1d8e8d48b9a3bfc7cc5d232119107692b`: 64 COMPILE_OK, 4 COMPILE_FAIL.
-Measurable local-limit gluing, actual Lp-section Bochner measurability and
-every-time Bochner energy now compile. Run149 already checked nested-limit
-compatibility, the global Fourier/convolution representative and the revised
-ZF/ZG a.e.-time nonlinear-source version. The only root failure in Run150 is
-YTBochnerSectionNorm: redundant `.aemeasurable` after `hq.enorm`, and a finite
-4/3 exponent fact. YW/YX/ZI are import-blocked, not certified.
+Run 36748251585 / job 109999892160, checked
+`03bcbdd875d6ee1652eb243ff353793102a0379b`: 67 COMPILE_OK, 5 COMPILE_FAIL.
+New PASS: exact Fubini norm equality and actual nonlinear-source Bochner
+realizations (YT), original-field slab class with exact norm and uniform
+bound (YX), and an internally constructed compact test cutoff. Run150's
+measurable gluing, Lp section measurability and every-time Bochner energy
+remain passed. The original ZA–ZH chain remains passed.
 
-The next batch repairs YT, submits the common measurable-limit connection
-from the raw PDE and actual frequency tail (no hCompact input), constructs the
-auxiliary compact test cutoff and the actual raw time-source realizations,
-and adds concrete L2 x L2 -> L1 drift-product convergence. These candidates
-are unverified until actual compilation. No full 7.2/7.1 or scattering claim.
+Root failures: YW needs explicit local-definition/measure unfolding;
+YZ uses the wrong continuity theorem name; the concrete drift-product
+convergence proof hits the default heartbeat limit. ZI/ZJ are import-blocked.
+The next batch repairs these and adds exact quadratic L1 coefficient limits,
+the actual continuum Hodge far-field estimate and the truncated near-kernel
+Lp condition. No new candidate is certified before actual compilation.
+Full original Hodge/MZ instantiation, 7.1 closure and whole-paper proof remain
+open; this is not a full 7.2 or scattering certificate.
 
 ## Layers and remaining actual correspondence
 

@@ -46,7 +46,7 @@ theorem v12_actual_raw_time_realizations
           eLpNorm (Function.uncurry q) 4 (v12_slab_measure a b) := by
   have hspace : ∀ t ∈ Set.Icc a b, Continuous (q t) := by
     intro t ht
-    apply continuous_iff_continuousOn_univ.mpr
+    apply continuousOn_univ.mp
     exact hqcont.comp (continuous_const.prodMk continuous_id).continuousOn
       (fun y _ => ⟨ht, Set.mem_univ y⟩)
   have htime : ∀ y, ContinuousOn (fun t => q t y) (Set.Icc a b) := by

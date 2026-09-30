@@ -98,3 +98,24 @@ and exact a.e. representatives are explicit; no product convergence interface.
 ContDiffBump (inner radius1, outer2) and HasCompactSupport.toSchwartzMap construct
 the auxiliary test cutoff, discharging its hypotheses inside the common-limit
 connection. Original Hodge reconstruction and M/Z estimates remain open.
+
+## Run151 update and new closure applications
+
+YT exact norm/source realization and YX actual raw slab representation compile.
+The original statements and source exponent assumptions are retained.
+YW unfolding, YZ continuity lemma name and drift-product heartbeat need repairs.
+
+New candidates define the actual rotation (-x_2,x_1), kernel
+K(x)=(2*pi*norm(x)^2)^(-1) times that rotation, including value0 at0.
+The kernel norm and far-field integrability/bound are proved, not assumptions.
+For the near kernel, Mathlib/Analysis/SpecialFunctions/Pow/Integral.lean
+`integrableOn_ball_of_norm_le_rpow` assumes a finite-dimensional real Haar
+space, dim>=1, singular exponent alpha<dim, a.e. power domination and strong
+measurability. The concrete application proves dimension2, alpha=4/3<2,
+actual kernel measurability and exact power domination; it yields the truncated
+kernel in L^(4/3). Near-field Young convergence/interpolation remain open.
+
+The quadratic local-limit candidate uses actual coordinate projections,
+complex conjugation, Holder products, real/imaginary parts and coefficient4/2
+to realize B,S,m,W. It proves L1 convergence from L2 convergence and exact
+a.e. representatives. No quadratic convergence is an interface premise.

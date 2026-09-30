@@ -1,5 +1,13 @@
 # W20 W2 full-master audit
 
+> **Historical audit — certification withdrawn.** The GREEN labels and
+> whole-block conclusions below record an earlier, insufficient standard of
+> evidence. They are not current full-statement certificates. See
+> `SEMANTIC_VERIFICATION_CORRECTION_20260928.md` and
+> `WHOLE_PAPER_COVERAGE.md`; actual objects, internal proof steps and concrete
+> external-theorem hypotheses must still be checked against the full manuscript.
+
+
 Verification authority:
 \`stereo_scalar_scattering_v20_W20_LeanSync_v2\`.
 
