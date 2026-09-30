@@ -3,9 +3,9 @@ import lean.v12.V12_TestDerivatives
 /-!
 Finite-Lp derivative errors of the exact compact spatial test.
 The derivative identities are proved in V12_TestDerivatives. Here dominated
-convergence controls the cutoff-derivative terms and the reflected kernel
-tails. The conclusion includes p=2; p=infinity is expressly excluded.
-These limits are for fixed x, not uniform over all spatial translations.
+convergence controls the cutoff-derivative terms and reflected kernel tails.
+The conclusion includes p=2; p=infinity is expressly excluded.
+Limits are for fixed x, not uniform over all spatial translations.
 -/
 
 set_option autoImplicit false
@@ -55,10 +55,9 @@ theorem v12_dominated_eLpNorm_tendsto_zero
 theorem v12_testScale_le_one (R : ℕ) : v12_testScale R ≤ 1 := by
   unfold v12_testScale
   apply (div_le_one (by positivity)).2
-  positivity
+  linarith [Nat.cast_nonneg (α := ℝ) R]
 
-/-- The actual cutoff-derivative terms vanish in every finite nonzero Lp.
-Schwartz boundedness supplies a common majorant; r_R^d tends to zero. -/
+/-- Actual cutoff-derivative terms vanish in every finite nonzero Lp. -/
 theorem v12_scaled_test_eLpNorm_tendsto
     (p : ℝ≥0∞) (hp0 : p ≠ 0) (hpt : p ≠ ⊤)
     (a : SchwartzMap V12Spatial ℝ) (k : SchwartzMap V12Spatial ℂ)
@@ -111,8 +110,7 @@ theorem v12_eLpNorm_add_tendsto_zero
   apply squeeze_zero (fun _ => bot_le) (fun R => eLpNorm_add_le (f := f R) (g := g R) hp)
   simpa only [zero_add] using hf.add hg
 
-/-- No gradient-error convergence assumption: the error is computed from
-its actual Frechet derivative and bounded by the proved finite-Lp limits. -/
+/-- The gradient error is computed from its actual Frechet derivative. -/
 theorem v12_compactSpatialTest_fderiv_error_tendsto
     (p : ℝ≥0∞) (hp : 1 ≤ p) (hpt : p ≠ ⊤)
     (χ : SchwartzMap V12Spatial ℝ) (hχ0 : χ 0 = 1)
@@ -130,7 +128,8 @@ theorem v12_compactSpatialTest_fderiv_error_tendsto
       p volume) atTop (𝓝 0) := by
     simpa only [eLpNorm_neg] using htail
   have hsum := v12_eLpNorm_add_tendsto_zero p hp
-    (fun R y => (1 * (v12_testScale R)^1) • v12_compactSpatialTest (∂_{m} χ) k R x y)
+    (fun R y => (1 * (v12_testScale R)^1) •
+      v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x y)
     (fun R y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))
     hsmall hneg
   convert hsum using 1
@@ -141,8 +140,7 @@ theorem v12_compactSpatialTest_fderiv_error_tendsto
   simp only [pow_one, one_mul, Pi.add_apply]
   abel
 
-/-- The second-derivative error has all three genuine cutoff contributions.
-In particular neither r_R^2 D^2 chi nor the -2 r_R cross term is discarded. -/
+/-- All three second-derivative cutoff contributions are retained. -/
 theorem v12_compactSpatialTest_second_error_tendsto
     (p : ℝ≥0∞) (hp : 1 ≤ p) (hpt : p ≠ ⊤)
     (χ : SchwartzMap V12Spatial ℝ) (hχ0 : χ 0 = 1)
