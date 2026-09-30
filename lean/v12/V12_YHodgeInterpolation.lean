@@ -26,9 +26,11 @@ theorem v12_hodge_L2_interpolation_squared
   have hh := eLpNorm_smul_le_mul_eLpNorm (p := (4 : ℝ≥0∞) / 3)
     (q := 4) (r := 1) hf.norm hf.norm
   have hp : eLpNorm (fun z => ‖f z‖ ^ 2) 1 μ = (eLpNorm f 2 μ) ^ 2 := by
-    simpa only [Real.rpow_two, ENNReal.ofReal_ofNat, one_mul, ENNReal.rpow_natCast] using
+    simpa only [Real.rpow_two, ENNReal.ofReal_ofNat, one_mul, ENNReal.rpow_two] using
       (eLpNorm_norm_rpow (p := 1) (q := (2 : ℝ)) f hf (by norm_num))
-  simpa only [smul_eq_mul, ← pow_two, hp, eLpNorm_norm f hf] using hh
+  change eLpNorm (fun z => ‖f z‖ * ‖f z‖) 1 μ ≤
+    eLpNorm (fun z => ‖f z‖) ((4 : ℝ≥0∞) / 3) μ * eLpNorm (fun z => ‖f z‖) 4 μ at hh
+  simpa only [← pow_two, hp, eLpNorm_norm f hf] using hh
 
 
 /-- Local L^(4/3) convergence and a uniform L4 bound force actual L2
@@ -46,13 +48,14 @@ theorem v12_hodge_L2_limit_of_fourThirds_limit
       eLpNorm (f n) ((4 : ℝ≥0∞) / 3) μ * C := by
     intro n
     exact (v12_hodge_L2_interpolation_squared μ (f n) (h43 n).aestronglyMeasurable).trans
-      (mul_le_mul_left' (h4 n) _)
+      (mul_le_mul' le_rfl (h4 n))
   have hfin : ∀ n, eLpNorm (f n) ((4 : ℝ≥0∞) / 3) μ * C < ∞ := by
     intro n
     exact ENNReal.mul_lt_top (h43 n) hC.lt_top
   have h2 : ∀ n, MemLp (f n) 2 μ := by
     intro n
     have hh := (hb n).trans_lt (hfin n)
+    change eLpNorm (f n) 2 μ < ∞
     simpa [ENNReal.pow_lt_top_iff] using hh
   refine ⟨h2, ?_⟩
   have hbR : ∀ n, ((eLpNorm (f n) 2 μ).toReal) ^ 2 ≤

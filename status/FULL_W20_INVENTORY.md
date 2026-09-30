@@ -1,7 +1,7 @@
 # Full W20 manuscript inventory -- not a coverage certificate
 
-Current working authority: private `stereo_scalar_scattering_v20_W20_LeanSync_v10_HLSSource` (138 pages).
-The original 207 theorem-class statements remain byte-identical across the v6–v10 working expansions; provenance is in MANUSCRIPT_SYNC.md.
+Current working authority: private `stereo_scalar_scattering_v20_W20_LeanSync_v11_HodgeBounds` (138 pages).
+The original 207 theorem-class statements remain byte-identical across the v6–v11 working expansions; provenance is in MANUSCRIPT_SYNC.md.
 The target remains the full W20 manuscript originally supplied as 133 pages.
 The 36-page Lean-min edition is only an auxiliary reference.
 
@@ -69,3 +69,10 @@ Standard analysis and precise published external theorems remain allowed;
 the task is not to reconstruct all analysis from zero.
 
 Current evidence supersedes the historical v4 boundary above: Run150 verifies nested compatibility, measurable gluing, actual section Bochner measurability and every-time energy. The raw/slab fixed-frequency connection remains compilation-blocked; original Hodge/MZ and full nonlinear closure remain open.
+
+Latest actual chain update (Run154): raw Fourier/cutoff representatives,
+Bochner realization, actual compact-test PDE/IBP/source limits, cutoff
+identity, fixed-frequency compactness, common subsequence and measurable
+gluing are compiled through ZL original Coulomb entry. The old v4 paragraph
+above describes the historical starting batch. Original Hodge/MZ and full7.1
+closure still block full7.2 and all dependent certifications.

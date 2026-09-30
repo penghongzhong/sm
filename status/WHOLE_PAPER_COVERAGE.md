@@ -16,22 +16,26 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run154 (partial, FAILURE)
+## Latest completed verification: Run155 (partial, FAILURE)
 
-Run36752799679/job110015401536 checked
-`f67ecd20517d50ac1ae652d911a1401ce9f2c510`:77 COMPILE_OK,4 COMPILE_FAIL.
-NEW PASS: near Hodge kernel L^(4/3), raw cutoff tail identification, ZK actual
-source/time-object construction, ZL original Coulomb equation entry with a<=b.
-The actual original PDE -> compact tests/IBP -> source limits -> cutoff time
-identity -> fixed-frequency compactness -> common measurable local limit is
-now compiled. No hIntegral/hRep/hBudget/hCompact input at the ZL endpoint.
-Actual coefficient Hodge/MZ budgets remain explicit and not yet discharged.
+Run36754225915/job110020249019 checked
+`0cba91cd1d65e6700feed862a33311f67a00f15e`:79 COMPILE_OK,6 COMPILE_FAIL.
+NEW PASS: actual strongL2 drift-product strongL1 limit and bounded-test
+integrals; weakL2/strongL2 varying-test integral limit. The raw original
+Coulomb -> compactness -> common measurable local-limit chain ZL stays green.
 
-Root failure: nonexistent Function.uncurry_apply identifier in the nonlinear
-Holder limit proof. Quadratic and actual curvature/far applications import-
-blocked. The next batch unfolds Function.uncurry directly and adds actual
-interpolation, Bochner Young, dense-test extension and weak-strong candidates.
-Only an actual later successful run can certify any new candidate.
+Root failures: ENNReal real/natural powers and Pi-valued product unfolding
+in interpolation; translation-measure namespace and IntegrableOn unfolding
+in Young; a redundant tactic in dense-test extension; partial definitions,
+conjugation API and Pi.add_apply in quadratic coefficients. Curvature/far-
+application files remain import-blocked. Fixes are next-run candidates.
+
+The next batch also submits raw Young representative identification and
+finite-time norm upgrading. Precisely registered external HLS is represented
+by an explicit proposition parameter (not an axiom/instance); concrete
+exponents, vector-kernel domination and Hodge application are proved in
+separate candidates. The source is Tao Corollary1.11.18, n=2; no paper-specific
+budget or conclusion is part of that interface.
 
 Original Hodge/MZ applications and Theorem7.1 nonlinear closure remain open.
 No full Theorem7.2, scattering or whole-paper certificate is claimed.

@@ -70,8 +70,10 @@ theorem v12_tensorL1Class_continuous
     (v12_componentL2 μ k).continuous
   have hr := (v12_componentL2 μ j).continuous
   have h := ((ContinuousLinearMap.mul ℝ ℂ).holderL μ 2 2 1).continuous₂.comp (hl.prodMk hr)
-  simpa only [Function.comp_def, Function.uncurry, ContinuousLinearMap.holderL_apply_apply,
-    v12_tensorL1Class] using h
+  have hc (q : Lp ℂ 2 μ) : Complex.conjCLE.toContinuousLinearMap.compLpL 2 μ q =
+      Complex.conjCLE.toContinuousLinearMap.compLp q := rfl
+  unfold v12_tensorL1Class
+  simpa only [Function.comp_def, Function.uncurry, ContinuousLinearMap.holderL_apply_apply, hc] using h
 
 noncomputable def v12_B_L1Class
     {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω) (Q : Lp V12Field 2 μ) : Lp ℝ 1 μ :=
@@ -134,9 +136,7 @@ theorem v12_massL1Class_ae
     (v12_massL1Class μ Q : Ω → ℝ) =ᵐ[μ]
       fun z => ‖(Q z) 0‖ ^ 2 + ‖(Q z) 1‖ ^ 2 := by
   have hid (z : ℂ) : (star z * z).re = ‖z‖ ^ 2 := by
-    change (Complex.conj z * z).re = _
-    rw [Complex.conj_mul']
-    rfl
+    simp [Complex.mul_re, Complex.star_def, Complex.sq_norm, Complex.normSq_apply] <;> ring
   filter_upwards [Lp.coeFn_add (v12_S_L1Class μ 0 0 Q) (v12_S_L1Class μ 1 1 Q),
     v12_S_L1Class_ae μ 0 0 Q, v12_S_L1Class_ae μ 1 1 Q] with z ha h0 h1
   change v12_massL1Class μ Q z = _
@@ -175,7 +175,7 @@ theorem v12_W_L1Class_ae
     v12_squareL1Class_ae μ 0 Q, v12_squareL1Class_ae μ 1 Q] with z hsm ha h0 h1
   change v12_W_L1Class μ Q z = _
   change v12_W_L1Class μ Q z = 2 * (v12_squareL1Class μ 0 Q + v12_squareL1Class μ 1 Q) z at hsm
-  rw [hsm, ha, h0, h1]
+  rw [hsm, ha, Pi.add_apply, h0, h1]
 
 theorem v12_W_strong_L1
     {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
@@ -186,8 +186,8 @@ theorem v12_W_strong_L1
     intro j
     have h := ((ContinuousLinearMap.mul ℂ ℂ).holderL μ 2 2 1).continuous₂.comp
       ((v12_componentL2 μ j).continuous.prodMk (v12_componentL2 μ j).continuous)
-    simpa only [Function.comp_def, Function.uncurry, ContinuousLinearMap.holderL_apply_apply,
-      v12_squareL1Class] using h
+    unfold v12_squareL1Class
+    simpa only [Function.comp_def, Function.uncurry, ContinuousLinearMap.holderL_apply_apply] using h
   exact (((hs 0).tendsto Q |>.comp hQ).add ((hs 1).tendsto Q |>.comp hQ)).const_smul (2 : ℂ)
 
 #print axioms v12_squareL1Class_ae

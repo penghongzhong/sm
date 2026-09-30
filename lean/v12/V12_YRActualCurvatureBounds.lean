@@ -26,7 +26,7 @@ theorem v12_curvatureDensity_eLpNorm_le
   have hmono := eLpNorm_mono_ae_real (p := p) hB
     (Filter.Eventually.of_forall (fun z => v12_curvatureDensity_bound (q z)))
   have hpow : eLpNorm (fun z => ‖q z‖ ^ 2) p μ = (eLpNorm q (p * 2) μ) ^ 2 := by
-    simpa only [Real.rpow_two, ENNReal.ofReal_ofNat, ENNReal.rpow_natCast] using
+    simpa only [Real.rpow_two, ENNReal.ofReal_ofNat, ENNReal.rpow_two] using
       (eLpNorm_norm_rpow (p := p) (q := (2 : ℝ)) q hq (by norm_num))
   have h2 : ‖(2 : ℝ)‖ₑ = (2 : ℝ≥0∞) := by
     rw [← ofReal_norm]

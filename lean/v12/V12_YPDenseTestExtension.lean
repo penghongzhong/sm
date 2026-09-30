@@ -36,7 +36,7 @@ theorem v12_dense_test_extension
     rw [dist_comm (T y), dist_eq_norm, dist_eq_norm, ← map_sub]
     exact T.le_opNorm (x-y)
   have hb : (C + ‖T‖) * dist x y < ε / 2 := by
-    have he : K * δ = ε / 2 := by dsimp [δ]; field_simp; ring
+    have he : K * δ = ε / 2 := by dsimp [δ]; field_simp [ne_of_gt hK]
     have hh : (C + ‖T‖) * dist x y ≤ K * dist x y := by
       apply mul_le_mul_of_nonneg_right _ dist_nonneg
       dsimp [K]

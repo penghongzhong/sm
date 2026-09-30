@@ -16,7 +16,7 @@ theorem v12_subRight_measurePreserving (y : V12Spatial) :
     MeasurePreserving (v12_subRightFamily y)
       (volume : Measure V12Spatial) (volume : Measure V12Spatial) := by
   change MeasurePreserving (fun x : V12Spatial => x-y) volume volume
-  exact (volume : Measure V12Spatial).measurePreserving_sub_right y
+  exact measurePreserving_sub_right (volume : Measure V12Spatial) y
 
 noncomputable def v12_translateKernel (p : ℝ≥0∞) [Fact (1 ≤ p)]
     (K : Lp V12Spatial p (volume : Measure V12Spatial)) (y : V12Spatial) :=
@@ -86,7 +86,7 @@ theorem v12_truncatedHodgeKernel_integrable (R : ℝ) :
       (volume : Measure V12Spatial) := by
   rw [integrable_indicator_iff measurableSet_ball]
   apply (integrable_norm_iff v12_hodgeKernel_measurable.aestronglyMeasurable.restrict).mp
-  simpa using v12_hodgeKernel_ball_power_integrable R 1 (by norm_num)
+  simpa [IntegrableOn] using v12_hodgeKernel_ball_power_integrable R 1 (by norm_num)
 
 noncomputable def v12_rawNearHodge (R : ℝ) (B : V12Spatial → ℝ) (x : V12Spatial) :=
   ∫ y, B y • ((Metric.ball (0 : V12Spatial) R).indicator v12_hodgeKernel) (x-y)

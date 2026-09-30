@@ -57,3 +57,15 @@ identify the real/complex/vector Lebesgue conventions, prove the actual
 B-slice L^(4/3) hypotheses, dominate the concrete Hodge kernel, prove the
 time interpolation/Fubini estimates and carry the original M/Z constants.
 No new unproved axiom has been added to the Lean environment.
+
+### Explicit HLS boundary (2026-09-30 continuation)
+V12_YHLSExternalStatement defines V12ExternalHLS2D, the exact n=2
+specialization of registered Tao Corollary1.11.18, as a proposition parameter.
+No axiom, global instance or proof of this external theorem is declared.
+Applications may retain this precise published foundation under the user's
+standard/external-analysis allowance. It must remain visible in final audits;
+#print axioms alone does not display proposition parameters.
+YSHodgeFractionalDomination and YTHodgeHLSApplication are separate concrete
+application candidates. Internal PDE, coefficient budgets, compactness and
+closure conclusions are excluded from the external schema. None of these
+candidates has yet passed Lean.
