@@ -523,9 +523,11 @@ theorem v12_schwartzKernelSymbolLInf_ae
     (k : SchwartzMap V12Spatial ℂ) :
     (v12_schwartzKernelSymbolLInf k : V12Spatial → ℂ)
       =ᵐ[volume] fun η => 𝓕 k η := by
+  have h :=
+    v12_symbolToLInf_ae (v12_schwartzKernelSymbolBCF k)
+  filter_upwards [h] with η hη
   simpa [v12_schwartzKernelSymbolLInf,
-    v12_schwartzKernelSymbolBCF] using
-      (v12_symbolToLInf_ae (v12_schwartzKernelSymbolBCF k))
+    v12_schwartzKernelSymbolBCF] using hη
 
 /-- On Schwartz Fourier data, multiplication by the L-infinity class of the
 Fourier transform of k is exactly the Schwartz pointwise pairing
