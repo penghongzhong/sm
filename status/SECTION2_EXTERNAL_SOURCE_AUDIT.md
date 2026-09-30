@@ -39,3 +39,21 @@ and checked hypotheses does not discharge the HLS application.
 The dedicated Q0 tactic repair is historical implementation evidence; it is
 not a certificate for these still-open analytic steps. Current authoritative
 scope is the whole-paper coverage ledger and semantic verification correction.
+
+## Precise HLS source recovered (2026-09-30; application still open)
+
+Terence Tao, *An Epsilon of Room, I: Real Analysis*, author/AMS-authorized
+preliminary edition, Corollary1.11.18, printed page182 (PDF index190),
+https://terrytao.wordpress.com/wp-content/uploads/2012/12/gsm-117-tao3-epsilon1.pdf .
+Hypotheses: n-dimensional Euclidean Lebesgue space, 1<p,r<infinity,
+0<alpha<n, 1/p+alpha/n=1+1/r, f in Lp. Conclusion: convolution with
+|x|^(-alpha) is defined a.e., belongs to Lr and has norm <=C(p,alpha,n)*norm(f).
+This source uses alpha as the kernel exponent, not the potential order.
+Concrete instance: n2,alpha1,p4/3,r4; 3/4+1/2=1+1/4.
+
+The source derives the result from weak Young/Schur interpolation immediately
+above it. Registration is not a Lean application certificate. Remaining:
+identify the real/complex/vector Lebesgue conventions, prove the actual
+B-slice L^(4/3) hypotheses, dominate the concrete Hodge kernel, prove the
+time interpolation/Fubini estimates and carry the original M/Z constants.
+No new unproved axiom has been added to the Lean environment.

@@ -147,3 +147,16 @@ new formulas are not marked formally verified. Original statements unchanged.
 TeX SHA256 c4bb9fa5d1b72d85d65d71bb22bd7ea511715b051e566d370aa53ff934461642
 PDF SHA256 8c5dcd566e0ebf3513f325a7b4f30b0da000e7a10150987c07ab9ccf37c7d469
 Both artifacts were privately saved; neither is committed to this public repository.
+
+## Private V10 exact HLS-source sync (2026-09-30)
+
+138pages;207 original theorem-class environments unchanged. The author/AMS
+primary source Tao, An Epsilon of Room I, Corollary1.11.18 p182 is now cited
+with exact assumptions and the dimension2/exponent4/3-to4 specialization.
+No Lean HLS application is claimed by this bibliographic registration.
+Three complete XeLaTeX passes and PDF conversion succeeded after clearing
+truncated auxiliary files; pages5 and137 visually checked. No overfull boxes
+or missing references in the final log.
+TeX SHA256 d3577339c3fb30401eb0cad5ef6cde874b55a11717c348aa33ee920658e709cc
+PDF SHA256 1bc33e06fe8890978ba34038a95a071b701bae19c8b32bc1334d97c202c23081
+Privately saved; no TeX/PDF is included in this public repository.

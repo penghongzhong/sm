@@ -119,3 +119,12 @@ The quadratic local-limit candidate uses actual coordinate projections,
 complex conjugation, Holder products, real/imaginary parts and coefficient4/2
 to realize B,S,m,W. It proves L1 convergence from L2 convergence and exact
 a.e. representatives. No quadratic convergence is an interface premise.
+
+## Run152 actual connection evidence
+
+YW, YZRawSourceTimeBounds, ZI and ZJ compile, including the full raw-divergence
+PDE-to-common-measurable-limit chain. Remaining concrete hypotheses are visible
+in the declarations, not hidden interfaces. Original Hodge/MZ and nonlinear
+closure still need proof. New raw-tail identification and raw-source common
+limit candidates remove the supplied time-Lp objects; a separate zero-length
+slab proof prevents silently excluding degenerate finite intervals.

@@ -32,7 +32,9 @@ theorem v12_strong_L2_drift_product_limit
     Tendsto (fun n => v12_driftL1Class μ (An n) (Qn n)) atTop
       (𝓝 (v12_driftL1Class μ A Q)) := by
   let B : ℂ →L[ℂ] V12Field →L[ℂ] V12Field := ContinuousLinearMap.lsmul ℂ ℂ
-  exact ((B.holderL μ 2 2 1).continuous₂.tendsto (A,Q)).comp (hA.prodMk_nhds hQ)
+  have h := ((B.holderL μ 2 2 1).continuous₂.tendsto (A,Q)).comp (hA.prodMk_nhds hQ)
+  simpa only [Function.comp_def, ContinuousLinearMap.holderL_apply_apply,
+    v12_driftL1Class, B] using h
 
 /-- The same constructed L1 class agrees with the actual raw product. -/
 theorem v12_driftL1Class_raw_rep
@@ -52,7 +54,8 @@ theorem v12_L1_bounded_test_limit
     Tendsto (fun n => ∫ z, φ z • Fn n z ∂μ) atTop (𝓝 (∫ z, φ z • F z ∂μ)) := by
   let B : ℂ →L[ℂ] V12Field →L[ℂ] V12Field := ContinuousLinearMap.lsmul ℂ ℂ
   have h := ((B.lpPairing μ ∞ 1 φ).continuous.tendsto F).comp hF
-  simpa only [ContinuousLinearMap.lpPairing_eq_integral] using h
+  simpa only [Function.comp_def, ContinuousLinearMap.lpPairing_eq_integral, B,
+    ContinuousLinearMap.lsmul_apply] using h
 
 #print axioms v12_L1_bounded_test_limit
 

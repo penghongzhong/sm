@@ -30,9 +30,9 @@ theorem v12_hodgeRotation_continuous : Continuous v12_hodgeRotation := by
 
 theorem v12_hodgeKernel_measurable : Measurable v12_hodgeKernel := by
   unfold v12_hodgeKernel
-  apply Measurable.smul
-  · fun_prop
-  · exact v12_hodgeRotation_continuous.measurable
+  have hs : Measurable (fun z : V12Spatial => (2 * Real.pi * ‖z‖ ^ 2)⁻¹) := by
+    fun_prop
+  exact hs.smul v12_hodgeRotation_continuous.measurable
 
 theorem v12_hodgeKernel_norm (z : V12Spatial) :
     ‖v12_hodgeKernel z‖ = (2 * Real.pi * ‖z‖)⁻¹ := by
