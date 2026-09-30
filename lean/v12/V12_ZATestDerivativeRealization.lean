@@ -18,9 +18,9 @@ open scoped Topology ENNReal ContDiff
 
 theorem v12_reflectedSchwartzL2_ae
     (k : SchwartzMap V12Spatial ℂ) (x : V12Spatial) :
-    (v12_reflectedTranslate (k.toLp 2) x : V12Spatial → ℂ)
+    (v12_reflectedTranslate (k.toLp 2 (volume : Measure V12Spatial)) x : V12Spatial → ℂ)
       =ᵐ[volume] fun y => k (x-y) := by
-  have h₁ := v12_reflectedTranslate_ae (k.toLp 2) x
+  have h₁ := v12_reflectedTranslate_ae (k.toLp 2 (volume : Measure V12Spatial)) x
   have h₂ := (v12_subLeft_measurePreserving x).quasiMeasurePreserving.ae
     (k.coeFn_toLp 2 (volume : Measure V12Spatial))
   filter_upwards [h₁, h₂] with y h₁y h₂y
@@ -32,15 +32,17 @@ variable (χ : SchwartzMap V12Spatial ℝ) (hc : HasCompactSupport χ)
   (hχ0 : χ 0 = 1) (hχb : ∀ y, 0 ≤ χ y ∧ χ y ≤ 1)
   (k : SchwartzMap V12Spatial ℂ) (x : V12Spatial)
 
+include hχ0 hχb
+
 /-- The exact first derivative of the compact test, as an L2 class. -/
 theorem v12_actual_test_first_L2_tendsto (m : V12Spatial) :
     Tendsto (fun R => (∂_{m}
-      (v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x)).toLp 2)
-      atTop (𝓝 (v12_reflectedTranslate ((-∂_{m} k).toLp 2) x)) := by
+      (v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x)).toLp 2 (volume : Measure V12Spatial))
+      atTop (𝓝 (v12_reflectedTranslate ((-∂_{m} k).toLp 2 (volume : Measure V12Spatial)) x)) := by
   let Ψ := fun R => v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x
-  apply v12_Lp_tendsto_of_ae_eLpNorm_error volume 2
-    (fun R => (∂_{m} (Ψ R)).toLp 2)
-    (v12_reflectedTranslate ((-∂_{m} k).toLp 2) x)
+  apply v12_Lp_tendsto_of_ae_eLpNorm_error (E := ℂ) (volume : Measure V12Spatial) 2
+    (fun R => (∂_{m} (Ψ R)).toLp 2 (volume : Measure V12Spatial))
+    (v12_reflectedTranslate ((-∂_{m} k).toLp 2 (volume : Measure V12Spatial)) x)
     (fun R y => (∂_{m} (Ψ R)) y) (fun y => (-∂_{m} k) (x-y))
     (fun R => (∂_{m} (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial))
     (v12_reflectedSchwartzL2_ae (-∂_{m} k) x)
@@ -55,8 +57,8 @@ theorem v12_actual_test_first_L2_tendsto (m : V12Spatial) :
 /-- The exact two-coordinate Laplacian, not an assumed L2 approximation. -/
 theorem v12_actual_test_laplacian_L2_tendsto :
     Tendsto (fun R => (Δ
-      (v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x)).toLp 2)
-      atTop (𝓝 (v12_reflectedTranslate ((Δ k).toLp 2) x)) := by
+      (v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x)).toLp 2 (volume : Measure V12Spatial))
+      atTop (𝓝 (v12_reflectedTranslate ((Δ k).toLp 2 (volume : Measure V12Spatial)) x)) := by
   let Ψ := fun R => v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x
   let e := EuclideanSpace.basisFun (Fin 2) ℝ
   let H : Fin 2 → ℕ → V12Spatial → ℂ := fun j R y =>
@@ -76,8 +78,8 @@ theorem v12_actual_test_laplacian_L2_tendsto :
       ((∂_{e 0} (∂_{e 0} k)) (x-y) + (∂_{e 1} (∂_{e 1} k)) (x-y)) = _
     dsimp only [H, Pi.add_apply]
     abel
-  apply v12_Lp_tendsto_of_ae_eLpNorm_error volume 2
-    (fun R => (Δ (Ψ R)).toLp 2) (v12_reflectedTranslate ((Δ k).toLp 2) x)
+  apply v12_Lp_tendsto_of_ae_eLpNorm_error (E := ℂ) (volume : Measure V12Spatial) 2
+    (fun R => (Δ (Ψ R)).toLp 2 (volume : Measure V12Spatial)) (v12_reflectedTranslate ((Δ k).toLp 2 (volume : Measure V12Spatial)) x)
     (fun R y => (Δ (Ψ R)) y) (fun y => (Δ k) (x-y))
     (fun R => (Δ (Ψ R)).coeFn_toLp 2 (volume : Measure V12Spatial))
     (v12_reflectedSchwartzL2_ae (Δ k) x)
@@ -99,10 +101,10 @@ theorem v12_actual_test_fullSource_L1_tendsto
     let Ψ := fun R => v12_compactSpatialTestSchwartz χ hc (χ.smooth (⊤ : ℕ∞)) k R x
     let e := EuclideanSpace.basisFun (Fin 2) ℝ
     Tendsto (fun R => ∫ t,
-      ‖v12_testSourceFromLpKernels ((Δ (Ψ R)).toLp 2)
-        (fun j => (∂_{e j} (Ψ R)).toLp 2) ((Ψ R).toLp 4) Q F G t -
-      v12_testSourceFromLpKernels (v12_reflectedTranslate ((Δ k).toLp 2) x)
-        (fun j => v12_reflectedTranslate ((-∂_{e j} k).toLp 2) x)
+      ‖v12_testSourceFromLpKernels ((Δ (Ψ R)).toLp 2 (volume : Measure V12Spatial))
+        (fun j => (∂_{e j} (Ψ R)).toLp 2 (volume : Measure V12Spatial)) ((Ψ R).toLp 4) Q F G t -
+      v12_testSourceFromLpKernels (v12_reflectedTranslate ((Δ k).toLp 2 (volume : Measure V12Spatial)) x)
+        (fun j => v12_reflectedTranslate ((-∂_{e j} k).toLp 2 (volume : Measure V12Spatial)) x)
         (v12_reflectedTranslateL4 (k.toLp 4) x) Q F G t‖ ∂μ) atTop (𝓝 0) := by
   dsimp only
   exact v12_testSourceFromLpKernels_L1_tendsto_of_MemLp μ _ _ _ _ _ _
