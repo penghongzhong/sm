@@ -78,7 +78,7 @@ theorem v12_scaled_test_eLpNorm_tendsto
         (c * (v12_testScale R)^d) • v12_compactSpatialTest a k R x y) := by
       change Continuous ((c * (v12_testScale R)^d) • v12_compactSpatialTest a k R x)
       exact (v12_compactSpatialTest_smooth a (a.smooth (⊤ : ℕ∞)) k R x).continuous.const_smul
-        (c * (v12_testScale R)^d)
+        (c * (v12_testScale R)^d : ℝ)
     exact hc.aestronglyMeasurable
   · intro R y
     have hr : ‖(v12_testScale R)^d‖ ≤ 1 := by
@@ -118,9 +118,7 @@ theorem v12_eLpNorm_add_tendsto_zero
       eLpNorm (f R) p volume + eLpNorm (g R) p volume := by
     intro R
     exact eLpNorm_add_le (μ := (volume : Measure V12Spatial)) (f := f R) (g := g R) hp
-  exact tendsto_of_tendsto_of_tendsto_of_le_of_le
-    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0))
-    hsum (fun R => bot_le) hle
+  exact squeeze_zero (fun R => bot_le) hle hsum
 
 /-- Pointwise negation is related to function negation before taking its norm. -/
 theorem v12_eLpNorm_pointwise_neg (p : ℝ≥0∞) (f : V12Spatial → ℂ) :
@@ -173,7 +171,17 @@ theorem v12_compactSpatialTest_fderiv_error_tendsto
   have hneg : Tendsto (fun R => eLpNorm
       (fun y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))
       p volume) atTop (𝓝 0) := by
-    simpa only [v12_eLpNorm_pointwise_neg] using htail
+    have heq : (fun R => eLpNorm
+        (fun y => -(v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y)))
+        p volume) =
+        (fun R => eLpNorm
+          (fun y => v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y))
+          p volume) := by
+      funext R
+      exact v12_eLpNorm_pointwise_neg p
+        (fun y => v12_compactSpatialTest χ (∂_{m} k) R x y - (∂_{m} k) (x-y))
+    rw [heq]
+    exact htail
   simp_rw [v12_test_first_error_decomposition]
   exact v12_eLpNorm_add_tendsto_zero p hp _ _ hsmall hneg
 
