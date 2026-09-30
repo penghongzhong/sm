@@ -16,26 +16,27 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run157 (partial, FAILURE)
+## Latest completed verification: Run158 (partial, FAILURE)
 
-Run36758210089/job110033772738 checked
-`4b9929ab9fc987a5a559182729fa409224f38d92`:93 COMPILE_OK,3 COMPILE_FAIL.
-NEW PASS: raw Young convolution equals the constructed Lp representative;
-finite-time norm upgrading; concrete compact-continuous L2 test density;
-mixed curvature bound; fractional kernel domination; actual vector Hodge
-HLS and its spatial energy/L4 application. Existing raw Coulomb compactness
-and common strongly measurable local-limit chain remains checked.
+Run36759628253/job110038571528 checked
+`df1bab6e3451d831d481a54177fb64c4e5a52810`:97 COMPILE_OK,3 COMPILE_FAIL.
+NEW PASS: inherited global Lp budget by local Fatou/exhaustion; actual
+compact-test localL1 -> global weakL2 extension; actual spatial Fourier
+Riesz multiplier, its time lifting, norm<=1 and frequency homogeneity.
 
-Root failures: exhaustion Fatou filter inference, scalar Riesz Holder exponent
-inference and inverse Fourier norm rewriting. Inherited energy was blocked.
-The next batch repairs these and adds actual local-to-global weak closure,
-raw tensor weak limits, time lifting of the Riesz operator, and the actual
-spacetime Hodge MZ bound. New candidates are not certified before their run.
+Remaining roots: inherited energy's measure alias in ofReal/toReal rewrite;
+tensor weak closure's raw representative unfolding; NNReal notation and
+ENNReal power order in the Hodge spacetime bound. Repairs await next run.
+The next batch also submits concrete near/far Hodge identity, original
+curvature cutoff L1 convergence/slice budget, actual Young spacetime limit,
+and its same-field curvature application. Generic scalar/vector Bochner
+sections, weak-integral/full-dual conversion, actual drift and W/mass bounds
+are candidates, not yet certified.
 
-External HLS remains an explicit precisely registered proposition parameter,
-not an axiom/instance: Tao, An Epsilon of Room I, Corollary1.11.18, n=2.
-The concrete spatial application now passed157. No paper-specific budget
-or conclusion is put inside that external interface.
+Precisely registered external HLS remains an explicit proposition parameter,
+not an axiom/instance: Tao Corollary1.11.18 (n=2). Its concrete spatial Hodge
+application passed157; full spacetime MZ/application chain is still being
+checked. No paper-specific conclusion is in the external schema.
 
 Original Hodge/MZ applications and Theorem7.1 nonlinear closure remain open.
 No full Theorem7.2, scattering or whole-paper certificate is claimed.

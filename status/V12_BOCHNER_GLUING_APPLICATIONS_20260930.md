@@ -189,3 +189,19 @@ YSCoulombRieszTimeOperator and YVHodgeSpacetimeBudget are uncompiled.
 Reverse audit: global Hodge MZ, spacetime Riesz realization, near/far strong
 Hodge convergence, all actual zero-order coefficients, and distributional
 closure must still be connected before marking full7.1 or full7.2.
+
+
+## Run158 superseding update
+
+97/100 actually passed. YOInheritedBounds, YQWeakClosureFromLocal,
+YRieszCoulombOperator and YSCoulombRieszTimeOperator PASS. Inherited energy,
+tensor weak raw representative and spacetime Hodge ENNReal power proof have
+specific compilation repairs in the next batch. Same-field near/far and
+Young convergence candidates now derive density hypotheses from original
+Q local strongL2 convergence and energy; these have not been run yet.
+
+Remaining reverse application obligations include the joint spacetime
+representative for time-lifted Riesz outputs and exact S/A0/V/W reconstruction,
+original fields' measurability on the restricted time interval (no stronger
+unmentioned global regularity assumption), final near/far strongL2 convergence,
+and testing every original constraint and PDE. Full7.1/7.2 stays OPEN.

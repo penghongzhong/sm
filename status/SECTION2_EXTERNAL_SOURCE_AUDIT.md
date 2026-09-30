@@ -69,3 +69,12 @@ YSHodgeFractionalDomination and YTHodgeHLSApplication are separate concrete
 application candidates. Internal PDE, coefficient budgets, compactness and
 closure conclusions are excluded from the external schema. None of these
 candidates has yet passed Lean.
+
+
+### Run157/158 application evidence supersedes candidate labels above
+The actual kernel domination, complex-positive scalar comparison, B-slice
+L^(4/3) membership and vector Hodge HLS/spatial energy-L4 application all
+passed157. Actual Fourier Riesz L2 norm<=1, time lifting and 2pi homogeneity
+passed158. Spacetime Hodge MZ has three small API repairs under verification;
+full original coefficient reconstruction/application remains OPEN.
+No additional external interface was registered in this batch.

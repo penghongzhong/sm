@@ -25,6 +25,7 @@ theorem v12_local_energy_inherited
   have he (n : ℕ) : ENNReal.ofReal ((eLpNorm (fun z => f n z - u z) 2 μ).toReal) =
       eLpNorm (fun z => f n z - u z) 2 μ :=
     ENNReal.ofReal_toReal ((hf2 n).sub hu2).eLpNorm_ne_top
+  change Tendsto (fun n => (eLpNorm (fun z => f n z - u z) 2 μ).toReal) atTop (𝓝 0) at hlim
   have hENN : Tendsto (fun n => eLpNorm (fun z => f n z - u z) 2 μ) atTop (𝓝 0) := by
     simpa only [Function.comp_def, he, ENNReal.ofReal_zero] using
       ENNReal.continuous_ofReal.continuousAt.tendsto.comp hlim

@@ -13,7 +13,7 @@ theorem v12_eLpNorm_four_power
     {Ω E : Type*} [MeasurableSpace Ω] [NormedAddCommGroup E]
     (μ : Measure Ω) (f : Ω → E) (hf : AEStronglyMeasurable f μ) :
     eLpNorm f 4 μ ^ 4 = ∫⁻ z, ‖f z‖ₑ ^ (4 : ℕ) ∂μ := by
-  have h := eLpNorm_nnreal_pow_eq_lintegral (p := (4 : ℝ≥0)) (by norm_num) hf
+  have h := eLpNorm_nnreal_pow_eq_lintegral (p := (4 : NNReal)) (by norm_num) hf
   simpa only [ENNReal.coe_ofNat, NNReal.coe_ofNat, ENNReal.rpow_ofNat] using h
 
 theorem v12_spatial_L4_budget_to_spacetime
@@ -27,7 +27,7 @@ theorem v12_spatial_L4_budget_to_spacetime
       K * eLpNorm (fun x => q (t,x)) 4 volume) :
     eLpNorm A 4 (μ.prod (volume : Measure V12Spatial)) ≤
       K * eLpNorm q 4 (μ.prod (volume : Measure V12Spatial)) := by
-  apply le_of_pow_le_pow_left₀ (by norm_num : (4 : ℕ) ≠ 0) (zero_le _)
+  apply (ENNReal.pow_le_pow_left_iff (by norm_num : (4 : ℕ) ≠ 0)).mp
   rw [mul_pow, v12_eLpNorm_four_power _ A hA, v12_eLpNorm_four_power _ q hq]
   rw [lintegral_prod _ (hA.enorm.pow_const 4), lintegral_prod _ (hq.enorm.pow_const 4)]
   rw [← lintegral_const_mul' (K^4) _ (by finiteness)]

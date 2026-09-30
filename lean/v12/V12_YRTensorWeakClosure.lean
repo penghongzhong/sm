@@ -99,6 +99,7 @@ theorem v12_actual_tensor_weak_L2_limit
     have hg := ((v12_tensorDensity_memLp μ j k r hr4).coeFn_toLp).restrict
       (s := v12_spatial_cylinder R)
     filter_upwards [hl, hr2.coeFn_toLp, hg] with z hz hq hz2
+    change v12_tensorL2Class μ j k r hr4 z = v12_tensorDensity j k (r z) at hz2
     rw [hz, hq, hz2]
     rfl
   have hF : ∀ R, Tendsto (Fn R) atTop (𝓝 (F R)) := by
@@ -113,9 +114,13 @@ theorem v12_actual_tensor_weak_L2_limit
         ∫ z, v12_tensorDensity j k (r z) * φ z ∂μ := by
     apply integral_congr_ae
     filter_upwards [(v12_tensorDensity_memLp μ j k r hr).coeFn_toLp] with z hz
+    change v12_tensorL2Class μ j k r hr z = v12_tensorDensity j k (r z) at hz
     rw [hz]
   intro φ
-  simpa only [Vn, V, he] using hw φ
+  have hwφ := hw φ
+  change Tendsto (fun n => ∫ z, v12_tensorL2Class μ j k (qn n) (hn4 n) z * φ z ∂μ) atTop
+    (𝓝 (∫ z, v12_tensorL2Class μ j k q hq4 z * φ z ∂μ)) at hwφ
+  simpa only [he] using hwφ
 
 #print axioms v12_tensorDensity_L2_bound
 #print axioms v12_raw_L2_toLp_tendsto
