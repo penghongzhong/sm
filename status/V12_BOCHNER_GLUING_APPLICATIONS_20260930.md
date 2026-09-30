@@ -85,3 +85,16 @@ classes, raw slab realization, and fixed-frequency compactness from the raw
 PDE. The latter constructs hIntegral, hRep and hBudget internally. Its
 upstream raw-system/Hodge/MZ applications remain open. All new declarations
 remain candidates until an actual successful run.
+
+## Run150 update
+
+YMeasurableLpSections, YMeasurableLocalLimitGluing and YUEveryTimeBochnerEnergy
+compile with only propext/Classical.choice/Quot.sound. Exact Fubini norms still
+failed in YT; no downstream same-field slab/compactness PASS claim.
+Next leaves use Mathlib.MeasureTheory.Function.Holder:
+ContinuousLinearMap.holder/coeFn_holder/holderL for actual L2 x L2 -> L1
+products and strong convergence. The paper-specific source/product definitions
+and exact a.e. representatives are explicit; no product convergence interface.
+ContDiffBump (inner radius1, outer2) and HasCompactSupport.toSchwartzMap construct
+the auxiliary test cutoff, discharging its hypotheses inside the common-limit
+connection. Original Hodge reconstruction and M/Z estimates remain open.

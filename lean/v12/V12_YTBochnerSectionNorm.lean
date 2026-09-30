@@ -29,7 +29,7 @@ theorem v12_eLpNorm_sections_eq_spacetime
   have hQ := v12_aestronglyMeasurable_Lp_sections μ p q hq Q hrep
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hptop hQ,
     eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hptop hq,
-    lintegral_prod _ (hq.enorm.aemeasurable.pow_const p.toReal)]
+    lintegral_prod _ (hq.enorm.pow_const p.toReal)]
   congr 1
   apply lintegral_congr_ae
   filter_upwards [hrep] with t ht
@@ -85,7 +85,7 @@ theorem v12_exists_actual_source_Bochner_realizations
           eLpNorm W 2 (μ.prod (volume : Measure V12Spatial))) *
         eLpNorm q 4 (μ.prod (volume : Measure V12Spatial)) := by
   letI : Fact ((2 : ℝ≥0∞) ≠ ∞) := ⟨by norm_num⟩
-  letI : Fact (((4 : ℝ≥0∞) / 3) ≠ ∞) := ⟨by norm_num⟩
+  letI : Fact (((4 : ℝ≥0∞) / 3) ≠ ∞) := ⟨by finiteness⟩
   have hFex := fun j => v12_exists_Bochner_Lp_sections μ 2 (v12_driftProduct A q j)
     (v12_driftProduct_memLp (μ.prod (volume : Measure V12Spatial)) A q j (hA j) hq)
   choose F hFr hFLp hFnorm using hFex

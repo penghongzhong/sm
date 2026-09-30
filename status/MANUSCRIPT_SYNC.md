@@ -134,3 +134,16 @@ The original statements and the paper's hypotheses were not weakened.
 Run 147 compiled Coulomb RHS conversion and spatial Fubini slices; full
 Bochner and gluing modules are pending. Written mathematics and PDF generation
 do not imply a Lean pass. Private manuscript artifacts stay outside GitHub.
+
+## Private V9 ActualSlab sync (2026-09-30)
+
+138 pages; 207 original theorem-class environments byte-identical to V8;
+1271 unique labels, no missing references, duplicates or overfull boxes.
+Three XeLaTeX passes and XDV conversion succeeded; pages13–14 visually checked.
+New v9:eq:actual-slab-cutoff (7.24) and v9:eq:actual-slab-cutoff-bound (7.25),
+page13, identify the same raw/cutoff slab classes and finite-time norm bounds.
+The associated YW/YX Lean candidates are blocked by YT in Run150, so these
+new formulas are not marked formally verified. Original statements unchanged.
+TeX SHA256 c4bb9fa5d1b72d85d65d71bb22bd7ea511715b051e566d370aa53ff934461642
+PDF SHA256 8c5dcd566e0ebf3513f325a7b4f30b0da000e7a10150987c07ab9ccf37c7d469
+Both artifacts were privately saved; neither is committed to this public repository.

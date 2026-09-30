@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v8 BochnerGluing, 138 pages,
+Current generated private working expansion: v9 ActualSlab, 138 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,19 +16,22 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run 148 (partial, FAILURE)
+## Latest completed verification: Run 150 (partial, FAILURE)
 
-Run 36743902458 / job 109985075036, checked
-`a269cd6b429016cbd53e47c5b59715ae5355bee8`: 59 COMPILE_OK, 5 COMPILE_FAIL.
-Previously passed ZA–ZH, YC and YSpacetimeSlices remain passed. New nested
-compatibility failed on the addition-side lemma; Bochner measurability failed
-on namespace, Lp carrier and zero-representative elaboration; gluing, Bochner
-norm transfer and every-time Bochner energy were dependency-blocked.
-The next batch fixes these and supplies actual global/spacetime cutoff
-representatives. It also revises ZF/ZG to accept a.e.-time F/G representatives,
-matching the actual Fubini construction rather than demanding all-time source
-Lp membership. These changed ZF/ZG statements require fresh compilation.
-No full Theorem 7.2/7.1, scattering or whole-paper certificate is claimed.
+Run 36746798597 / job 109994918397, checked
+`bfb411e1d8e8d48b9a3bfc7cc5d232119107692b`: 64 COMPILE_OK, 4 COMPILE_FAIL.
+Measurable local-limit gluing, actual Lp-section Bochner measurability and
+every-time Bochner energy now compile. Run149 already checked nested-limit
+compatibility, the global Fourier/convolution representative and the revised
+ZF/ZG a.e.-time nonlinear-source version. The only root failure in Run150 is
+YTBochnerSectionNorm: redundant `.aemeasurable` after `hq.enorm`, and a finite
+4/3 exponent fact. YW/YX/ZI are import-blocked, not certified.
+
+The next batch repairs YT, submits the common measurable-limit connection
+from the raw PDE and actual frequency tail (no hCompact input), constructs the
+auxiliary compact test cutoff and the actual raw time-source realizations,
+and adds concrete L2 x L2 -> L1 drift-product convergence. These candidates
+are unverified until actual compilation. No full 7.2/7.1 or scattering claim.
 
 ## Layers and remaining actual correspondence
 
@@ -39,7 +42,7 @@ No full Theorem 7.2/7.1, scattering or whole-paper certificate is claimed.
 | v12 source products | Actual A_j Q and VQ+W conjugate(Q), Holder estimates, MemLp | Hodge-defined coefficients, M/Z bounds, Fubini time-Lp realization |
 | v12 time integration | Source L43 budget, interval Holder, weak-test residual and limit machinery | Original-system regularity, same-field time-Bochner realizations and Hodge/MZ hypotheses remain open; ZC–ZG compiled in Run 146 |
 | v12 fixed-cutoff compactness | NEW: actual cylinder representatives constructed; joint equicontinuity and L2 compact closure derived from energy/source integrals | Prove the terminal source/budget/integral/representative inputs from the original PDE; instantiate downstream common-subsequence theorem |
-| v12 local limits | Conditional common-subsequence/tail support | Compatible measurable gluing and exact Theorem-7.1 limit passage |
+| v12 local limits | Common-sequence nested compatibility and one strongly measurable glued limit, Run150 | Original-field common sequence and exact Theorem-7.1 nonlinear limit passage |
 | v13-v20 | Existing scalar/finite/dependency kernels | Exact norm objects and transitive analytic hypotheses |
 | v19 Lemma 14.7 | Fixed-anchor phase and dense-class/quantifier support | Actual Poincare measure-space and Fourier-operator instance |
 | W1-W3 | Existing kernels | Not a continuous full-theorem verified prefix |

@@ -70,8 +70,8 @@ jobs:
           count=0
           build_root="$PWD/.lake/build/lib/lean"
           mkdir -p "$build_root"
-          # Local imports currently point only from V12_TimeSourceBridge to
-          # V12_FrequencyTightnessLimit, hence this order is topological.
+          # Public module names are maintained in dependency order; the
+          # source audit checks that every local import sorts earlier.
           while IFS= read -r -d '' f; do
             count=$((count + 1))
             echo "==> $f"
