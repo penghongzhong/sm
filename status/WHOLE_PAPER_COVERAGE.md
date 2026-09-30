@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v17 SlabSourceClosure, 139 pages,
+Current generated private working expansion: v18 SpatialConstraints, 139 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,24 +16,25 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run164 (partial, FAILURE)
+## Latest completed verification: Run165 (partial, FAILURE)
 
-Run36783348350/job110118773939 checked
-`ce79f6b791254faf0b67636eb1f55b83a3448094`:122 COMPILE_OK,9 COMPILE_FAIL.
-NEW PASS: actual joint spacetime Riesz operator; norm-square weak closure;
-actual same-field Coulomb drift strong local L1; component and original
-W conjugate(Q) compact tests; actual vector drift differentiated compact tests.
-No previously passing file regressed. Counts are not paper coverage.
+Run36785327773/job110125247670 checked
+`0750f74cf376cd651098ebb8573fc4f5a840d13a`:123 COMPILE_OK,13 COMPILE_FAIL.
+NEW PASS: Fourier conjugation/reflection, real/even actual spatial Riesz
+multiplier, real spatial output. No previously passing file regressed.
+Four direct roots remain: A0 budget/weak-limit id unfolding, slab extension
+indicator/piecewise equality, local IBP Haar namespace, and actual scalar
+drift test local-finiteness instance. Nine imports failed.
 
-Three direct roots: A0 reconstruction measure-alias HSub inference,
-Fourier reflection coercion, and local IBP Haar instance/explicit arguments.
-Six imports failed. Run165 candidates repair them, prove original slab zero
-extension and MZ applicability, and add original actual-source PDE testing
-and distributional PDE closure with inherited limit-field bounds. Generic
-first-order compatibility testing derives weighted source integrability
-from the original differential relation. These candidates are UNVERIFIED.
-Exact original smooth/Hodge/A0 correspondence and torsion/div/curl closure,
-full7.1/7.2 and subsequent whole-paper branches remain OPEN.
+Run166 candidates repair these actual errors and add proved standard slab
+local-finiteness instances, raw V representative/reality, actual curvature
+compact tests, actual connection derivative tests, and original torsion/
+divergence/curl compact closure. Original PDE distributional closure and
+exact original coefficient section applications remain unverified. No
+hIntegral/hCompact or coefficient/source convergence conclusion is an input.
+Full7.1/7.2 still requires original smooth-field applicability and exact
+canonical spatial/time directions, all candidates checked, and full7.2
+instantiation; subsequent whole-paper branches remain OPEN.
 
 Precisely registered external HLS remains an explicit proposition parameter,
 not an axiom/instance: Tao Corollary1.11.18 (n=2). Concrete spatial Hodge

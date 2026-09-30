@@ -91,7 +91,7 @@ theorem v12_actualTemporalCoulomb_L2_budget
       _ = _ := by simp; ring
   unfold v12_actualTemporalCoulombL2
   apply (norm_sub_le _ _).trans
-  simp only [norm_smul, Complex.norm_ofNat]
+  simp only [id_eq, norm_smul, Complex.norm_ofNat]
   nlinarith
 
 theorem v12_actualTensorL2_dual_limit
@@ -178,7 +178,7 @@ theorem v12_actualTemporalCoulomb_weak_L2_limit
     (φ.comp (v12_spacetimeCoulombRieszOperator ((volume : Measure ℝ).restrict (Set.Icc a b)) j k))
   have hs := tendsto_finset_sum Finset.univ (fun j _ =>
     tendsto_finset_sum Finset.univ (fun k _ => hR j k))
-  simpa only [v12_actualTemporalCoulombL2, map_sub, map_smul, map_sum,
+  simpa only [v12_actualTemporalCoulombL2, id_eq, map_sub, map_smul, map_sum,
     ContinuousLinearMap.comp_apply] using (hs.const_smul (4 : ℂ)).sub ((hm φ).const_smul (2 : ℂ))
 
 #print axioms v12_actualTemporalCoulomb_L2_budget

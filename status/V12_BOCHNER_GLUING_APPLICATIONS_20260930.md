@@ -240,3 +240,7 @@ drift derivative tests PASS. Three direct roots/six imports remain.
 Run165 candidates add original slab extension/MZ, actual source L43 testing,
 full actual PDE distributional passage and original first-order compact
 constraints. Full7.1/7.2 remains OPEN; candidates are not green.
+
+Run165 actual check:123/136, FAILURE. Full spatial Fourier reality module
+PASS. Four direct roots/nine imports remain. Run166 repairs and actual
+spatial-constraint closure applications are candidates, not green.

@@ -21,6 +21,12 @@ theorem v12_smoothSlabExtension_stronglyMeasurable
   classical
   have hm := hq.measurable_piecewise (g := fun _ => (0 : V12Field)) continuousOn_const
     (measurableSet_Icc.prod MeasurableSet.univ)
+  have he : v12_smoothSlabExtension a b q =
+      (Set.Icc a b ×ˢ Set.univ).piecewise q (fun _ => (0 : V12Field)) := by
+    funext z
+    by_cases hz : z ∈ Set.Icc a b ×ˢ Set.univ <;>
+      simp [v12_smoothSlabExtension, Set.indicator_apply, Set.piecewise, hz]
+  rw [he]
   exact hm.stronglyMeasurable
 
 theorem v12_smoothSlabExtension_apply

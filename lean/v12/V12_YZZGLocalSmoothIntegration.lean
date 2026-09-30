@@ -1,3 +1,4 @@
+import lean.v12.V12_YFFiniteSlabMeasures
 import lean.v12.V12_YZZCCompactDistributionTests
 import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
 import Mathlib.MeasureTheory.Group.Prod
@@ -29,7 +30,7 @@ theorem v12_local_smooth_compact_IBP
     (hψ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ)
     (hc : HasCompactSupport ψ) (hs : tsupport ψ ⊆ U) (v : V12Spacetime) :
     (∫ z, f z * fderiv ℝ ψ z v) = -(∫ z, fderiv ℝ f z v * ψ z) := by
-  letI : IsAddHaarMeasure (volume : Measure V12Spacetime) :=
+  letI : Measure.IsAddHaarMeasure (volume : Measure V12Spacetime) :=
     Measure.prod.instIsAddHaarMeasure (volume : Measure ℝ) (volume : Measure V12Spatial)
   have hdf : ContinuousOn (fun z => fderiv ℝ f z v) U :=
     (hf.continuousOn_fderiv_of_isOpen hU (by simp)).clm_apply continuousOn_const

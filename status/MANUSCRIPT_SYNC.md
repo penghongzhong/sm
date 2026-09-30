@@ -245,3 +245,15 @@ Pending Lean applications are not certified by this manuscript sync.
 TeX SHA256 94e6627adbf8108f9a347edebd1c21700dc8ec5f358028189fc60e4b826f3b78
 PDF SHA256 e43e1e968d6a4711a83d9b15389c78b12cef5c956d9f8030fb05aa99955ebc8d
 Private manuscript files remain excluded from public Git history.
+
+## Private working v18 SpatialConstraints
+
+139 pages; all207 original statement environments byte-identical to v17.
+Expanded original div/curl compact identities, same-sequence curvature and
+connection limits, torsion AQ tests and internally proved integrability.
+Three XeLaTeX passes/PDF conversion completed; pages12/13 visually checked.
+No overfull boxes or unresolved references; existing font fallback only.
+Corresponding new Lean modules remain candidates pending actual compiler.
+TeX SHA256 de73499d4941d8890364a32cc1cc449c911d05e51f4ecc3261cc032bfd303675
+PDF SHA256 24f2eaeda37c42e90688d18debd80cf05bee39130e09212566e98b8b12fd8a3e
+Private TeX/PDF remain excluded from public Git history.
