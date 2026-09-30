@@ -54,9 +54,23 @@ theorem v12_compactSpatialTest_fderiv_apply
       funext z
       rfl]
   rw [fderiv_smul hc hk]
+  have hscale := (hasFDerivAt_id (𝕜 := ℝ) y).const_smul (v12_testScale R)
+  have hreflect := (hasFDerivAt_id (𝕜 := ℝ) y).const_sub x
+  have hccomp := (χ.hasFDerivAt (v12_testScale R • y)).comp y hscale
+  have hkcomp := (k.hasFDerivAt (x - y)).comp y hreflect
+  have hc_eval :
+      (fderiv ℝ (fun z : V12Spatial => χ (v12_testScale R • z)) y) m =
+        v12_testScale R • (fderiv ℝ (⇑χ) (v12_testScale R • y)) m := by
+    rw [hccomp.fderiv]
+    simp
+  have hk_eval :
+      (fderiv ℝ (fun z : V12Spatial => k (x - z)) y) m =
+        - (fderiv ℝ (⇑k) (x - y)) m := by
+    rw [hkcomp.fderiv]
+    simp
+  rw [hc_eval, hk_eval]
   simp [v12_compactSpatialTest, v12_testCutoff,
-    SchwartzMap.lineDerivOp_apply_eq_fderiv,
-    ContinuousLinearMap.comp_apply, smul_smul, sub_eq_add_neg]
+    SchwartzMap.lineDerivOp_apply_eq_fderiv, smul_smul, sub_eq_add_neg]
 
 /-- Standard second directional derivative identity for the same compact test.
     This is again a pure multivariable-calculus leaf, not a paper-specific PDE
@@ -77,7 +91,11 @@ theorem v12_compactSpatialTest_second_fderiv_apply
         v12_compactSpatialTest χ (∂_{m} k) R x z := by
     funext z
     exact v12_compactSpatialTest_fderiv_apply χ k R x z m
-  rw [hfun]
+  change fderiv ℝ
+      (fun z =>
+        v12_testScale R •
+          v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z -
+        v12_compactSpatialTest χ (∂_{m} k) R x z) y m = _
   have h1 : DifferentiableAt ℝ
       (fun z => v12_compactSpatialTest (∂_{m} χ : SchwartzMap V12Spatial ℝ) k R x z) y := by
     exact (v12_compactSpatialTest_differentiable (∂_{m} χ) k R x).differentiableAt
