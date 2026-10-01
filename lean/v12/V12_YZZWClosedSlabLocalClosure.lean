@@ -70,7 +70,8 @@ theorem v12_closed_slab_original_local_closure
       (μ.restrict (v12_spatial_cylinder R)) = eLpNorm (fun z => qn n z-u z) 2
       (μ.restrict (v12_spatial_cylinder R)) := by
     apply eLpNorm_congr_ae
-    filter_upwards [(v12_smoothSlabExtension_ae a b (qn n)).restrict (v12_spatial_cylinder R)] with z hz
+    filter_upwards [(v12_smoothSlabExtension_ae a b (qn n)).restrict (s := v12_spatial_cylinder R)] with z hz
+    change ext n z = qn n z at hz
     rw [hz]
   have hlimExt (R : ℕ) : Tendsto (fun n => (eLpNorm (fun z => ext n z-u z) 2
       (μ.restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0) := by
@@ -85,7 +86,8 @@ theorem v12_closed_slab_original_local_closure
       (μ.restrict (v12_real_spatial_cylinder r)) = eLpNorm (fun z => qn n z-v z) 2
       (μ.restrict (v12_real_spatial_cylinder r)) := by
     apply eLpNorm_congr_ae
-    filter_upwards [(v12_smoothSlabExtension_ae a b (qn n)).restrict (v12_real_spatial_cylinder r)] with z hz
+    filter_upwards [(v12_smoothSlabExtension_ae a b (qn n)).restrict (s := v12_real_spatial_cylinder r)] with z hz
+    change ext n z = qn n z at hz
     rw [hz]
   refine ⟨(hQ r).1, ?_⟩
   simpa only [hn] using (hQ r).2

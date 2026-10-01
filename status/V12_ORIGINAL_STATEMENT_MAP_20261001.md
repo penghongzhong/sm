@@ -19,7 +19,7 @@ Candidate entry: V12_YZZWClosedSlabLocalClosure,
 | Same-field V | v12_originalReconstructedPotential | BZ extension representative candidate, no continuity of A0 assumed |
 | Same-field W | v12_WDensity | Existing explicit quadratic formula |
 | Actual source-class equality | v12_originalScalarSource | KT candidate uses AE coefficient equality and local equality of derivatives |
-| Coefficient/source budgets | Hodge MZ and temporal Riesz L2 | Existing verified budgets, J summation still failed171 |
+| Coefficient/source budgets | Hodge MZ and temporal Riesz L2 | Existing verified budgets, J summation PASS172 |
 | Strong global measurable limit | Local L2 exhaustion then measurable representative | Existing gluing lemmas; V/W application pending |
 | Same M and Z for limit | v12_global_energy_inherited and v12_global_budget_inherited_from_local_L2 | Existing verified lemmas; V/W application pending |
 | B, A, AQ on every real-radius cylinder | V12SameFieldRealCoefficientConvergence | SD/SF candidates; AQ finite norms must be proved before toReal squeeze |
@@ -39,16 +39,36 @@ smoothness of A, continuity of V and closed-slab continuity of the time
 derivative. Those additional conditions have not been discharged from the
 literal original definition. Do not promote the ZM assembly to full7.2.
 
-The pending alternative is to obtain concrete compact-test time identities
-from the original spacetime distributional equation, with actual same-field
-source budgets, then feed the existing cutoff-limit/compactness machinery.
-Theorem7.1 closure must be applied to that SAME resulting subsequence.
+The original-distribution route now has a complete CANDIDATE dependency chain:
+GS concrete tensor tests (PASS172); GT/GU/GV/GW tensor PDE, Fubini, weighted
+time source; ZDE/ZDF residual uniqueness/source identification (pending173);
+ZDG same-Q MZ instantiation; ZDH actual vector FTC; ZES exact Q/F/G class
+match; ZFS compact Lp time identity; ZGS cutoff source/endpoint limits;
+ZIS fixed-frequency compactness; ZKS common sequence and measurable gluing;
+ZKT closure on that SAME subsequence. ZKS treats zero/empty slabs separately.
+GS PASS172; GU/GV/ZDD/ZDE PASS173. Other new applications remain candidates. ZKT is NOT a certificate.
 
-Fourier normalization audit: V12_FrequencyTightnessLimit already defines
-v12_cyclicScale N = 2*pi / 2^N, matching xi=2*pi*eta. There is no missing 2*pi
-in that scale. New local candidate V12_YFourierKernelNormalization spells out
-the inverse-integral formula and the two-dimensional Jacobian explicitly.
-It was written after Run171 started and is NOT part of Run171.
+Reverse audit: ZKT's inputs are closed continuity/open smoothness of qn,
+actual L4 membership and original M/Z bounds, literal spatial compatibility,
+literal original advective distributional PDE, and actual raw-frequency
+norm tightness. It has no input for hIntegral, hCompact, Q/F/G representatives,
+coefficient bounds, source convergence, local limits or global qn measurability.
+ZKT obtains a common local limit through ZKS, then instantiates W on qn∘σ.
+ZDG derives all internal local-integrability obligations from original MZ.
+No A0 continuity or A smoothness is added along this route.
+
+Forward audit: ZKS constructs actual time Q/F/G through YZRawSourceTimeBounds,
+using CAOriginalReconstructedBudgets for A,V,W. Scalar tested source is joined
+to vector source in ZDH and identified with exact Lp kernels in ZES; ZGS uses
+the already verified concrete cutoff/test norm limits. No norm-only field
+identification substitutes for AE equality. These applications require CI.
+
+Fourier normalization: v12_cyclicScale N = 2*pi / 2^N already matches
+xi=2*pi*eta. YFourierKernelNormalization explicitly proves the inverse-integral
+Jacobian. Its local-F unfolding correction PASS173.
+Literal manuscript/Lean Fourier-profile application must be checked together
+with the full theorem, even though the source/compactness statements use the
+actual existing cutoff definition directly.
 
 ## Foundations / acceptance
 

@@ -15,10 +15,10 @@ theorem v12_original_spatial_constraints_extension
     V12CanonicalSpatialDistributionalConstraints a b (v12_smoothSlabExtension a b q) := by
   let ext := v12_smoothSlabExtension a b q
   let μ := v12_slab_measure a b
-  have he := v12_smoothSlabExtension_ae a b q
+  have he : ext =ᵐ[μ] q := v12_smoothSlabExtension_ae a b q
   have hA (j : Fin 2) : v12_actualCoulombA ext j =ᵐ[μ] v12_actualCoulombA q j := by
     filter_upwards [v12_smoothSlabExtension_Hodge_ae a b q] with z hz
-    simp only [v12_actualCoulombA, hz]
+    simp only [v12_actualCoulombA, ext, hz]
   have hQI (j : Fin 2) (ψ : V12Spacetime → ℂ) :
       (∫ z, ext z j * ψ z ∂μ) = ∫ z, q z j * ψ z ∂μ := by
     apply integral_congr_ae
@@ -42,6 +42,7 @@ theorem v12_original_spatial_constraints_extension
     apply integral_congr_ae
     filter_upwards [he, hA k] with z hqz haz
     rw [hqz, haz]
+  dsimp only [ext, μ] at hQI hAI hBI hAQI
   intro ψ hψ hc hs
   simpa only [hQI, hAI, hBI, hAQI] using hCompat ψ hψ hc hs
 

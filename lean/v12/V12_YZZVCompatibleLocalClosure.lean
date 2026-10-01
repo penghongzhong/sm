@@ -57,12 +57,12 @@ theorem v12_same_field_distributional_local_closure
   have hmv : StronglyMeasurable v := hmu.stronglyMeasurable_mk
   have huv : u =ᵐ[μ] v := hmu.ae_eq_mk
   have hv2 (R : ℕ) : MemLp v 2 (μ.restrict (v12_spatial_cylinder R)) :=
-    (hu2 R).ae_eq (huv.restrict _)
+    (hu2 R).ae_eq (huv.restrict)
   have hnorm (R n : ℕ) : eLpNorm (fun z => qn n z-v z) 2
       (μ.restrict (v12_spatial_cylinder R)) = eLpNorm (fun z => qn n z-u z) 2
       (μ.restrict (v12_spatial_cylinder R)) := by
     apply eLpNorm_congr_ae
-    filter_upwards [huv.restrict (v12_spatial_cylinder R)] with z hz
+    filter_upwards [huv.restrict (s := v12_spatial_cylinder R)] with z hz
     rw [hz]
   have hlimv (R : ℕ) : Tendsto (fun n => (eLpNorm (fun z => qn n z-v z) 2
       (μ.restrict (v12_spatial_cylinder R))).toReal) atTop (𝓝 0) := by

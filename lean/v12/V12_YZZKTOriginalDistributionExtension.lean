@@ -65,6 +65,7 @@ theorem v12_original_distributional_PDE_extension
       (∫ z, ext z j * χ z ∂μ) = ∫ z, q z j * χ z ∂μ := by
     apply integral_congr_ae
     filter_upwards [v12_smoothSlabExtension_ae a b q] with z hz
+    change ext z = q z at hz
     rw [hz]
   have hr :
       (fun z => ((2 * Complex.I) *

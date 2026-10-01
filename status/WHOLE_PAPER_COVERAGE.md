@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v23 WeakTimeTests, 141 pages,
+Current generated private working expansion: v24 TimeSourceIdentification, 141 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,26 +16,32 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run172 (partial, FAILURE)
+## Latest completed verification: Run173 (partial, FAILURE)
 
-Run36807799145/job110195936344 checked
-`1141a1d72f892f904b5afa2e36de05c3266c2daf`:154 COMPILE_OK,20 COMPILE_FAIL.
-Four new PASS: YZZBS potential reality; YZZBW original spatial constraints;
-YZZGS concrete tensor tests; YZZJ zero-order source tests. No previous PASS
-regressed. Four direct roots: angular kernel local-definition unfolding;
-BT slab-measure transparency; K missing actual-Coulomb definition import;
-ZDD AE equality symmetry dispatch. Sixteen dependent import failures.
-See RUN172_ACTUAL_RESULTS.json. These counts are not paper coverage.
+Run36809570011/job110201386138 checked
+`a064fa329b5aff50f0ebe43a447acce361953c68`:167 COMPILE_OK,13 COMPILE_FAIL.
+Thirteen new PASS: angular Fourier normalization; BT potential representative;
+GU actual Fubini; GV spatial/time test integrability; K actual source PDE;
+N/ND/NE distribution PDE closures; S canonical predicates; SD all-real
+coefficient limits; U original constraint closure; ZDD interior FTC;
+ZDE compact residual uniqueness. No previous PASS regressed.
+Six direct roots: BU extension abbreviation; BZ missing energy-lemma import;
+GT second-derivative simp ordering and I^2; SE extension abbreviation;
+SF/V implicit AE restriction set argument. Seven dependent import failures.
+See RUN173_ACTUAL_RESULTS.json. Counts are not paper coverage.
 
-User restored GitHub compilation at 2026-10-01 10:26 Asia/Shanghai. Batch173
-repairs those four roots and submits six candidates: GT original tensor PDE,
-GU Fubini, GV actual spatial-pairing time integrability, GW original weighted
-time identity, ZDE residual uniqueness, ZDF original source identification.
-GW derives the time test identity from the original PDE; ZDF discharges the
-residual-test premise internally. Actual f/Af local integrability still needs
-original-MZ instantiation in the final application. Source-class matching,
-cutoff FTC, compactness and the same-subsequence closure remain downstream.
-No candidate is PASS before actual execution; no full 7.1/7.2 certificate.
+Batch174 fixes these roots and submits nine original-data candidates:
+CA reconstructed coefficient budgets; ZDG original MZ/source instantiation;
+ZDH original vector FTC; ZES same-field source/Lp match; ZFS compact Lp time
+identity; ZGS original cutoff identity; ZIS fixed-frequency compactness;
+ZKS common measurable limit (including zero/empty slabs); ZKT SAME-subsequence
+closure. These are NOT certified. Actual Lean execution of the entire chain
+and literal original-statement/normalization audit remain required.
+
+The new end-to-end candidate has only original smoothness, compatibility,
+M/Z and raw frequency-tightness inputs. It does not assume hIntegral,
+hCompact, source budgets, representatives, coefficient convergence or a
+local limit. Full7.1/7.2 and all later paper branches remain OPEN.
 
 The original applications derive component/second coordinate derivatives,
 the zero-extended canonical PDE with actual V, and spatial constraints.

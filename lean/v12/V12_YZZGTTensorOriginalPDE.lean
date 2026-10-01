@@ -58,8 +58,10 @@ theorem v12_original_PDE_tensor_time_source
         (fun y => fderiv ℝ ψ y (EuclideanSpace.basisFun (Fin 2) ℝ j)) z.2
         (EuclideanSpace.basisFun (Fin 2) ℝ j) :=
     v12_tensorTest_second_spatial_derivative η ψ hη hψ z.1 z.2 _ _
-  simp only [hsecond, hfirst, Φ, v12_tensorTest] at he
-  linear_combination -Complex.I * he
+  simp only [hsecond] at he
+  simp only [hfirst, Φ, v12_tensorTest] at he
+  linear_combination (norm := ring_nf) -Complex.I * he
+  simp only [Complex.I_sq] <;> ring
 
 #print axioms v12_original_PDE_tensor_time_source
 end SMScattering.W20Full

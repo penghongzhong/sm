@@ -16,8 +16,10 @@ theorem v12_real_coefficient_convergence_of_extension
   intro r
   let ν := (v12_slab_measure a b).restrict (v12_real_spatial_cylinder r)
   let ext := fun n => v12_smoothSlabExtension a b (qn n)
-  have he n := (v12_smoothSlabExtension_ae a b (qn n)).restrict (v12_real_spatial_cylinder r)
-  have hH n := (v12_smoothSlabExtension_Hodge_ae a b (qn n)).restrict (v12_real_spatial_cylinder r)
+  have he (n : ℕ) : ext n =ᵐ[ν] qn n :=
+    (v12_smoothSlabExtension_ae a b (qn n)).restrict
+  have hH (n : ℕ) : v12_spacetimeHodge (ext n) =ᵐ[ν] v12_spacetimeHodge (qn n) :=
+    (v12_smoothSlabExtension_Hodge_ae a b (qn n)).restrict
   have hBae (n : ℕ) :
       (fun z => v12_curvatureDensity (ext n z)-v12_curvatureDensity (q z)) =ᵐ[ν]
       (fun z => v12_curvatureDensity (qn n z)-v12_curvatureDensity (q z)) := by
@@ -37,6 +39,7 @@ theorem v12_real_coefficient_convergence_of_extension
     filter_upwards [he n, hH n] with z hqz haz
     simp only [v12_actualCoulombA, hqz, haz]
   have hDnorm (n : ℕ) (j : Fin 2) := eLpNorm_congr_ae (hDae n j) (p := (1 : ℝ≥0∞))
+  dsimp only [ext, ν] at hBint hAnorm hDnorm
   refine ⟨fun n => ((h r).1 n).congr (hBae n), ?_,
     (fun n => ((h r).2.2.1 n).ae_eq (hAae n)), ?_, ?_⟩
   · simpa only [hBint] using (h r).2.1

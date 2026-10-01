@@ -1,4 +1,4 @@
-import lean.v12.V12_YZZBTOriginalPotentialRepresentative
+import lean.v12.V12_YZZBUOriginalSourceBudgets
 
 /-! The original V formula on a closed time slab, using its actual A0 L2
 class. No continuous representative of A0 or V is assumed. Original spatial
