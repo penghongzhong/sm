@@ -13,21 +13,21 @@ open scoped ENNReal
 
 theorem v12_actualTemporalCoulomb_congr_ae
     (a b : ℝ) (q r : V12Spacetime → V12Field)
-    (hq : MemLp q 4 (v12_slab_measure a b)) (hr : MemLp r 4 (v12_slab_measure a b))
+    (hq : MemLp q 4 (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) (hr : MemLp r 4 (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))
     (he : q =ᵐ[v12_slab_measure a b] r) :
     v12_actualTemporalCoulombL2 a b q hq = v12_actualTemporalCoulombL2 a b r hr := by
   have hS (j k : Fin 2) :
-      v12_SL2Class (v12_slab_measure a b) j k q hq =
-      v12_SL2Class (v12_slab_measure a b) j k r hr := by
+      v12_SL2Class (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) j k q hq =
+      v12_SL2Class (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) j k r hr := by
     apply Lp.ext_iff.mpr
-    filter_upwards [v12_SL2Class_ae (v12_slab_measure a b) j k q hq,
-      v12_SL2Class_ae (v12_slab_measure a b) j k r hr, he] with z hqz hrz hz
+    filter_upwards [v12_SL2Class_ae (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) j k q hq,
+      v12_SL2Class_ae (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) j k r hr, he] with z hqz hrz hz
     rw [hqz, hrz, hz]
-  have hm : v12_massComplexL2Class (v12_slab_measure a b) q hq =
-      v12_massComplexL2Class (v12_slab_measure a b) r hr := by
+  have hm : v12_massComplexL2Class (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) q hq =
+      v12_massComplexL2Class (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) r hr := by
     apply Lp.ext_iff.mpr
-    filter_upwards [v12_massComplexL2Class_ae (v12_slab_measure a b) q hq,
-      v12_massComplexL2Class_ae (v12_slab_measure a b) r hr, he] with z hqz hrz hz
+    filter_upwards [v12_massComplexL2Class_ae (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) q hq,
+      v12_massComplexL2Class_ae (((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)) r hr, he] with z hqz hrz hz
     rw [hqz, hrz, hz]
   simp only [v12_actualTemporalCoulombL2_eq, hS, hm]
 

@@ -28,10 +28,12 @@ theorem v12_compact_pairing_time_identity_of_integrable_source
   have hoc : Set.uIoc s t ⊆ Set.Icc a b := by
     rw [Set.uIoc_of_le hst]
     exact Set.Ioc_subset_Icc_self.trans hsub
-  have he := ae_restrict_of_ae_restrict_of_subset hoc hsource
+  have he : (fun τ => ∫ y : V12Spatial, ψ y • DQ τ y)
+      =ᵐ[(volume : Measure ℝ).restrict (Set.uIoc s t)] G :=
+    ae_restrict_of_ae_restrict_of_subset hoc hsource
   have hGi : IntervalIntegrable G volume s t :=
     intervalIntegrable_iff.mpr (hG.mono_set hoc)
-  have hDi := hGi.congr_ae he.symm
+  have hDi := hGi.congr_ae (Filter.EventuallyEq.symm he)
   have hslice : ∀ τ ∈ Set.Ioo a b, Continuous (Q τ) := by
     intro τ hτ
     have hmap : Set.MapsTo (fun y : V12Spatial => (τ,y)) Set.univ

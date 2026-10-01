@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v22 OriginalDistribution, 141 pages,
+Current generated private working expansion: v23 WeakTimeTests, 141 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,24 +16,26 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run171 (partial, FAILURE)
+## Latest completed verification: Run172 (partial, FAILURE)
 
-Run36806039538/job110190473399 checked
-`e47dc7ebac76151281dcfe0954deeed81e0bf857`:150 COMPILE_OK,21 COMPILE_FAIL.
-Eight new PASS: YNS real-cylinder integrals; YSFC joint A0 representative;
-YSZZ joint coefficient reality; YWW original component PDE; YZZGP weak
- divergence product; YZZGQ original weak-divergence PDE; YZZGR original
-advective-distribution test conversion; YZZHP reverse distribution PDE.
-No previously passed module regressed. Three direct roots: BS star algebra,
-BW direction abbreviation, J integral-addition rewrite; eighteen import failures.
-See RUN171_ACTUAL_RESULTS.json. These counts are not paper coverage.
+Run36807799145/job110195936344 checked
+`1141a1d72f892f904b5afa2e36de05c3266c2daf`:154 COMPILE_OK,20 COMPILE_FAIL.
+Four new PASS: YZZBS potential reality; YZZBW original spatial constraints;
+YZZGS concrete tensor tests; YZZJ zero-order source tests. No previous PASS
+regressed. Four direct roots: angular kernel local-definition unfolding;
+BT slab-measure transparency; K missing actual-Coulomb definition import;
+ZDD AE equality symmetry dispatch. Sixteen dependent import failures.
+See RUN172_ACTUAL_RESULTS.json. These counts are not paper coverage.
 
-User restored GitHub compilation at 2026-10-01 10:26 Asia/Shanghai. Batch172
-repairs these roots, makes finite-cylinder instances explicit in SD/W,
-and tests exact angular Fourier kernel normalization, concrete tensor tests,
-and an interior-derivative FTC step. No candidate is PASS before actual execution.
-The FTC source-identification premise is an internal obligation to be derived
-from the original distribution PDE, NOT an accepted full-theorem input.
+User restored GitHub compilation at 2026-10-01 10:26 Asia/Shanghai. Batch173
+repairs those four roots and submits six candidates: GT original tensor PDE,
+GU Fubini, GV actual spatial-pairing time integrability, GW original weighted
+time identity, ZDE residual uniqueness, ZDF original source identification.
+GW derives the time test identity from the original PDE; ZDF discharges the
+residual-test premise internally. Actual f/Af local integrability still needs
+original-MZ instantiation in the final application. Source-class matching,
+cutoff FTC, compactness and the same-subsequence closure remain downstream.
+No candidate is PASS before actual execution; no full 7.1/7.2 certificate.
 
 The original applications derive component/second coordinate derivatives,
 the zero-extended canonical PDE with actual V, and spatial constraints.

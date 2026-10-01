@@ -38,9 +38,8 @@ theorem v12_cutoffKernel_angular_integral
         real_inner_smul_left, v12_cyclicScale_angular_argument])
   rw [he, Measure.integral_comp_smul_of_nonneg volume F (2 * Real.pi)
     (hR := by positivity)]
-  simpa only [V12Spatial, finrank_euclideanSpace_fin] using (rfl :
-    ((2 * Real.pi) ^ 2)⁻¹ • (∫ ξ : V12Spatial, F ξ) =
-      ((2 * Real.pi) ^ 2)⁻¹ • (∫ ξ : V12Spatial, F ξ))
+  simp only [V12Spatial, finrank_euclideanSpace_fin, F]
+
 
 #print axioms v12_cyclicScale_angular_argument
 #print axioms v12_cutoffKernel_angular_integral

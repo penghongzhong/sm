@@ -325,3 +325,17 @@ Run170142/160PASS18FAIL;Run171 pending. Full7.1/7.2 remainOPEN.
 TeX SHA256:12b1a508480ead1891ef9ab78b8454d46b591a104a59e4468d4f7396678d2342
 PDF SHA256:80d70b6fc76f6652373710f3a0965f7bee77299220b1bbcbf2dfc5ffaff6333a
 Private files remain outside the public repository.
+
+## 2026-10-01 v23 WeakTimeTests
+
+Private141pages;207original statement environments unchanged fromv22.
+Replaced unjustified pointwise differentiation of F=AQ in the time-test proof
+by genuine eta(t)*psi(x) distribution tests, actual source integrability,
+Fubini and the integrable-derivative FTC. No A0/V continuous representative
+is required by this human proof. Lean tensor/Fubini/source applications remain
+candidates, not whole-Theorem7.2 certification. Run171150/171PASS21FAIL;
+Run172pending. ThreeXeLaTeX+xdvipdfmxsuccess,nooverfull/undefinedrefs/duplicates,
+page17visuallychecked.
+TeX SHA256:50bb18a43fb5a4536edebb6b05ae97f8b3ef6129cfa1de8abcd974c8415d9def
+PDF SHA256:901d3eaf3377e958e2a74431e383f596335b5feb21ce2dceb735ae1123571d62
+Private TeX/PDF excluded from public repository.
