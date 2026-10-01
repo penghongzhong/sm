@@ -23,7 +23,7 @@ theorem v12_joint_smooth_time_hasDerivAt
   have hd : DifferentiableAt ℝ f (t,x) :=
     (hf.differentiableOn (by simp)).differentiableAt (hU.mem_nhds ht)
   have hi : HasDerivAt (fun s : ℝ => (s,x)) (1,0) t :=
-    (hasDerivAt_id' t).prodMk (hasDerivAt_const x t)
+    (hasDerivAt_id' t).prodMk (hasDerivAt_const t x)
   exact (hd.hasFDerivAt.comp_hasDerivAt t hi).differentiableAt.hasDerivAt
 
 theorem v12_joint_fderiv_spatial_slice
@@ -31,7 +31,7 @@ theorem v12_joint_fderiv_spatial_slice
     (f : V12Spacetime → E) (t : ℝ) (x v : V12Spatial)
     (hf : DifferentiableAt ℝ f (t,x)) :
     fderiv ℝ f (t,x) (0,v) = fderiv ℝ (fun y => f (t,y)) x v := by
-  have hi := (hasFDerivAt_const t x).prodMk (hasFDerivAt_id x)
+  have hi := (hasFDerivAt_const (𝕜 := ℝ) t x).prodMk (hasFDerivAt_id (𝕜 := ℝ) x)
   have hc := hf.hasFDerivAt.comp x hi
   have he := congrArg (fun L : V12Spatial →L[ℝ] E => L v) hc.fderiv
   simpa only [Function.comp_def, ContinuousLinearMap.comp_apply,
@@ -45,7 +45,7 @@ theorem v12_joint_fderiv_time_slice
     (hd : HasDerivAt (fun s => f (s,x)) d t) :
     fderiv ℝ f (t,x) v12_timeDirection = d := by
   have hi : HasDerivAt (fun s : ℝ => (s,x)) (1,0) t :=
-    (hasDerivAt_id' t).prodMk (hasDerivAt_const x t)
+    (hasDerivAt_id' t).prodMk (hasDerivAt_const t x)
   have hc := hf.hasFDerivAt.comp_hasDerivAt t hi
   exact hc.unique hd
 
@@ -61,9 +61,11 @@ theorem v12_joint_second_spatial_slice
     (continuous_fst : Continuous (Prod.fst : V12Spacetime → ℝ))
   have hdiff (y : V12Spatial) : DifferentiableAt ℝ f (t,y) :=
     (hf.differentiableOn (by simp)).differentiableAt (hU.mem_nhds ht)
-  have hd := (hf.fderiv_of_isOpen hU (by simp)).clm_apply
+  have hd : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+      (fun z => fderiv ℝ f z ((0 : ℝ),v)) U :=
+    (hf.fderiv_of_isOpen hU (by simp)).clm_apply
     (contDiffOn_const : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun _ : V12Spacetime => (0,v)) U)
+      (fun _ : V12Spacetime => ((0 : ℝ),v)) U)
   have hdif : DifferentiableAt ℝ (fun z => fderiv ℝ f z (0,v)) (t,x) :=
     (hd.differentiableOn (by simp)).differentiableAt (hU.mem_nhds ht)
   rw [v12_joint_fderiv_spatial_slice _ t x w hdif]

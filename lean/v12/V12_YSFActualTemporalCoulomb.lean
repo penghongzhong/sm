@@ -128,7 +128,7 @@ theorem v12_actualTensorL2_dual_limit
       filter_upwards [(v12_tensorDensity_memLp μ j k r hr).coeFn_toLp] with z hz
       change v12_tensorL2Class μ j k r hr z = v12_tensorDensity j k (r z) at hz
       rw [hz]
-    simpa only [he] using v12_actual_tensor_weak_L2_limit a b qn q hn4 hq4 hn2 hq2 hlim Z hZ hb j k ψ
+    simpa only [he, μ, v12_slab_measure] using v12_actual_tensor_weak_L2_limit a b qn q hn4 hq4 hn2 hq2 hlim Z hZ hb j k ψ
   exact hw j k
 
 theorem v12_actualMassL2_dual_limit
@@ -173,7 +173,7 @@ theorem v12_actualTemporalCoulomb_weak_L2_limit
       filter_upwards [(v12_tensorDensity_memLp μ j k r hr).coeFn_toLp] with z hz
       change v12_tensorL2Class μ j k r hr z = v12_tensorDensity j k (r z) at hz
       rw [hz]
-    simpa only [he] using v12_actual_tensor_weak_L2_limit a b qn q hn4 hq4 hn2 hq2 hlim Z hZ hb j k ψ
+    simpa only [he, μ, v12_slab_measure] using v12_actual_tensor_weak_L2_limit a b qn q hn4 hq4 hn2 hq2 hlim Z hZ hb j k ψ
   have hS (j k : Fin 2) (φ : Lp ℂ 2 μ →L[ℂ] ℂ) :
       Tendsto (fun n => φ (v12_SL2Class μ j k (qn n) (hn4 n))) atTop
         (𝓝 (φ (v12_SL2Class μ j k q hq4))) := by

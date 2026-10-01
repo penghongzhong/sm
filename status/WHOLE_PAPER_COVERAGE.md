@@ -16,16 +16,17 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run167 (partial, FAILURE)
+## Latest completed verification: Run168 (partial, FAILURE)
 
-Run36789168870/job110137701656 checked
-`ad5c100e157e5fafe1e559a723a4471b906a3da5`:130 COMPILE_OK,17 COMPILE_FAIL.
-NEW PASS: YZZHOriginalCompactPDE. The original scalar PDE, local product
-rule, weighted source integrability and compact first/second IBP now produce
-an actual integral identity without hIntegral. No old PASS regressed.
-Three direct roots: A0 expanded/slab measure HSub synthesis; explicit
-Eventually.mono neighbourhood proof; first-order integral ENorm instance
-mismatch. Fourteen further imports failed. No failed proof is certified.
+Run36790750504/job110142809934 checked
+`f02b16694d67eb5cb206fa4edfd98e8976f4eb04`:132 COMPILE_OK,20 COMPILE_FAIL.
+NEW PASS: YWTSlabDerivativePreservation and YZZOCompactFirstOrderConstraints.
+Three direct roots: tensor weak-limit measure aliases; canonical chain-rule
+scalar/type inference; missing component imports and torsion integral
+normalization. Seventeen further imports failed. No failed proof is certified.
+
+Batch169 repairs these three roots without changing theorem statements.
+The original-data closure and source-budget applications remain unverified.
 
 Next batch normalizes the A0/V reconstruction measures, proves first-order
 weighted integrability directly from local smoothness, and repairs the

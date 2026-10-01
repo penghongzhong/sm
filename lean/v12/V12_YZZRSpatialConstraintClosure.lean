@@ -1,3 +1,4 @@
+import lean.v12.V12_YZZEComponentTestLimits
 import lean.v12.V12_YZZLScalarDriftTest
 import lean.v12.V12_YZZOCompactFirstOrderConstraints
 import lean.v12.V12_YZZPCurvatureTestLimits
@@ -113,7 +114,7 @@ theorem v12_actual_spatial_constraints_distributional_closure
     have hraw : ∀ᵐ z ∂μ, z ∈ Prod.fst ⁻¹' Set.Ioo a b →
         fderiv ℝ (fun x => qn n x 1) z e₀ + (-1 : ℂ) * fderiv ℝ (fun x => qn n x 0) z e₁ = r z :=
       Filter.Eventually.of_forall (fun z hz => by
-        simpa only [neg_one_mul, sub_eq_add_neg] using htorsion n z hz)
+        simpa only [r, neg_one_mul, sub_eq_add_neg] using htorsion n z hz)
     have h := (v12_original_first_order_compact_constraint a b
       (fun z => qn n z 1) (fun z => qn n z 0) r ψ (-1) e₀ e₁
       (hqSmooth n 1) (hqSmooth n 0) hψ hc hs hraw).2
@@ -122,7 +123,9 @@ theorem v12_actual_spatial_constraints_distributional_closure
         Complex.I * ((∫ z, (v12_actualCoulombA (qn n) 0 z * qn n z 1) * ψ z ∂μ) -
           (∫ z, (v12_actualCoulombA (qn n) 1 z * qn n z 0) * ψ z ∂μ)) := by
       simp only [r, mul_assoc, sub_mul]
-      rw [integral_const_mul, integral_sub (hDriftInt n 0 1) (hDriftInt n 1 0)]
+      have hsplit := integral_sub (hDriftInt n 0 1) (hDriftInt n 1 0)
+      simp only [mul_assoc] at hsplit
+      rw [integral_const_mul, hsplit]
     exact h.trans he
   have hdivL := ((hA 0 e₀).neg).sub (hA 1 e₁)
   rw [funext hdivI] at hdivL

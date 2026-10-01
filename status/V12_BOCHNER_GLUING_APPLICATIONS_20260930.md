@@ -260,3 +260,13 @@ mono notation, first-order Integrable ENorm instance. Next batch repairs
 these and adds original coordinate/component PDE and div/curl/torsion
 applications, original-local-closure with measurable limit representative
 and internally constructed time derivative. All additions remain candidates.
+
+## 2026-10-01: Run168 actual results / batch169
+
+Run168 checked f02b16694d67eb5cb206fa4edfd98e8976f4eb04:132/152 modules
+compiled; this is NOT paper coverage. New checked modules: YWT local
+zero-extension derivative preservation and O original first-order compact
+constraints. The three direct roots in YSF/YWU/R are repaired for batch169:
+explicit measure unfolding, correctly typed chain rules, component imports,
+and normalization of the actual integrable torsion terms. All downstream
+original-data closures remain candidates pending actual Lean execution.
