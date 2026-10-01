@@ -1,0 +1,6 @@
+SymPy 1.14.0; actual execution 2026-10-01
+PASS: i D + L = -2 i A + G implies D = i L -2 A -i G.
+PASS: xi=2*pi*eta has 2D Jacobian (2*pi)^2.
+PASS: cyclic symbol scale = angular dyadic scale.
+These finite algebra checks do NOT prove Fubini, integrability,
+source identification, time FTC applicability or whole-paper closure.

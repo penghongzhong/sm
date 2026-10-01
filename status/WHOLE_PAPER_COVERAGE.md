@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v21 WeakDivergence, 140 pages,
+Current generated private working expansion: v22 OriginalDistribution, 141 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,21 +16,24 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run169 (partial, FAILURE)
+## Latest completed verification: Run171 (partial, FAILURE)
 
-Run36799982579/job110171906536 checked
-`bc784d148c683b5d6f2e89f8e03b7bf9d162ca03`:134 COMPILE_OK,18 COMPILE_FAIL.
-NEW PASS: YSFActualTemporalCoulomb and YWUCanonicalSliceDerivatives.
-No previous successful module regressed. Five direct roots: original temporal
-slice measure aliases, joint reality measurable/zero terms, component PDE
-uncurrying, potential weak-limit finite-cylinder instance, typed drift
-component membership. Thirteen further imports failed.
+Run36806039538/job110190473399 checked
+`e47dc7ebac76151281dcfe0954deeed81e0bf857`:150 COMPILE_OK,21 COMPILE_FAIL.
+Eight new PASS: YNS real-cylinder integrals; YSFC joint A0 representative;
+YSZZ joint coefficient reality; YWW original component PDE; YZZGP weak
+ divergence product; YZZGQ original weak-divergence PDE; YZZGR original
+advective-distribution test conversion; YZZHP reverse distribution PDE.
+No previously passed module regressed. Three direct roots: BS star algebra,
+BW direction abbreviation, J integral-addition rewrite; eighteen import failures.
+See RUN171_ACTUAL_RESULTS.json. These counts are not paper coverage.
 
-Batch170 repairs these actual roots and adds eight candidates for all-real
-radius transfer, distributional/pointwise equivalence, compact product tests,
-and removal of the unproved joint-connection-smoothness premise. New ND PDE
-closure derives local integrability of A internally from the same-Q MZ budget.
-All new or previously blocked applications remain unverified.
+User restored GitHub compilation at 2026-10-01 10:26 Asia/Shanghai. Batch172
+repairs these roots, makes finite-cylinder instances explicit in SD/W,
+and tests exact angular Fourier kernel normalization, concrete tensor tests,
+and an interior-derivative FTC step. No candidate is PASS before actual execution.
+The FTC source-identification premise is an internal obligation to be derived
+from the original distribution PDE, NOT an accepted full-theorem input.
 
 The original applications derive component/second coordinate derivatives,
 the zero-extended canonical PDE with actual V, and spatial constraints.

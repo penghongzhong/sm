@@ -72,16 +72,19 @@ theorem v12_original_extended_spatial_constraints
     exact congrArg (fun u : V12Field => u j) (v12_smoothSlabExtension_eqOn_interior a b f hz)
   refine ⟨hqs, hAs, ?_, ?_, ?_⟩
   · intro z hz
+    dsimp only [v12_spatialDirection]
     rw [hAd 0 z hz, hAd 1 z hz,
       v12_joint_fderiv_spatial_slice _ z.1 z.2 _ (hAdiff 0 z hz),
       v12_joint_fderiv_spatial_slice _ z.1 z.2 _ (hAdiff 1 z hz)]
     exact hdiv z.1 hz z.2
   · intro z hz
+    dsimp only [v12_spatialDirection]
     rw [hAd 1 z hz, hAd 0 z hz, v12_smoothSlabExtension_eqOn_interior a b f hz,
       v12_joint_fderiv_spatial_slice _ z.1 z.2 _ (hAdiff 1 z hz),
       v12_joint_fderiv_spatial_slice _ z.1 z.2 _ (hAdiff 0 z hz)]
     exact hcurl z.1 hz z.2
   · intro z hz
+    dsimp only [v12_spatialDirection]
     rw [hQd 1 hz, hQd 0 hz, hApoint 0 z hz, hApoint 1 z hz,
       v12_smoothSlabExtension_eqOn_interior a b f hz,
       v12_joint_fderiv_spatial_slice _ z.1 z.2 _ (hQdiff 1 z hz),

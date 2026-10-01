@@ -54,8 +54,10 @@ theorem v12_closed_slab_original_local_closure
   have hbound (n : ℕ) : eLpNorm (ext n) 4 μ ≤ Z := by
     rw [v12_smoothSlabExtension_eLpNorm]
     exact hb n
-  have h2 (R n : ℕ) : MemLp (ext n) 2 (μ.restrict (v12_spatial_cylinder R)) :=
-    ((h4 n).restrict (v12_spatial_cylinder R)).mono_exponent (by norm_num)
+  have h2 (R n : ℕ) : MemLp (ext n) 2 (μ.restrict (v12_spatial_cylinder R)) := by
+    letI : IsFiniteMeasure (μ.restrict (v12_spatial_cylinder R)) :=
+      v12_cylinder_isFiniteMeasure a b R
+    exact ((h4 n).restrict (v12_spatial_cylinder R)).mono_exponent (by norm_num)
   have hsComp (n : ℕ) (j : Fin 2) : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
       (fun z => ext n z j) (Prod.fst ⁻¹' Set.Ioo a b) :=
     v12_component_contDiffOn a b (ext n) j

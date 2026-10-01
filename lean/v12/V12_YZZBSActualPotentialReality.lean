@@ -42,8 +42,10 @@ theorem v12_actualPotentialL2Class_real
   filter_upwards [v12_actualPotentialL2Class_ae hHLS a b q hmq hq4 M hEq,
     v12_actualTemporalCoulomb_real a b q hq4] with z hz ha
   rw [hz]
-  simp only [star_sub, star_add, star_neg, star_mul, ha, Complex.star_def, Complex.conj_ofReal]
-  all_goals norm_num
+  have ha' : (starRingEnd ℂ) (v12_actualTemporalCoulombL2 a b q hq4 z) =
+      v12_actualTemporalCoulombL2 a b q hq4 z := ha
+  simp only [Complex.star_def, map_sub, map_add, map_neg, map_mul, map_ofNat,
+    Complex.conj_ofReal, ha']
 
 #print axioms v12_actualPotentialL2Class_ae
 #print axioms v12_actualPotentialL2Class_real

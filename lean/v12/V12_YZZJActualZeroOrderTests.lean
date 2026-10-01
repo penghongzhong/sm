@@ -80,9 +80,21 @@ theorem v12_actual_zero_order_compact_limits
   have hnInt (n : ℕ) := hint (qn n) (hn4 n) (fun R => hn2 R n)
     (v12_actualPotentialL2Class hHLS a b (qn n) (hmn n) (hn4 n) M (hEn n))
   have hqInt := hint q hq4 hq2 (v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq)
-  have heN (n : ℕ) := integral_add (hnInt n).1 (hnInt n).2
-  have heQ := integral_add hqInt.1 hqInt.2
-  dsimp only [μ] at heN heQ
+  have heN (n : ℕ) :
+      (∫ z, v12_actualPotentialL2Class hHLS a b (qn n) (hmn n) (hn4 n) M (hEn n) z *
+        (ψ z * qn n z j) + v12_WDensity (qn n z) * (ψ z * star (qn n z j))
+        ∂v12_slab_measure a b) =
+      (∫ z, v12_actualPotentialL2Class hHLS a b (qn n) (hmn n) (hn4 n) M (hEn n) z *
+        (ψ z * qn n z j) ∂v12_slab_measure a b) +
+      (∫ z, v12_WDensity (qn n z) * (ψ z * star (qn n z j)) ∂v12_slab_measure a b) :=
+    integral_add (hnInt n).1 (hnInt n).2
+  have heQ :
+      (∫ z, v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq z * (ψ z * q z j) +
+        v12_WDensity (q z) * (ψ z * star (q z j)) ∂v12_slab_measure a b) =
+      (∫ z, v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq z * (ψ z * q z j)
+        ∂v12_slab_measure a b) +
+      (∫ z, v12_WDensity (q z) * (ψ z * star (q z j)) ∂v12_slab_measure a b) :=
+    integral_add hqInt.1 hqInt.2
   simpa only [heN, heQ] using he
 
 #print axioms v12_compact_times_local_memLp_two

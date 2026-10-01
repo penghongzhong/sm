@@ -45,6 +45,8 @@ theorem v12_same_field_coefficients_all_real_radii
   have hDrift (R n : ℕ) (j : Fin 2) : MemLp
       (fun z => v12_actualCoulombA (qn n) j z • qn n z-v12_actualCoulombA q j z • q z)
       1 (μ.restrict (v12_spatial_cylinder R)) := by
+    letI : IsFiniteMeasure (μ.restrict (v12_spatial_cylinder R)) :=
+      v12_cylinder_isFiniteMeasure a b R
     have hn := (hD a b (qn n) (hmn n) (hn4 n) (ENNReal.ofReal M) (by finiteness) (hEn n) j).1
     have hq := (hD a b q hmq hq4 (ENNReal.ofReal M) (by finiteness) hEq j).1
     have h : MemLp (fun z => v12_driftProduct (v12_actualCoulombA (qn n)) (qn n) j z -

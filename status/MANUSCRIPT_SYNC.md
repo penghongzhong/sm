@@ -311,3 +311,17 @@ all later scattering branches remain OPEN pending whole-statement proof.
 TeX SHA256:d5829e3b5897b69446bf78652389cebee05f41a593685e465cd68e1490428570
 PDF SHA256:250f89e6563d075ec799f943cc91ecff789e6a4c4ec6c668bb7388deca92df7b
 Private artifacts saved successfully; only metadata is committed publicly.
+
+## 2026-10-01 v22 OriginalDistribution
+
+Private v22:141 pages;207 original theorem/lemma/proposition/corollary
+statement environments byte-identical to v21. Three XeLaTeX passes plus
+xdvipdfmx succeeded; pages14/19 visually checked, no overfull boxes or
+undefined references. Existing CJK bold-font substitution warning remains.
+Original advective distributional test formula is explicit; weak-divergence
+product identity is derived, and no extra joint connection smoothness or
+A0 continuity is imposed. Certification boundary updated to actual
+Run170142/160PASS18FAIL;Run171 pending. Full7.1/7.2 remainOPEN.
+TeX SHA256:12b1a508480ead1891ef9ab78b8454d46b591a104a59e4468d4f7396678d2342
+PDF SHA256:80d70b6fc76f6652373710f3a0965f7bee77299220b1bbcbf2dfc5ffaff6333a
+Private files remain outside the public repository.
