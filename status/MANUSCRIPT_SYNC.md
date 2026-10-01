@@ -292,3 +292,22 @@ extra premise in the original-local-closure candidate. Do not treat it as
 implied by the displayed Q bounds. The next proof uses f times a compact
 test in the ORIGINAL distributional div A equation, deriving the advective
 to divergence-form conversion with only local integrability of A.
+
+## Private v21 weak-divergence sync (2026-10-01)
+
+Private working expansion v21 WeakDivergence:140pages,207 original theorem
+statements byte-identical to v20. Three XeLaTeX passes plus xdvipdfmx; no
+overfull boxes, undefined references or duplicate labels. Page14 visually
+inspected. Actual proof text now uses the genuine Q_j times compact test in
+the original distributional div A=0 equation. This avoids imposing joint
+space-time smoothness on the nonlocal connection. Source coefficients need
+not be pointwise continuous representatives. Added equation label
+v21:eq:weak-divergence-product. Both pointwise-original-PDE and original
+advective-distributional-PDE routes are described separately and precisely.
+
+Actual status synchronized to Run169:134/152 modules compiled,18failed;
+Run170 candidates pending. Counts are not paper coverage. Full7.1/7.2 and
+all later scattering branches remain OPEN pending whole-statement proof.
+TeX SHA256:d5829e3b5897b69446bf78652389cebee05f41a593685e465cd68e1490428570
+PDF SHA256:250f89e6563d075ec799f943cc91ecff789e6a4c4ec6c668bb7388deca92df7b
+Private artifacts saved successfully; only metadata is committed publicly.

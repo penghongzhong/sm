@@ -30,7 +30,8 @@ theorem v12_ae_eq_of_measurable_sections
       (fun x => hg.mk g (t,x)) := by
     filter_upwards [he, Measure.ae_ae_of_ae_prod hf.ae_eq_mk,
       Measure.ae_ae_of_ae_prod hg.ae_eq_mk] with t ht hft hgt
-    exact hft.symm.trans (ht.trans hgt)
+    filter_upwards [hft, ht, hgt] with x hx hy hz
+    exact hx.symm.trans (hy.trans hz)
   have hj : hf.mk f =ᵐ[μ.prod (volume : Measure V12Spatial)] hg.mk g :=
     (Measure.ae_prod_iff_ae_ae (hfm.measurableSet_eq_fun hgm)).mpr hs
   exact hf.ae_eq_mk.trans (hj.trans hg.ae_eq_mk.symm)

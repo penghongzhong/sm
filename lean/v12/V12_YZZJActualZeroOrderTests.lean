@@ -82,6 +82,7 @@ theorem v12_actual_zero_order_compact_limits
   have hqInt := hint q hq4 hq2 (v12_actualPotentialL2Class hHLS a b q hmq hq4 M hEq)
   have heN (n : ℕ) := integral_add (hnInt n).1 (hnInt n).2
   have heQ := integral_add hqInt.1 hqInt.2
+  dsimp only [μ] at heN heQ
   simpa only [heN, heQ] using he
 
 #print axioms v12_compact_times_local_memLp_two

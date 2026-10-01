@@ -110,7 +110,6 @@ theorem v12_scalar_PDE_pointwise_of_distributional
     linear_combination htst
   intro z hz
   have he := sub_eq_zero.mp (hzero z hz)
-  dsimp [r] at he
   rw [v12_spacetime_scalar_Coulomb_product_rule A f z e₀ e₁
     (fun j => ((hA j).differentiableOn (by simp)).differentiableAt (hU.mem_nhds hz))
     ((hf.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hz)) (hdiv z hz)] at he

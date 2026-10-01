@@ -61,6 +61,7 @@ theorem v12_distributional_divergence_product
           A j z * (f z * fderiv ℝ ψ z v) ∂μ) := by
         apply integral_congr_ae
         exact Filter.Eventually.of_forall (fun z => by
+          dsimp only
           rw [v12_local_smooth_compact_product_derivative U hU f ψ hf hψ hs z v]
           ring)
       _ = _ := integral_add (hi j v) (hi' j v)

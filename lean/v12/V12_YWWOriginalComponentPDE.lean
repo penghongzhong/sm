@@ -93,7 +93,7 @@ theorem v12_original_curried_scalar_PDE
     v12_component_fderiv f (t,x) (0,e 1) j hf,
     hspace 0, hspace 1]
   have he := congrArg (fun u : V12Field => u j) hPDE
-  simpa only [f, PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, v12_zeroOrderProduct,
+  simpa only [f, e, Function.uncurry, PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, v12_zeroOrderProduct,
     v12_conjugateField_apply] using he
 
 #print axioms v12_component_fderiv

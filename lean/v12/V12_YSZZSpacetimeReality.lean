@@ -37,7 +37,7 @@ theorem v12_spacetimeCoulombRieszOperator_real (μ : Measure ℝ) [SFinite μ]
     rw [← hgx, hox]
     exact hrx
   have hglobal : ∀ᵐ z ∂μ.prod (volume : Measure V12Spatial), star (g z) = g z :=
-    (Measure.ae_prod_iff_ae_ae (measurableSet_eq_fun hgm.measurable.star hgm.measurable)).2 hs
+    (Measure.ae_prod_iff_ae_ae (measurableSet_eq_fun (continuous_star.measurable.comp hgm.measurable) hgm.measurable)).2 hs
   filter_upwards [hg, hglobal] with z hz hr
   rw [hz]
   exact hr
