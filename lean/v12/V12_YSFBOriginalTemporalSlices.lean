@@ -76,15 +76,15 @@ theorem v12_fubiniMap_Riesz (μ : Measure ℝ) [SFinite μ] (j k : Fin 2)
 
 theorem v12_actualTemporalCoulomb_fubini_formula
     (a b : ℝ) (q : V12Spacetime → V12Field)
-    (hq : MemLp q 4 (v12_slab_measure a b)) :
+    (hq : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) :
     v12_fubiniMap ((volume : Measure ℝ).restrict (Set.Icc a b))
       (v12_actualTemporalCoulombL2 a b q hq) =
     (4 : ℂ) • (∑ j, ∑ k, v12_timeCoulombRieszOperator
       ((volume : Measure ℝ).restrict (Set.Icc a b)) j k
       (v12_fubiniMap ((volume : Measure ℝ).restrict (Set.Icc a b))
-        (v12_SL2Class (v12_slab_measure a b) j k q hq))) -
+        (v12_SL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) j k q hq))) -
     (2 : ℂ) • v12_fubiniMap ((volume : Measure ℝ).restrict (Set.Icc a b))
-      (v12_massComplexL2Class (v12_slab_measure a b) q hq) := by
+      (v12_massComplexL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) q hq) := by
   let μ := (volume : Measure ℝ).restrict (Set.Icc a b)
   have hsub (f g : Lp ℂ 2 (μ.prod (volume : Measure V12Spatial))) :
       v12_fubiniMap μ (f-g) = v12_fubiniMap μ f-v12_fubiniMap μ g :=
@@ -133,7 +133,7 @@ theorem v12_time_temporal_formula_ae
 
 theorem v12_A0_original_spatial_formula
     (a b : ℝ) (q : V12Spacetime → V12Field)
-    (hq : MemLp q 4 (v12_slab_measure a b)) :
+    (hq : MemLp q 4 ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial)))) :
     ∀ᵐ t ∂(volume : Measure ℝ).restrict (Set.Icc a b),
       ∀ ht : MemLp (fun x => q (t,x)) 4 (volume : Measure V12Spatial),
       (fun x => v12_actualTemporalCoulombL2 a b q hq (t,x)) =ᵐ[volume]
@@ -141,8 +141,8 @@ theorem v12_A0_original_spatial_formula
         (fun j k => v12_SL2Class volume j k (fun x => q (t,x)) ht)
         (v12_massComplexL2Class volume (fun x => q (t,x)) ht) : V12Spatial → ℂ) := by
   let μ := (volume : Measure ℝ).restrict (Set.Icc a b)
-  let S := fun j k => v12_fubiniMap μ (v12_SL2Class (v12_slab_measure a b) j k q hq)
-  let m := v12_fubiniMap μ (v12_massComplexL2Class (v12_slab_measure a b) q hq)
+  let S := fun j k => v12_fubiniMap μ (v12_SL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) j k q hq)
+  let m := v12_fubiniMap μ (v12_massComplexL2Class ((((volume : Measure ℝ).restrict (Set.Icc a b)).prod (volume : Measure V12Spatial))) q hq)
   have hA := v12_time_temporal_formula_ae μ S m
   rw [← v12_actualTemporalCoulomb_fubini_formula a b q hq] at hA
   have hS : ∀ᵐ t ∂μ, ∀ j k, ∀ ht : MemLp (fun x => q (t,x)) 4 volume,
@@ -158,7 +158,8 @@ theorem v12_A0_original_spatial_formula
     rw [ha]
     have he : (fun j k => S j k t) = (fun j k => v12_SL2Class volume j k (fun x => q (t,x)) ht) :=
       funext (fun j => funext (fun k => hs j k ht))
-    rw [he, hm ht]
+    have hm' : m t = v12_massComplexL2Class volume (fun x => q (t,x)) ht := hm ht
+    rw [he, hm']
   rw [hclasses] at hf
   exact hf.symm
 

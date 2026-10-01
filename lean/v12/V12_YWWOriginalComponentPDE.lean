@@ -70,7 +70,7 @@ theorem v12_original_curried_scalar_PDE
       (A 0 (t,x) * fderiv ℝ (fun z => q z.1 z.2 j) (t,x) (v12_spatialDirection 0) +
        A 1 (t,x) * fderiv ℝ (fun z => q z.1 z.2 j) (t,x) (v12_spatialDirection 1)) +
       (V (t,x) * q t x j + W (t,x) * star (q t x j)) := by
-  let f := Function.uncurry q
+  let f : V12Spacetime → V12Field := fun z => q z.1 z.2
   let e := EuclideanSpace.basisFun (Fin 2) ℝ
   have hU : IsOpen (Prod.fst ⁻¹' Set.Ioo a b : Set V12Spacetime) :=
     isOpen_Ioo.preimage (continuous_fst : Continuous (Prod.fst : V12Spacetime → ℝ))
@@ -79,20 +79,21 @@ theorem v12_original_curried_scalar_PDE
   have htime := v12_joint_fderiv_time_slice f t x (dq t x) hf hd
   have hspace (k : Fin 2) := v12_joint_fderiv_spatial_slice f t x (e k) hf
   have hsecond (k : Fin 2) := v12_joint_second_spatial_slice a b f hs t ht x (e k) (e k)
+  dsimp only [v12_spatialDirection]
   rw [v12_component_fderiv f (t,x) v12_timeDirection j hf, htime]
-  rw [v12_component_second_fderiv a b f hs (t,x) (v12_spatialDirection 0)
-    (v12_spatialDirection 0) ht j,
-    v12_component_second_fderiv a b f hs (t,x) (v12_spatialDirection 1)
-    (v12_spatialDirection 1) ht j]
+  rw [v12_component_second_fderiv a b f hs (t,x) (0,e 0)
+    (0,e 0) ht j,
+    v12_component_second_fderiv a b f hs (t,x) (0,e 1)
+    (0,e 1) ht j]
   change Complex.I * dq t x j +
     ((fderiv ℝ (fun z => fderiv ℝ f z (0,e 0)) (t,x) (0,e 0)) j +
      (fderiv ℝ (fun z => fderiv ℝ f z (0,e 1)) (t,x) (0,e 1)) j) = _
   rw [hsecond 0, hsecond 1,
-    v12_component_fderiv f (t,x) (v12_spatialDirection 0) j hf,
-    v12_component_fderiv f (t,x) (v12_spatialDirection 1) j hf,
+    v12_component_fderiv f (t,x) (0,e 0) j hf,
+    v12_component_fderiv f (t,x) (0,e 1) j hf,
     hspace 0, hspace 1]
   have he := congrArg (fun u : V12Field => u j) hPDE
-  simpa only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, v12_zeroOrderProduct,
+  simpa only [f, PiLp.add_apply, PiLp.smul_apply, smul_eq_mul, v12_zeroOrderProduct,
     v12_conjugateField_apply] using he
 
 #print axioms v12_component_fderiv

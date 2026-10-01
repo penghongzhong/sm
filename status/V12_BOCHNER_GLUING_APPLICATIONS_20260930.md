@@ -270,3 +270,27 @@ constraints. The three direct roots in YSF/YWU/R are repaired for batch169:
 explicit measure unfolding, correctly typed chain rules, component imports,
 and normalization of the actual integrable torsion terms. All downstream
 original-data closures remain candidates pending actual Lean execution.
+
+### Original smooth-gauge applicability correction and next candidates
+
+Theorem7.1 defines genuine compatibility through the original distributional
+Coulomb constraints/PDE. The existing T wrapper assumes joint smoothness of
+the reconstructed A; this has NOT been deduced from the original Q hypotheses.
+It must not be silently added to the paper theorem. GN proves that f times
+an original compact test is globally smooth/compact. GP inserts this actual
+test into distributional div A=0 and proves the advective/divergence identity
+using only local integrability of A. GQ derives the compact PDE identity from
+the original pointwise scalar PDE using that weak-divergence argument.
+These are eight new LOCAL candidates, pending actual Lean: YN all-real-radius
+restriction, GM continuous distribution uniqueness, GN compact product tests,
+GP weak divergence product, GQ original weak-divergence PDE, HP reverse scalar
+PDE IBP, PA reverse first-order IBP. No original condition is weakened or
+additional coefficient regularity declared proved. Full7.1/7.2 remains OPEN.
+
+Run169 actual result:134/152 successful modules,18failed, five direct roots
+and thirteen blocked imports. YSF temporal Coulomb weak closure and YWU
+canonical slice derivatives newly compile. Batch170 fixes FB measure aliases,
+SZZ measurability/zero, WW explicit uncurrying/directions, B finite-cylinder
+instance, R typed component membership. ND weak-divergence PDE closure also
+removes joint A smoothness and derives A local integrability from actual MZ.
+No whole-paper or complete7.1/7.2 status change.

@@ -53,9 +53,13 @@ theorem v12_actualPotential_weak_L2_limit
   let hqA := v12_actual_Hodge_memLp4 hHLS a b q hmq hq4 M hEq
   have hnA2 : ∀ R n, MemLp (v12_spacetimeHodge (qn n)) 2 (μ.restrict (v12_spatial_cylinder R)) := by
     intro R n
+    letI : IsFiniteMeasure (μ.restrict (v12_spatial_cylinder R)) :=
+      v12_cylinder_isFiniteMeasure a b R
     exact ((hnA n).restrict (v12_spatial_cylinder R)).mono_exponent (by norm_num)
   have hqA2 : ∀ R, MemLp (v12_spacetimeHodge q) 2 (μ.restrict (v12_spatial_cylinder R)) := by
     intro R
+    letI : IsFiniteMeasure (μ.restrict (v12_spatial_cylinder R)) :=
+      v12_cylinder_isFiniteMeasure a b R
     exact (hqA.restrict (v12_spatial_cylinder R)).mono_exponent (by norm_num)
   have hAlim := fun R => (v12_actual_Hodge_local_L2_limit hHLS a b R qn q hmn hmq
     hn4 hq4 hn2 hq2 hlim M hM hEn hEq Z hZ hZq).2

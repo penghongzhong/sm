@@ -99,7 +99,8 @@ theorem v12_actual_spatial_constraints_distributional_closure
       Integrable (fun z => (v12_actualCoulombA (qn n) k z * qn n z j) * ψ z) μ := by
     have hVec := (hMZ a b (qn n) (hmn n) (hn4 n) (ENNReal.ofReal M) (by finiteness) (hEn n) k).1
     have hScalar : MemLp (fun z => v12_actualCoulombA (qn n) k z * qn n z j) 2 μ := by
-      have h := (v12_raw_component_eLpNorm_le μ 2
+      have h : MemLp (fun z => v12_driftProduct (v12_actualCoulombA (qn n)) (qn n) k z j) 2 μ :=
+        (v12_raw_component_eLpNorm_le μ 2
         (v12_driftProduct (v12_actualCoulombA (qn n)) (qn n) k) hVec.aestronglyMeasurable j).trans_lt hVec
       simpa only [v12_driftProduct, PiLp.smul_apply, smul_eq_mul] using h
     have h := (hScalar.locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport

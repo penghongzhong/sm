@@ -37,7 +37,7 @@ theorem v12_spacetimeCoulombRieszOperator_real (μ : Measure ℝ) [SFinite μ]
     rw [← hgx, hox]
     exact hrx
   have hglobal : ∀ᵐ z ∂μ.prod (volume : Measure V12Spatial), star (g z) = g z :=
-    (Measure.ae_prod_iff_ae_ae (measurableSet_eq hgm.measurable.star hgm.measurable)).2 hs
+    (Measure.ae_prod_iff_ae_ae (measurableSet_eq_fun hgm.measurable.star hgm.measurable)).2 hs
   filter_upwards [hg, hglobal] with z hz hr
   rw [hz]
   exact hr
@@ -69,7 +69,9 @@ theorem v12_LpIsReal_sum {Ω ι : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
   | empty =>
       simp only [Finset.sum_empty]
       filter_upwards [Lp.coeFn_zero (E := ℂ) (p := 2) (μ := μ)] with z hz
-      simp [hz]
+      change star ((0 : Lp ℂ 2 μ) z) = (0 : Lp ℂ 2 μ) z
+      have hz' : (0 : Lp ℂ 2 μ) z = 0 := hz
+      rw [hz', star_zero]
   | @insert i s hi ih =>
       rw [Finset.sum_insert hi]
       exact v12_LpIsReal_add μ _ _ (hf i (Finset.mem_insert_self _ _))

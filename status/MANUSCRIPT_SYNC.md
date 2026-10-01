@@ -270,3 +270,25 @@ font fallback remains. New Lean correspondence modules are still candidates.
 TeX SHA256 ef4c9fbf6341d1e4a96da15a209a4bfc3aa86cec4e15b48b4fa0ff1e6b964002
 PDF SHA256 7b8f1a018779195975f01d7ac3fa42643952d5bea9aa9138895f4c8a9616d2ce
 Private TeX/PDF excluded from public Git history.
+
+## Private v20 canonical application sync (2026-10-01)
+
+Private working expansion v20 CanonicalClosure has 140 pages. All207 original
+statement environments are byte-identical to v19. Three XeLaTeX passes and
+xdvipdfmx completed successfully; no overfull boxes, undefined references or
+duplicate labels. Existing CJK bold font fallback remains. Page19 visually
+inspected. Added canonical first/second slice derivatives, countable-cover
+measurable representative, and finite-norm all-real-radius restriction.
+Verification text distinguishes actual Run168 from pending Run169 and the
+open original smooth-gauge applicability audit. No full7.1/7.2 certificate.
+
+TeX SHA256:291542454f7cf96b5d521747141ce6f0fc7d899f380b96ca1a2d43de18188c40
+PDF SHA256:e0d2236250735c87b4420dc387063064e6c0fb6d60ea265ea0b26dd83ebe5514
+Both private artifacts saved successfully. Only correspondence/build metadata
+is public; no private manuscript text or PDF is committed.
+
+A later audit identifies joint space-time smoothness of A as an unproved
+extra premise in the original-local-closure candidate. Do not treat it as
+implied by the displayed Q bounds. The next proof uses f times a compact
+test in the ORIGINAL distributional div A equation, deriving the advective
+to divergence-form conversion with only local integrability of A.

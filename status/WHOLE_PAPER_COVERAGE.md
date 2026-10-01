@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v19 OriginalSourceBudgets, 140 pages,
+Current generated private working expansion: v20 CanonicalClosure, 140 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,23 +16,24 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run168 (partial, FAILURE)
+## Latest completed verification: Run169 (partial, FAILURE)
 
-Run36790750504/job110142809934 checked
-`f02b16694d67eb5cb206fa4edfd98e8976f4eb04`:132 COMPILE_OK,20 COMPILE_FAIL.
-NEW PASS: YWTSlabDerivativePreservation and YZZOCompactFirstOrderConstraints.
-Three direct roots: tensor weak-limit measure aliases; canonical chain-rule
-scalar/type inference; missing component imports and torsion integral
-normalization. Seventeen further imports failed. No failed proof is certified.
+Run36799982579/job110171906536 checked
+`bc784d148c683b5d6f2e89f8e03b7bf9d162ca03`:134 COMPILE_OK,18 COMPILE_FAIL.
+NEW PASS: YSFActualTemporalCoulomb and YWUCanonicalSliceDerivatives.
+No previous successful module regressed. Five direct roots: original temporal
+slice measure aliases, joint reality measurable/zero terms, component PDE
+uncurrying, potential weak-limit finite-cylinder instance, typed drift
+component membership. Thirteen further imports failed.
 
-Batch169 repairs these three roots without changing theorem statements.
-The original-data closure and source-budget applications remain unverified.
+Batch170 repairs these actual roots and adds eight candidates for all-real
+radius transfer, distributional/pointwise equivalence, compact product tests,
+and removal of the unproved joint-connection-smoothness premise. New ND PDE
+closure derives local integrability of A internally from the same-Q MZ budget.
+All new or previously blocked applications remain unverified.
 
-Next batch normalizes the A0/V reconstruction measures, proves first-order
-weighted integrability directly from local smoothness, and repairs the
-neighbourhood proof. New original applications derive component/second
-coordinate derivatives, the zero-extended canonical PDE with the actual V,
-and canonical div/curl/torsion from the original spatial equations.
+The original applications derive component/second coordinate derivatives,
+the zero-extended canonical PDE with actual V, and spatial constraints.
 The original-local-closure candidate also constructs a strongly measurable
 limit representative from local L2 membership instead of assuming global
 measurability. Its time derivative is constructed from original smoothness.
@@ -54,9 +55,9 @@ instance, external schema or weakened paper statement.
 |---|---|---|
 | Section 2 | Algebra, geometry, Fourier symbols and actual Plancherel | Complete function/derivative/Hodge/HLS applications |
 | v12 Fourier/local L2 | Actual cutoff symbol/kernels, local restrictions, tail-sup adapter, common radius/frequency subsequence | Raw tail identification PASS154; exact paper Fourier profile instantiation |
-| v12 source products | Actual A_j Q and VQ+W conjugate(Q), Holder estimates, MemLp | Hodge-defined coefficients and their actual M/Z bounds; Fubini time-Lp realization now compiled |
-| v12 time integration | Source L43 budget, interval Holder, weak-test residual and limit machinery | Original-system regularity, same-field time-Bochner realizations and Hodge/MZ hypotheses remain open; ZC–ZG compiled in Run 146 |
-| v12 fixed-cutoff compactness | NEW: actual cylinder representatives constructed; joint equicontinuity and L2 compact closure derived from energy/source integrals | ZI/ZJ now discharge budget/integral/representative/compactness internally; original Hodge/MZ field instance remains open |
+| v12 source products | Actual A_j Q and VQ+W conjugate(Q), Holder estimates, MemLp | Actual Hodge M/Z and Fubini realization checked; original A0/V/source budget correspondence still blocked |
+| v12 time integration | Source L43 budget, interval Holder, weak-test residual and limit machinery | ZC–ZG compiled in Run146; raw original regularity and reconstructed A0/V budget applications still audited |
+| v12 fixed-cutoff compactness | NEW: actual cylinder representatives constructed; joint equicontinuity and L2 compact closure derived from energy/source integrals | ZI/ZJ now discharge budget/integral/representative/compactness internally; same-Q Hodge/MZ instance checked; original A0/V source application remains open |
 | v12 local limits | Common-sequence nested compatibility and one strongly measurable glued limit, Run150 | Original-field common sequence and exact Theorem-7.1 nonlinear limit passage |
 | v13-v20 | Existing scalar/finite/dependency kernels | Exact norm objects and transitive analytic hypotheses |
 | v19 Lemma 14.7 | Fixed-anchor phase and dense-class/quantifier support | Actual Poincare measure-space and Fourier-operator instance |

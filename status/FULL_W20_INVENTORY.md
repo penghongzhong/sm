@@ -1,7 +1,7 @@
 # Full W20 manuscript inventory -- not a coverage certificate
 
-Current working authority: private `stereo_scalar_scattering_v20_W20_LeanSync_v19_OriginalSourceBudgets` (140 pages).
-The original 207 theorem-class statements remain byte-identical across the v6–v19 working expansions; provenance is in MANUSCRIPT_SYNC.md.
+Current working authority: private `stereo_scalar_scattering_v20_W20_LeanSync_v20_CanonicalClosure` (140 pages).
+The original 207 theorem-class statements remain byte-identical across the v6–v20 working expansions; provenance is in MANUSCRIPT_SYNC.md.
 The target remains the full W20 manuscript originally supplied as 133 pages.
 The 36-page Lean-min edition is only an auxiliary reference.
 
