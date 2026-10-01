@@ -78,3 +78,17 @@ passed157. Actual Fourier Riesz L2 norm<=1, time lifting and 2pi homogeneity
 passed158. Spacetime Hodge MZ has three small API repairs under verification;
 full original coefficient reconstruction/application remains OPEN.
 No additional external interface was registered in this batch.
+
+
+### Run173 foundation/application audit
+The spacetime Hodge MZ, actual Riesz temporal coefficient, source-product
+membership, original distribution-PDE local limit, and cofinal real-radius
+coefficient transfer modules now have recorded actual PASS evidence in
+RUN173_ACTUAL_RESULTS.json (and its earlier-run dependencies).
+The exact angular inverse-Fourier formula, including the two-dimensional
+Jacobian and cyclicScale=2*pi/2^N, also PASS173.
+Original closed-slab reconstructed-budget and final theorem applications
+remain under Run174 verification. No additional external proposition was
+introduced. In particular source identification, FTC applicability, compactness,
+common subsequences and paper closure are not registered as external results.
+The whole of Section2 and the whole manuscript are still not certified.

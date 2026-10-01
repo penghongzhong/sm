@@ -94,13 +94,28 @@ theorem v12_original_PDE_weighted_time_source
         dsimp [v12_scalarSpatialTestSource, dd, d, e]
         ring
       _ = _ := by
-        rw [integral_sub
-          ((((hL 0).1.add (hL 1).1).const_mul Complex.I).sub
-            (((hB 0).1.add (hB 1).1).const_mul 2)) (hZ.1.const_mul Complex.I),
-          integral_sub (((hL 0).1.add (hL 1).1).const_mul Complex.I)
-            (((hB 0).1.add (hB 1).1).const_mul 2),
-          integral_const_mul, integral_const_mul, integral_const_mul,
-          integral_add (hL 0).1 (hL 1).1, integral_add (hB 0).1 (hB 1).1]
+        have hLsum : Integrable (fun t => η t * (∫ x, f (t,x) * dd 0 x) +
+            η t * (∫ x, f (t,x) * dd 1 x)) μ := (hL 0).1.add (hL 1).1
+        have hBsum : Integrable (fun t => η t * (∫ x, (A 0 (t,x)*f (t,x))*d 0 x) +
+            η t * (∫ x, (A 1 (t,x)*f (t,x))*d 1 x)) μ := (hB 0).1.add (hB 1).1
+        have hLeft : Integrable (fun t => Complex.I * (η t * (∫ x, f (t,x)*dd 0 x) +
+            η t * (∫ x, f (t,x)*dd 1 x))) μ := hLsum.const_mul Complex.I
+        have hMid : Integrable (fun t => (2 : ℂ) *
+            (η t * (∫ x, (A 0 (t,x)*f (t,x))*d 0 x) +
+             η t * (∫ x, (A 1 (t,x)*f (t,x))*d 1 x))) μ := hBsum.const_mul 2
+        have hRight : Integrable (fun t => Complex.I *
+            (η t * (∫ x, g (t,x)*ψ x))) μ := hZ.1.const_mul Complex.I
+        have hSub : Integrable (fun t => Complex.I *
+            (η t * (∫ x, f (t,x)*dd 0 x) + η t * (∫ x, f (t,x)*dd 1 x)) -
+            2 * (η t * (∫ x, (A 0 (t,x)*f (t,x))*d 0 x) +
+             η t * (∫ x, (A 1 (t,x)*f (t,x))*d 1 x))) μ := hLeft.sub hMid
+        have hOuter := integral_sub hSub hRight
+        have hInner := integral_sub hLeft hMid
+        have hLs := integral_add (hL 0).1 (hL 1).1
+        have hBs := integral_add (hB 0).1 (hB 1).1
+        simp only [Pi.sub_apply, Pi.add_apply] at hOuter hInner hLs hBs
+        rw [hOuter, hInner, integral_const_mul, integral_const_mul, integral_const_mul,
+          hLs, hBs]
   have he := v12_original_PDE_tensor_time_source a b f A g η ψ
     hf hA hg hη hcη hsη hψ hcψ hdiv hPDE
   dsimp only at he

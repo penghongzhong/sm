@@ -66,6 +66,7 @@ theorem v12_original_extended_scalar_PDE
   have hEe := v12_smoothSlabExtension_energy a b f M hE
   have ha := v12_original_A0_joint_representative a b f h4 A0 hc0 hA0
   have hv := v12_original_V_extended_representative hHLS a b f hc h4 M hEe A0 V ha hV
+  dsimp only
   intro j
   have hje : Set.EqOn (fun z => ext z j) (fun z => f z j) U :=
     fun z hz => congrArg (fun u : V12Field => u j) (v12_smoothSlabExtension_eqOn_interior a b f hz)
@@ -73,9 +74,10 @@ theorem v12_original_extended_scalar_PDE
   have hjdd (v : V12Spacetime) := v12_open_eqOn_second_directional_derivative U hU _ _ hje v v
   filter_upwards [hv] with z hzV
   intro hz
-  have hqz := v12_smoothSlabExtension_eqOn_interior a b f hz
-  have hAz (k : Fin 2) := v12_smoothSlabExtension_A_eqOn_interior a b f k hz
-  rw [hjd hz, hjdd (v12_spatialDirection 0) hz, hjdd (v12_spatialDirection 1) hz,
+  have hqz : ext z = f z := v12_smoothSlabExtension_eqOn_interior a b f hz
+  have hAz (k : Fin 2) : v12_actualCoulombA ext k z = v12_actualCoulombA f k z :=
+    v12_smoothSlabExtension_A_eqOn_interior a b f k hz
+  rw [hjdd (v12_spatialDirection 0) hz, hjdd (v12_spatialDirection 1) hz, hjd hz,
     hAz 0, hAz 1, hqz, ← hzV]
   exact v12_original_curried_scalar_PDE a b q dq (v12_actualCoulombA f) V
     (fun z => v12_WDensity (f z)) hs z.1 hz z.2 (hd z.1 hz z.2) (hPDE z.1 hz z.2) j

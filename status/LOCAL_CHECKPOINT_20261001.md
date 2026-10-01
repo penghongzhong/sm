@@ -55,3 +55,13 @@ User reauthorized GitHub compilation. Run170 actually completed:142/160 PASS,
 WW direction abbreviation; GP beta reduction; HP redundant dsimp; J integral
 addition normalization. Repairs and 11 saved candidates await the next run.
 No full-paper certification follows from these counts.
+
+## Actual Run174 and batch175 (2026-10-01T04:03Z)
+
+Run174 completed FAILURE:175/189 PASS,14 FAIL,3 direct roots,11 dependent
+failures,8 new PASS and no regressions. Latest private saved manuscript v25
+(141pages,207 unchanged original statements); its status records Run173 and
+will be synchronized separately. Run175 submission contains BV/GW/KT fixes,
+T implicit-AE-restriction fix, four literal function-space candidates and
+one single-field budget candidate. Full7.1/7.2 and whole paper remain OPEN.
+GitHub compilation only; PR6 remains Draft/open/unmerged.

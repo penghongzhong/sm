@@ -78,3 +78,17 @@ All other cited support here is the pinned Mathlib or previously compiled
 project lemmas. Original load-bearing conclusions are never external axioms.
 Full7.1, full7.2 and later paper branches remain OPEN. Compilation counts
 are not coverage of the 207 original proof-bearing statement environments.
+
+## Literal function-space strengthening (local candidates after Run174 submission)
+
+XStrongLocalL2Closure constructs actual L2 quotient representatives on every
+real-radius cylinder and proves convergence in their norm topology; finiteness
+is proved using L4 restriction to finite cylinders before any toReal step.
+YLimitBochnerEnergy constructs the time-valued spatial L2 representative from
+the joint measurable limit and proves Bochner Linfinity membership with M.
+KU and KV use the same subsequence and original input conditions as KT.
+The final candidate entries are Y.v12_original_local_closure_with_mixed_norm
+and ZKV.v12_original_frequency_tightness_full_spaces. These four new files
+were NOT included in Run174 and have no actual compiler result yet.
+Static forward/reverse import audit has 193 files and no missing/late imports.
+This static check is not a Lean execution or whole-theorem certificate.

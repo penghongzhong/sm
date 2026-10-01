@@ -85,14 +85,15 @@ theorem v12_original_local_closure
   have hmv : StronglyMeasurable v := hmu.stronglyMeasurable_mk
   have huv : u =ᵐ[μ] v := hmu.ae_eq_mk
   have hv2 (R : ℕ) : MemLp v 2 (μ.restrict (v12_spatial_cylinder R)) :=
-    (hu2 R).ae_eq (huv.restrict _)
+    (hu2 R).ae_eq (huv.restrict)
   let ext := fun n => v12_smoothSlabExtension a b (Function.uncurry (q n))
   have hmn n := v12_smoothSlabExtension_stronglyMeasurable a b _ (hqcont n)
   have hn4 n := v12_smoothSlabExtension_memLp a b _ 4 (hq4 n)
   have hEe n := v12_smoothSlabExtension_energy a b _ M (hEnergy n)
-  have hext n := v12_smoothSlabExtension_ae a b (Function.uncurry (q n))
+  have hext (n : ℕ) : ext n =ᵐ[μ] Function.uncurry (q n) :=
+    v12_smoothSlabExtension_ae a b (Function.uncurry (q n))
   have hen2 (R n : ℕ) : MemLp (ext n) 2 (μ.restrict (v12_spatial_cylinder R)) :=
-    (hn2 R n).ae_eq ((hext n).restrict _).symm
+    (hn2 R n).ae_eq (Filter.EventuallyEq.symm ((hext n).restrict))
   have hbext (n : ℕ) : eLpNorm (ext n) 4 μ ≤ Z := by
     rw [v12_smoothSlabExtension_eLpNorm]
     exact hqbound n
@@ -100,13 +101,13 @@ theorem v12_original_local_closure
       (μ.restrict (v12_spatial_cylinder R)) = eLpNorm (fun z => q n z.1 z.2-u z) 2
       (μ.restrict (v12_spatial_cylinder R)) := by
     apply eLpNorm_congr_ae
-    filter_upwards [huv.restrict (v12_spatial_cylinder R)] with z hz
+    filter_upwards [huv.restrict (s := v12_spatial_cylinder R)] with z hz
     rw [hz]
   have hnormExt (R n : ℕ) : eLpNorm (fun z => ext n z-v z) 2
       (μ.restrict (v12_spatial_cylinder R)) = eLpNorm (fun z => q n z.1 z.2-u z) 2
       (μ.restrict (v12_spatial_cylinder R)) := by
     apply eLpNorm_congr_ae
-    filter_upwards [(hext n).restrict (v12_spatial_cylinder R), huv.restrict (v12_spatial_cylinder R)]
+    filter_upwards [(hext n).restrict (s := v12_spatial_cylinder R), huv.restrict (s := v12_spatial_cylinder R)]
       with z he hu
     rw [he, hu]
   have hlimOrig (R : ℕ) : Tendsto (fun n => (eLpNorm (fun z => q n z.1 z.2-v z) 2
@@ -160,7 +161,7 @@ theorem v12_original_local_closure
       eLpNorm (fun z => v12_actualCoulombA (Function.uncurry (q n)) j z • q n z.1 z.2 -
         v12_actualCoulombA v j z • v z) 1 (μ.restrict (v12_spatial_cylinder R)) := by
     apply eLpNorm_congr_ae
-    filter_upwards [(hext n).restrict (v12_spatial_cylinder R),
+    filter_upwards [(hext n).restrict (s := v12_spatial_cylinder R),
       (v12_smoothSlabExtension_Hodge_ae a b (Function.uncurry (q n))).restrict
         (v12_spatial_cylinder R)] with z hqz hAz
     simp only [v12_actualCoulombA, hqz, hAz]

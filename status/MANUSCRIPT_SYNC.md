@@ -351,3 +351,15 @@ and remaining original-MZ/vector/FTC obligations; no full-theorem certificate.
 TeX SHA256:547b49295e16d6d5af07b7e0a3f5e93f356f1c47e4303870040b8d1700d9f3ba
 PDF SHA256:35aabfbe63d7e3f555df8f6f0f362278b05e12b0e2f71ac54d8c10117b22b349
 Private files saved separately, never submitted to this public repository.
+
+
+## Private v25 OriginalTightnessChain — 2026-10-01
+141 pages;207 original statement environments unchanged from v24.
+Three XeLaTeX passes and xdvipdfmx succeeded; pages19/20 visually checked.
+Long module-name paragraph overflow fixed before final delivery; no overfull
+boxes, undefined references or duplicate labels in the final build.
+Run173 actual167/180 PASS13FAIL;Run174 pending. Complete candidate dependency
+chain and SAME-subsequence closure mapped explicitly; not a theorem certificate.
+TeX SHA256:70bb5619149226ed239a4f5310c9afcc6c4855ab1122aceb9577c8f9d3b10c26
+PDF SHA256:9e6373c8be4213fdf64d960d495edd92fa305b0f31992b0142222910070faa61
+Private files saved separately; neither artifact is in this public repository.

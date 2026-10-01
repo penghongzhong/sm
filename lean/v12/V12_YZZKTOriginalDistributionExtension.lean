@@ -85,7 +85,8 @@ theorem v12_original_distributional_PDE_extension
         exact hz (hs (subset_tsupport ψ hne))
       rw [hzero, mul_zero, mul_zero]
   rw [integral_congr_ae hr]
-  simpa only [hpair] using hPDE ψ hψ hcψ hs
+  dsimp only [ext, μ] at hpair
+  simpa only [hpair, μ] using hPDE ψ hψ hcψ hs
 
 #print axioms v12_originalScalarSource_extension_ae
 #print axioms v12_original_distributional_PDE_extension

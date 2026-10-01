@@ -2,7 +2,7 @@
 
 Target: full W20 master originally supplied as 133 pages, 207 proof-bearing
 environments. Registered Library baseline: private LeanSync v4, 135 pages.
-Current generated private working expansion: v24 TimeSourceIdentification, 141 pages,
+Current generated private working expansion: v25 OriginalTightnessChain, 141 pages,
 all 207 original statements byte-identical. See MANUSCRIPT_SYNC.md for the
 explicit v4-based provenance, hashes, build checks and storage boundary.
 The 36-page Lean-min and T001-T094 remain auxiliary references only.
@@ -16,27 +16,27 @@ Allowed foundations remain Lean/Mathlib, standard analysis and precisely
 identified published results. Concrete applications and internal bridges
 must be checked; all standard analysis need not be rebuilt from scratch.
 
-## Latest completed verification: Run173 (partial, FAILURE)
+## Latest completed verification: Run174 (partial, FAILURE)
 
-Run36809570011/job110201386138 checked
-`a064fa329b5aff50f0ebe43a447acce361953c68`:167 COMPILE_OK,13 COMPILE_FAIL.
-Thirteen new PASS: angular Fourier normalization; BT potential representative;
-GU actual Fubini; GV spatial/time test integrability; K actual source PDE;
-N/ND/NE distribution PDE closures; S canonical predicates; SD all-real
-coefficient limits; U original constraint closure; ZDD interior FTC;
-ZDE compact residual uniqueness. No previous PASS regressed.
-Six direct roots: BU extension abbreviation; BZ missing energy-lemma import;
-GT second-derivative simp ordering and I^2; SE extension abbreviation;
-SF/V implicit AE restriction set argument. Seven dependent import failures.
-See RUN173_ACTUAL_RESULTS.json. Counts are not paper coverage.
+Run36811400116/job110207024128 checked
+`3fa6369057a79e3fd8cbe3f1a1f656d232827519`:175 COMPILE_OK,14 COMPILE_FAIL.
+Eight new PASS: BU original source budgets, BZ raw potential formula,
+CA original reconstructed A/V/W budgets, GT original tensor PDE,
+SE spatial constraint extension, SF real coefficient extension,
+V compatible local closure, and ZM historical original Coulomb common limit.
+No previous PASS regressed. Three direct roots: BV let-binder introduction;
+GW integral subtraction/addition elaboration; KT extension abbreviation in
+pairing rewrite. Eleven dependent import failures. See RUN174_ACTUAL_RESULTS.json.
 
-Batch174 fixes these roots and submits nine original-data candidates:
-CA reconstructed coefficient budgets; ZDG original MZ/source instantiation;
-ZDH original vector FTC; ZES same-field source/Lp match; ZFS compact Lp time
-identity; ZGS original cutoff identity; ZIS fixed-frequency compactness;
-ZKS common measurable limit (including zero/empty slabs); ZKT SAME-subsequence
-closure. These are NOT certified. Actual Lean execution of the entire chain
-and literal original-statement/normalization audit remain required.
+Batch175 repairs those roots, retains the T AE-restriction fix, and submits
+X/KU actual local L2 quotient convergence, Y/KV actual Bochner energy and
+full-space closure candidates. CB bundles single-field coefficient budgets;
+it does NOT certify the full coefficient lemma, which also has two-field
+difference bounds and rough-field scope. Counts are not paper coverage.
+
+Original-data source/compactness/common-limit applications downstream of
+GW and KT remain unverified, including ZDG/ZDH/ZES/ZFS/ZGS/ZIS/ZKS/ZKT.
+No end-to-end closure or tightness certificate is claimed.
 
 The new end-to-end candidate has only original smoothness, compatibility,
 M/Z and raw frequency-tightness inputs. It does not assume hIntegral,
