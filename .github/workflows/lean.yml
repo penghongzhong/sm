@@ -34,7 +34,13 @@ jobs:
             exit 1
           fi
       - name: Compile actual Bochner integral lemmas and print axioms
-        run: lake env lean lean/K511ActualBochner.lean 2>&1 | tee k511-compile.log
+        run: |
+          set -o pipefail
+          lake env lean lean/K511ActualBochner.lean 2>&1 | tee k511-compile.log
+          if grep -E 'sorryAx|^.*error:' k511-compile.log; then
+            echo "Kernel audit failed: compilation error or sorryAx"
+            exit 1
+          fi
       - name: Upload log
         if: always()
         uses: actions/upload-artifact@v4

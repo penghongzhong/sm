@@ -280,8 +280,10 @@ theorem tracefreeComplexAction_norm_le
   have hp : (Real.sqrt (a ^ 2 + b ^ 2) * ‖v‖) ^ 2 =
       (a ^ 2 + b ^ 2) * ‖v‖ ^ 2 := by
     rw [mul_pow, Real.sq_sqrt (by positivity)]
-  nlinarith [norm_nonneg (tracefreeComplexAction a b v),
-    Real.sqrt_nonneg (a ^ 2 + b ^ 2), norm_nonneg v]
+  have hprod : 0 ≤ Real.sqrt (a ^ 2 + b ^ 2) * ‖v‖ :=
+    mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)
+  apply (sq_le_sq₀ (norm_nonneg _) hprod).mpr
+  rw [hs, hp]
 
 #print axioms SM.K.Actual511.tracefreeComplexAction_norm_le
 
@@ -339,7 +341,7 @@ theorem actualCoeffConvolution_edge_L2
       (inner (𝕜 := ℂ) (q x)
         (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
           (actualCoeffConvolution μ q K x 1) (d x))).im) μ) :
-    | -4 * (∫ x, (inner (𝕜 := ℂ) (q x)
+    |-4 * (∫ x, (inner (𝕜 := ℂ) (q x)
         (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
           (actualCoeffConvolution μ q K x 1) (d x))).im ∂μ)| ≤
       4 * B * (∫ x, ‖q x‖ ^ 2 ∂μ) *
