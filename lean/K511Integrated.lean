@@ -801,4 +801,54 @@ theorem original511_spatial_and_clock
 
 #print axioms SM.K.Original511.original511_spatial_and_clock
 
+
+
+/-- Spatial pairing measurability follows from chosen strongly-measurable
+L² representatives and joint measurability of the actual Hessian
+convolution kernel. This eliminates the nonpaper pairing premise. -/
+theorem edge_pair_measurable_of_joint
+    (μ : Measure α) [SFinite μ]
+    (q d : α → ComplexPlane2)
+    (K : α → α → EuclideanSpace ℝ (Fin 2))
+    (hqSM : StronglyMeasurable q)
+    (hdSM : StronglyMeasurable d)
+    (hKJoint : StronglyMeasurable (fun p : α × α => K p.1 p.2)) :
+    AEStronglyMeasurable (fun x =>
+      (inner (𝕜 := ℂ) (q x)
+        (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+          (actualCoeffConvolution μ q K x 1) (d x))).im) μ := by
+  have hQProd : StronglyMeasurable (fun p : α × α => q p.2) :=
+    hqSM.comp measurable_snd
+  have hmass : StronglyMeasurable (fun p : α × α => ‖q p.2‖ ^ 2) := by
+    fun_prop
+  have hJoint : StronglyMeasurable
+      (fun p : α × α => (‖q p.2‖ ^ 2) • K p.1 p.2) :=
+    hmass.smul hKJoint
+  have hConv : StronglyMeasurable (actualCoeffConvolution μ q K) := by
+    simpa only [actualCoeffConvolution] using hJoint.integral_prod_right'
+  have h0 : StronglyMeasurable (fun x => (actualCoeffConvolution μ q K x) 0) := by
+    exact (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin 2 => ℝ) 0).continuous.comp_stronglyMeasurable hConv
+  have h1 : StronglyMeasurable (fun x => (actualCoeffConvolution μ q K x) 1) := by
+    exact (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin 2 => ℝ) 1).continuous.comp_stronglyMeasurable hConv
+  have hArgs : StronglyMeasurable
+      (fun x => ((actualCoeffConvolution μ q K x 0,
+        actualCoeffConvolution μ q K x 1), d x)) :=
+    (h0.prodMk h1).prodMk hdSM
+  have hCont : Continuous
+      (fun z : (ℝ × ℝ) × ComplexPlane2 =>
+        tracefreeComplexAction z.1.1 z.1.2 z.2) := by
+    fun_prop
+  have hAction : StronglyMeasurable (fun x =>
+      tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+        (actualCoeffConvolution μ q K x 1) (d x)) :=
+    hCont.comp_stronglyMeasurable hArgs
+  have hInner : StronglyMeasurable (fun x =>
+      inner (𝕜 := ℂ) (q x)
+        (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+          (actualCoeffConvolution μ q K x 1) (d x))) :=
+    hqSM.inner hAction
+  exact (Complex.continuous_im.comp_stronglyMeasurable hInner).aestronglyMeasurable
+
+#print axioms SM.K.Original511.edge_pair_measurable_of_joint
+
 end SM.K.Original511
