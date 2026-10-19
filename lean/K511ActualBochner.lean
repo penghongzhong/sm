@@ -3,6 +3,10 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
+import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.Positivity
 
 noncomputable section
 set_option autoImplicit false
@@ -280,5 +284,128 @@ theorem tracefreeComplexAction_norm_le
     Real.sqrt_nonneg (a ^ 2 + b ^ 2), norm_nonneg v]
 
 #print axioms SM.K.Actual511.tracefreeComplexAction_norm_le
+
+
+/-- The true coefficient-vector Bochner convolution of the tracefree Hessian
+against the mass |q|². -/
+def actualCoeffConvolution (μ : Measure α) (q : α → ComplexPlane2)
+    (K : α → α → EuclideanSpace ℝ (Fin 2)) (x : α) :
+    EuclideanSpace ℝ (Fin 2) :=
+  ∫ y, (‖q y‖ ^ 2) • K x y ∂μ
+
+/-- Complex pairing pointwise bound with the sharp operator coefficient. -/
+theorem tracefreeComplexAction_pair_bound
+    (a b : ℝ) (q d : ComplexPlane2) :
+    |(inner (𝕜 := ℂ) q (tracefreeComplexAction a b d)).im| ≤
+      Real.sqrt (a ^ 2 + b ^ 2) * ‖q‖ * ‖d‖ := by
+  calc
+    |(inner (𝕜 := ℂ) q (tracefreeComplexAction a b d)).im| ≤
+      ‖inner (𝕜 := ℂ) q (tracefreeComplexAction a b d)‖ :=
+        Complex.abs_im_le_norm _
+    _ ≤ ‖q‖ * ‖tracefreeComplexAction a b d‖ := norm_inner_le_norm _ _
+    _ ≤ ‖q‖ * (Real.sqrt (a ^ 2 + b ^ 2) * ‖d‖) :=
+      mul_le_mul_of_nonneg_left (tracefreeComplexAction_norm_le a b d) (norm_nonneg _)
+    _ = Real.sqrt (a ^ 2 + b ^ 2) * ‖q‖ * ‖d‖ := by ring
+
+private theorem norm_pair_integrable_actual
+    (μ : Measure α) (q d : α → ComplexPlane2)
+    (hq : MemLp q 2 μ) (hd : MemLp d 2 μ) :
+    Integrable (fun x => ‖q x‖ * ‖d x‖) μ :=
+  (hq.norm).integrable_mul (hd.norm)
+
+private theorem pair_holder_actual
+    (μ : Measure α) (q d : α → ComplexPlane2)
+    (hq : MemLp q 2 μ) (hd : MemLp d 2 μ) :
+    (∫ x, ‖q x‖ * ‖d x‖ ∂μ) ≤
+      Real.sqrt (∫ x, ‖q x‖ ^ 2 ∂μ) *
+      Real.sqrt (∫ x, ‖d x‖ ^ 2 ∂μ) := by
+  have hTwo : (ENNReal.ofReal (2 : ℝ)) = (2 : ENNReal) := by norm_num
+  have hq' : MemLp q (ENNReal.ofReal 2) μ := by simpa [hTwo] using hq
+  have hd' : MemLp d (ENNReal.ofReal 2) μ := by simpa [hTwo] using hd
+  convert MeasureTheory.integral_mul_norm_le_Lp_mul_Lq
+    Real.HolderConjugate.two_two hq' hd' using 1 <;> simp [Real.sqrt_eq_rpow]
+
+/-- The actual L² Cauchy–Schwarz bound for the complex pairing of the
+Bochner-convolved, symmetric, tracefree real Hessian.
+All analytic integrability assumptions other than hEdgeMeas follow from q,d∈L²,
+the strong measurability and the sharp L∞ kernel bound. -/
+theorem actualCoeffConvolution_edge_L2
+    (μ : Measure α) (q d : α → ComplexPlane2)
+    (K : α → α → EuclideanSpace ℝ (Fin 2)) (B : ℝ)
+    (hq : MemLp q 2 μ) (hd : MemLp d 2 μ) (hB : 0 ≤ B)
+    (hKMeas : ∀ x, StronglyMeasurable (K x))
+    (hKBound : ∀ x y, ‖K x y‖ ≤ B)
+    (hEdgeMeas : AEStronglyMeasurable (fun x =>
+      (inner (𝕜 := ℂ) (q x)
+        (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+          (actualCoeffConvolution μ q K x 1) (d x))).im) μ) :
+    | -4 * (∫ x, (inner (𝕜 := ℂ) (q x)
+        (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+          (actualCoeffConvolution μ q K x 1) (d x))).im ∂μ)| ≤
+      4 * B * (∫ x, ‖q x‖ ^ 2 ∂μ) *
+      Real.sqrt (∫ x, ‖q x‖ ^ 2 ∂μ) *
+      Real.sqrt (∫ x, ‖d x‖ ^ 2 ∂μ) := by
+  let M : ℝ := ∫ y, ‖q y‖ ^ 2 ∂μ
+  let C : ℝ := B * M
+  have hm : Integrable (fun y => ‖q y‖ ^ 2) μ :=
+    hq.integrable_norm_pow (by norm_num)
+  have hM : 0 ≤ M := integral_nonneg (fun y => sq_nonneg (‖q y‖))
+  have hC : 0 ≤ C := mul_nonneg hB hM
+  have hKernel (x : α) : ‖actualCoeffConvolution μ q K x‖ ≤ C := by
+    exact (integralWeightedKernel_norm_le μ (fun y => ‖q y‖ ^ 2) (K x)
+      B hm (fun y => sq_nonneg _) hB (hKMeas x) (hKBound x)).2
+  let edge : α → ℝ := fun x =>
+    (inner (𝕜 := ℂ) (q x)
+      (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+        (actualCoeffConvolution μ q K x 1) (d x))).im
+  have hPoint (x : α) :
+      |edge x| ≤ C * (‖q x‖ * ‖d x‖) := by
+    have hc := tracefreeComplexAction_pair_bound
+      (actualCoeffConvolution μ q K x 0)
+      (actualCoeffConvolution μ q K x 1) (q x) (d x)
+    have hNorm : Real.sqrt
+        ((actualCoeffConvolution μ q K x 0) ^ 2 +
+         (actualCoeffConvolution μ q K x 1) ^ 2) =
+        ‖actualCoeffConvolution μ q K x‖ := by
+      rw [EuclideanSpace.norm_eq, Fin.sum_univ_two]
+      simp only [Real.norm_eq_abs, sq_abs]
+    rw [hNorm] at hc
+    calc
+      |edge x| ≤ ‖actualCoeffConvolution μ q K x‖ * ‖q x‖ * ‖d x‖ := hc
+      _ ≤ C * ‖q x‖ * ‖d x‖ := by
+        gcongr
+        exact hKernel x
+      _ = C * (‖q x‖ * ‖d x‖) := by ring
+  have hProd := norm_pair_integrable_actual μ q d hq hd
+  have hInt : Integrable edge μ := by
+    apply Integrable.mono' (hProd.const_mul C) hEdgeMeas
+    filter_upwards [] with x
+    simpa only [Real.norm_eq_abs] using hPoint x
+  have hAbs : |∫ x, edge x ∂μ| ≤
+      C * (Real.sqrt (∫ x, ‖q x‖ ^ 2 ∂μ) *
+        Real.sqrt (∫ x, ‖d x‖ ^ 2 ∂μ)) := by
+    calc
+      |∫ x, edge x ∂μ| = ‖∫ x, edge x ∂μ‖ := (Real.norm_eq_abs _).symm
+      _ ≤ ∫ x, ‖edge x‖ ∂μ := norm_integral_le_integral_norm _
+      _ = ∫ x, |edge x| ∂μ := by simp only [Real.norm_eq_abs]
+      _ ≤ ∫ x, C * (‖q x‖ * ‖d x‖) ∂μ :=
+        integral_mono hInt.abs (hProd.const_mul C) hPoint
+      _ = C * (∫ x, ‖q x‖ * ‖d x‖ ∂μ) := integral_const_mul _ _
+      _ ≤ C * (Real.sqrt (∫ x, ‖q x‖ ^ 2 ∂μ) *
+          Real.sqrt (∫ x, ‖d x‖ ^ 2 ∂μ)) := by
+            gcongr
+            exact pair_holder_actual μ q d hq hd
+  change |-4 * (∫ x, edge x ∂μ)| ≤ _
+  calc
+    |-4 * (∫ x, edge x ∂μ)| = 4 * |∫ x, edge x ∂μ| := by
+      rw [abs_mul]; norm_num
+    _ ≤ 4 * (C * (Real.sqrt (∫ x, ‖q x‖ ^ 2 ∂μ) *
+        Real.sqrt (∫ x, ‖d x‖ ^ 2 ∂μ))) := by gcongr
+    _ = 4 * B * (∫ x, ‖q x‖ ^ 2 ∂μ) *
+        Real.sqrt (∫ x, ‖q x‖ ^ 2 ∂μ) *
+        Real.sqrt (∫ x, ‖d x‖ ^ 2 ∂μ) := by dsimp [C, M]; ring
+
+#print axioms SM.K.Actual511.tracefreeComplexAction_pair_bound
+#print axioms SM.K.Actual511.actualCoeffConvolution_edge_L2
 
 end SM.K.Actual511
