@@ -868,6 +868,8 @@ theorem edge_pair_measurable_of_joint
 
 
 
+set_option maxHeartbeats 5000000
+
 /-- AE measurability requires only the ORIGINAL L² field hypothesis.
 It is not necessary to choose globally Borel representatives of q or d.
 The product-measure Fubini interface supplies the Bochner convolution
