@@ -87,4 +87,63 @@ theorem realMatrixIntegral_symmetric
 #print axioms SM.K.Actual511.integralWeightedKernel_norm_le
 #print axioms SM.K.Actual511.realMatrixIntegral_tracefree
 #print axioms SM.K.Actual511.realMatrixIntegral_symmetric
+
+/-- For any genuinely integrable nonnegative density and any entrywise
+strongly measurable uniformly bounded tracefree symmetric real Hessian,
+the ACTUAL Lebesgue convolution has the exact trace/symmetry identities.
+The two entry integrability proofs are obtained from Bochner domination;
+they are not listed as assumptions. -/
+theorem realMatrixConvolution_tracefree_symmetric
+    (μ : Measure α) (m : α → ℝ)
+    (H : α → Fin 2 → Fin 2 → ℝ) (B : ℝ)
+    (hm : Integrable m μ)
+    (hmnn : ∀ y, 0 ≤ m y)
+    (hB : 0 ≤ B)
+    (hStrong : ∀ i j, StronglyMeasurable (fun y => H y i j))
+    (hBound : ∀ y i j, |H y i j| ≤ B)
+    (hSym : ∀ y, H y 0 1 = H y 1 0)
+    (hTrace : ∀ y, H y 0 0 + H y 1 1 = 0) :
+    (∫ y, m y * H y 0 1 ∂μ) = (∫ y, m y * H y 1 0 ∂μ) ∧
+      (∫ y, m y * H y 0 0 ∂μ) +
+        (∫ y, m y * H y 1 1 ∂μ) = 0 := by
+  have hI00 : Integrable (fun y => m y * H y 0 0) μ := by
+    have hb : ∀ y, ‖H y 0 0‖ ≤ B := by
+      intro y
+      simpa only [Real.norm_eq_abs] using hBound y 0 0
+    have hh := (integralWeightedKernel_norm_le μ m
+      (fun y => H y 0 0) B hm hmnn hB (hStrong 0 0) hb).1
+    simpa only [smul_eq_mul] using hh
+  have hI11 : Integrable (fun y => m y * H y 1 1) μ := by
+    have hb : ∀ y, ‖H y 1 1‖ ≤ B := by
+      intro y
+      simpa only [Real.norm_eq_abs] using hBound y 1 1
+    have hh := (integralWeightedKernel_norm_le μ m
+      (fun y => H y 1 1) B hm hmnn hB (hStrong 1 1) hb).1
+    simpa only [smul_eq_mul] using hh
+  exact ⟨realMatrixIntegral_symmetric μ m H hSym,
+    realMatrixIntegral_tracefree μ m H hI00 hI11 hTrace⟩
+
+/-- Use the true L² mass density |q|², not an assumed L¹ surrogate. -/
+theorem realMatrixConvolution_from_L2
+    (μ : Measure α) (q : α → E)
+    (H : α → Fin 2 → Fin 2 → ℝ) (B : ℝ)
+    (hq : MemLp q 2 μ)
+    (hB : 0 ≤ B)
+    (hStrong : ∀ i j, StronglyMeasurable (fun y => H y i j))
+    (hBound : ∀ y i j, |H y i j| ≤ B)
+    (hSym : ∀ y, H y 0 1 = H y 1 0)
+    (hTrace : ∀ y, H y 0 0 + H y 1 1 = 0) :
+    (∫ y, ‖q y‖ ^ 2 * H y 0 1 ∂μ) =
+        (∫ y, ‖q y‖ ^ 2 * H y 1 0 ∂μ) ∧
+      (∫ y, ‖q y‖ ^ 2 * H y 0 0 ∂μ) +
+        (∫ y, ‖q y‖ ^ 2 * H y 1 1 ∂μ) = 0 := by
+  have hm : Integrable (fun y => ‖q y‖ ^ 2) μ :=
+    hq.integrable_norm_pow (by norm_num)
+  exact realMatrixConvolution_tracefree_symmetric μ
+    (fun y => ‖q y‖ ^ 2) H B hm
+    (fun y => sq_nonneg _) hB hStrong hBound hSym hTrace
+
+#print axioms SM.K.Actual511.realMatrixConvolution_tracefree_symmetric
+#print axioms SM.K.Actual511.realMatrixConvolution_from_L2
+
 end SM.K.Actual511
