@@ -247,4 +247,38 @@ theorem tracefree_complex_sqnorm
 
 #print axioms SM.K.Actual511.tracefree_complex_sqnorm
 
+
+/-- The exact complex-linear action of a real 2x2 symmetric tracefree
+matrix on the complex Euclidean plane. -/
+abbrev ComplexPlane2 := EuclideanSpace ℂ (Fin 2)
+def tracefreeComplexAction (a b : ℝ) (v : ComplexPlane2) : ComplexPlane2 :=
+  !₂[(a : ℂ) * v 0 + (b : ℂ) * v 1,
+     (b : ℂ) * v 0 - (a : ℂ) * v 1]
+
+private theorem plane2_norm_sq (v : ComplexPlane2) :
+    ‖v‖ ^ 2 = ‖v 0‖ ^ 2 + ‖v 1‖ ^ 2 := by
+  rw [EuclideanSpace.norm_eq, Fin.sum_univ_two, Real.sq_sqrt (by positivity)]
+
+theorem tracefreeComplexAction_norm_sq (a b : ℝ) (v : ComplexPlane2) :
+    ‖tracefreeComplexAction a b v‖ ^ 2 =
+      (a ^ 2 + b ^ 2) * ‖v‖ ^ 2 := by
+  rw [plane2_norm_sq, plane2_norm_sq v]
+  simpa [tracefreeComplexAction] using
+    (tracefree_complex_sqnorm a b (v 0) (v 1))
+
+/-- Sharp pointwise operator bound; exactly one coefficient norm,
+without a sqrt(2) or a Frobenius norm loss. -/
+theorem tracefreeComplexAction_norm_le
+    (a b : ℝ) (v : ComplexPlane2) :
+    ‖tracefreeComplexAction a b v‖ ≤
+      Real.sqrt (a ^ 2 + b ^ 2) * ‖v‖ := by
+  have hs := tracefreeComplexAction_norm_sq a b v
+  have hp : (Real.sqrt (a ^ 2 + b ^ 2) * ‖v‖) ^ 2 =
+      (a ^ 2 + b ^ 2) * ‖v‖ ^ 2 := by
+    rw [mul_pow, Real.sq_sqrt (by positivity)]
+  nlinarith [norm_nonneg (tracefreeComplexAction a b v),
+    Real.sqrt_nonneg (a ^ 2 + b ^ 2), norm_nonneg v]
+
+#print axioms SM.K.Actual511.tracefreeComplexAction_norm_le
+
 end SM.K.Actual511
