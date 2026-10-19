@@ -706,7 +706,7 @@ theorem local_to_heat_layer
 
 
 
-/-- Direct combination of the REAL tracefree-convolution edge pairing with
+/- Direct combination of the REAL tracefree-convolution edge pairing with
 the true heat-layer clock theorem. Unlike the separate clock theorem,
 the local e^(5/2) edge bound is NOT an assumption. -/
 open SM.K.Actual511
