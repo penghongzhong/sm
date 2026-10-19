@@ -461,7 +461,8 @@ theorem actualCoeffConvolution_coordinate
     (x : α) (i : Fin 2) :
     (actualCoeffConvolution μ q K x) i =
       ∫ y, (‖q y‖ ^ 2) * (K x y i) ∂μ := by
-  let L : EuclideanSpace ℝ (Fin 2) →L[ℝ] ℝ := PiLp.proj i
+  let L : EuclideanSpace ℝ (Fin 2) →L[ℝ] ℝ :=
+    PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin 2 => ℝ) i
   have hm : Integrable (fun y => ‖q y‖ ^ 2) μ :=
     hq.integrable_norm_pow (by norm_num)
   have hInt : Integrable (fun y => (‖q y‖ ^ 2) • K x y) μ :=
