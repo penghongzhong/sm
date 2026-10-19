@@ -850,7 +850,7 @@ theorem edge_pair_measurable_of_joint
       · change Continuous (fun z : (ℝ × ℝ) × ComplexPlane2 =>
           (z.1.2 : ℂ) * z.2 0 - (z.1.1 : ℂ) * z.2 1)
         fun_prop
-    have hF : Continuous ((WithLp.equiv (2 : ℝ≥0∞) (Fin 2 → ℂ)).symm) :=
+    have hF : Continuous ((WithLp.equiv 2 (Fin 2 → ℂ)).symm) :=
       PiLp.continuous_equiv_symm
     simpa only [tracefreeComplexAction] using hF.comp hPi
   have hAction : StronglyMeasurable (fun x =>
