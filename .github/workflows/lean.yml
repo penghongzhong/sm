@@ -49,6 +49,13 @@ jobs:
             echo "Clock theorem not certified"
             exit 1
           fi
+      - name: Compile complete original 5.11 spatial-clock integration
+        run: |
+          set -o pipefail
+          lake env lean lean/K511Integrated.lean 2>&1 | tee k511-integrated.log
+          if grep -E 'sorryAx|^.*error:' k511-integrated.log; then
+            exit 1
+          fi
       - name: Upload log
         if: always()
         uses: actions/upload-artifact@v4
@@ -57,3 +64,4 @@ jobs:
           path: |
             k511-compile.log
             k511-clock-compile.log
+            k511-integrated.log
