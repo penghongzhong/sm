@@ -2,6 +2,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Linarith
 
 noncomputable section
 set_option autoImplicit false
@@ -175,5 +176,58 @@ theorem actual_tracefree_coeff_convolution_bound
 
 #print axioms SM.K.Actual511.tracefree_real_sqnorm
 #print axioms SM.K.Actual511.actual_tracefree_coeff_convolution_bound
+
+
+/-- Original 5.11 tensor Z, including the trace subtraction. -/
+def originalZ (q d : Fin 2 → ℂ) (j k : Fin 2) : ℝ :=
+  2 * ((star (q j)) * d k).im -
+    (if j = k then 1 else 0) * (∑ l : Fin 2, ((star (q l)) * d l).im)
+
+/-- The actual matrix-valued convolution, defined entrywise by Lebesgue
+integration and NOT by a finite-sum stand-in. -/
+def actualTracefreeMatrix (μ : Measure α) (q : α → E)
+    (H : α → α → Fin 2 → Fin 2 → ℝ) (x : α) :
+    Matrix (Fin 2) (Fin 2) ℝ :=
+  fun i j => ∫ y, (‖q y‖ ^ 2) * H x y i j ∂μ
+
+/-- A generic two-by-two matrix has the exact contraction cancellation
+whenever its trace vanishes. -/
+theorem tracefreeZ_contract_exact
+    (U : Matrix (Fin 2) (Fin 2) ℝ) (q d : Fin 2 → ℂ)
+    (hTrace : U 0 0 + U 1 1 = 0) :
+    -2 * (∑ j : Fin 2, ∑ k : Fin 2, U j k * originalZ q d j k) =
+      -4 * (∑ j : Fin 2, ∑ k : Fin 2,
+        U j k * ((star (q j)) * d k).im) := by
+  simp only [originalZ, Fin.sum_univ_two]
+  simp only [show (0 : Fin 2) = 0 from rfl,
+    show (1 : Fin 2) = 1 from rfl, ↓reduceIte]
+  dsimp
+  have h11 : U 1 1 = -U 0 0 := by linarith [hTrace]
+  rw [h11]
+  ring
+
+/-- Original Z contraction in terms of the ACTUAL Lebesgue convolution:
+the trace cancellation is not inserted as an assumption, but follows
+from the uniform tracefree kernel bound and q in L². -/
+theorem actualLebesgue_Z_contract
+    (μ : Measure α) (q : α → E)
+    (H : α → α → Fin 2 → Fin 2 → ℝ) (B : ℝ)
+    (hq : MemLp q 2 μ) (hB : 0 ≤ B)
+    (hStrong : ∀ x i j, StronglyMeasurable (fun y => H x y i j))
+    (hBound : ∀ x y i j, |H x y i j| ≤ B)
+    (hSym : ∀ x y, H x y 0 1 = H x y 1 0)
+    (hTrace : ∀ x y, H x y 0 0 + H x y 1 1 = 0)
+    (x : α) (v d : Fin 2 → ℂ) :
+    -2 * (∑ j : Fin 2, ∑ k : Fin 2,
+      actualTracefreeMatrix μ q H x j k * originalZ v d j k) =
+      -4 * (∑ j : Fin 2, ∑ k : Fin 2,
+      actualTracefreeMatrix μ q H x j k *
+        ((star (v j)) * d k).im) := by
+  have hInt := realMatrixConvolution_from_L2 μ q (H x) B
+    hq hB (hStrong x) (hBound x) (hSym x) (hTrace x)
+  exact tracefreeZ_contract_exact (actualTracefreeMatrix μ q H x) v d hInt.2
+
+#print axioms SM.K.Actual511.tracefreeZ_contract_exact
+#print axioms SM.K.Actual511.actualLebesgue_Z_contract
 
 end SM.K.Actual511
