@@ -851,7 +851,7 @@ theorem edge_pair_measurable_of_joint
           (z.1.2 : ℂ) * z.2 0 - (z.1.1 : ℂ) * z.2 1)
         fun_prop
     have hF : Continuous ((WithLp.equiv 2 (Fin 2 → ℂ)).symm) :=
-      PiLp.continuous_equiv_symm
+      PiLp.continuous_equiv_symm 2 (fun _ : Fin 2 => ℂ)
     simpa only [tracefreeComplexAction] using hF.comp hPi
   have hAction : StronglyMeasurable (fun x =>
       tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
