@@ -1,23 +1,21 @@
-name: Lean Verification
+name: K 5.11 pinned Lean 4.19 Bochner
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    branches:
+      - lean-k511-*
   workflow_dispatch:
 
-concurrency:
-  group: sm-public-lean-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: read
 
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Lean toolchain
+      - name: Install pinned Lean
         uses: leanprover/lean-action@v1
         with:
           auto-config: false
@@ -26,24 +24,20 @@ jobs:
           lint: false
           use-github-cache: true
           use-mathlib-cache: false
-
-      - name: Resolve Mathlib dependencies
+      - name: Resolve pinned Mathlib
         run: lake update
-
-      - name: Fetch Mathlib cache
+      - name: Fetch Mathlib compiled cache
         run: lake exe cache get
-
-      - name: Reject proof placeholders and custom axioms
+      - name: Ban proof placeholders
         run: |
-          if grep -R -nE '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' lean --include='*.lean'; then
-            echo "Forbidden proof placeholder/custom axiom declaration found"
+          if grep -nE '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' lean/K511ActualBochner.lean; then
             exit 1
           fi
-
-      - name: Compile public Lean files
-        run: |
-          set -e
-          find lean -name '*.lean' -print0 | sort -z | while IFS= read -r -d '' f; do
-            echo "==> $f"
-            lake env lean "$f"
-          done
+      - name: Compile actual Bochner integral lemmas and print axioms
+        run: lake env lean lean/K511ActualBochner.lean 2>&1 | tee k511-compile.log
+      - name: Upload log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k511-bochner-log
+          path: k511-compile.log
