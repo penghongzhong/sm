@@ -841,10 +841,18 @@ theorem edge_pair_measurable_of_joint
     have hPi : Continuous (fun z : (ℝ × ℝ) × ComplexPlane2 =>
         (![ (z.1.1 : ℂ) * z.2 0 + (z.1.2 : ℂ) * z.2 1,
             (z.1.2 : ℂ) * z.2 0 - (z.1.1 : ℂ) * z.2 1] : Fin 2 → ℂ)) := by
-      fun_prop
-    simpa only [tracefreeComplexAction] using
-      ((WithLp.continuous_equiv_symm (p := (2 : ℝ≥0∞))
-        (β := fun _ : Fin 2 => ℂ)).comp hPi)
+      apply continuous_pi
+      intro i
+      fin_cases i
+      · change Continuous (fun z : (ℝ × ℝ) × ComplexPlane2 =>
+          (z.1.1 : ℂ) * z.2 0 + (z.1.2 : ℂ) * z.2 1)
+        fun_prop
+      · change Continuous (fun z : (ℝ × ℝ) × ComplexPlane2 =>
+          (z.1.2 : ℂ) * z.2 0 - (z.1.1 : ℂ) * z.2 1)
+        fun_prop
+    have hF : Continuous ((WithLp.equiv (2 : ℝ≥0∞) (Fin 2 → ℂ)).symm) :=
+      PiLp.continuous_equiv_symm
+    simpa only [tracefreeComplexAction] using hF.comp hPi
   have hAction : StronglyMeasurable (fun x =>
       tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
         (actualCoeffConvolution μ q K x 1) (d x)) :=
