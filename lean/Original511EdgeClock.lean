@@ -143,4 +143,45 @@ theorem edge_clock_integral
       ring
 
 #print axioms SM.K.Original511.edge_clock_integral
+
+/-- Sharp bridge from the actual local L² tracefree estimate to the
+heat-layer estimate assumed by edge_clock_integral.
+No hLocal is taken as input: it is DERIVED with the mass 2e and the
+D W thermal norm bound. -/
+theorem local_to_heat_layer
+    (e J Cz A Ne Te M D Redge : ℝ)
+    (he : 0 < e) (hJ : 0 < J) (hCz : 0 ≤ Cz)
+    (hA : 0 ≤ A) (hN : 0 ≤ Ne) (hTe : 0 < Te)
+    (hMass : M = 2 * e)
+    (hD : Real.sqrt D ≤ A * e * Ne * Real.sqrt Te)
+    (hLocal : |Redge| ≤
+        4 * (Cz / (2 * J)) * M * Real.sqrt M * Real.sqrt D) :
+    |Redge| ≤ (4 * Real.sqrt 2 * A * Cz / J) *
+      e ^ ((5:ℝ)/2) * Ne * Real.sqrt Te := by
+  have hp : e ^ ((5:ℝ)/2) = e ^ 2 * Real.sqrt e := by
+    calc
+      e ^ ((5:ℝ)/2) = e ^ ((2:ℝ) + (1:ℝ)/2) := by congr 1; ring
+      _ = e ^ (2:ℝ) * e ^ ((1:ℝ)/2) := Real.rpow_add he _ _
+      _ = e ^ 2 * Real.sqrt e := by
+        rw [Real.rpow_natCast, ← Real.sqrt_eq_rpow]
+  have hr : Real.sqrt (2 * e) = Real.sqrt 2 * Real.sqrt e := by
+    rw [Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2)]
+  have hcoef : 0 ≤ 4 * (Cz / (2 * J)) *
+      (2 * e) * Real.sqrt (2 * e) := by positivity
+  calc
+    |Redge| ≤
+        4 * (Cz / (2 * J)) * M * Real.sqrt M * Real.sqrt D := hLocal
+    _ = 4 * (Cz / (2 * J)) * (2 * e) *
+        Real.sqrt (2 * e) * Real.sqrt D := by rw [hMass]
+    _ ≤ 4 * (Cz / (2 * J)) * (2 * e) *
+        Real.sqrt (2 * e) * (A * e * Ne * Real.sqrt Te) :=
+      mul_le_mul_of_nonneg_left hD hcoef
+    _ = (4 * Real.sqrt 2 * A * Cz / J) *
+          e ^ ((5:ℝ)/2) * Ne * Real.sqrt Te := by
+      rw [hr, hp]
+      field_simp
+      ring
+
+#print axioms SM.K.Original511.local_to_heat_layer
+
 end SM.K.Original511
