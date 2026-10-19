@@ -41,9 +41,19 @@ jobs:
             echo "Kernel audit failed: compilation error or sorryAx"
             exit 1
           fi
+      - name: Compile original 5.11 heat-layer clock transfer
+        run: |
+          set -o pipefail
+          lake env lean lean/Original511EdgeClock.lean 2>&1 | tee k511-clock-compile.log
+          if grep -E 'sorryAx|^.*error:' k511-clock-compile.log; then
+            echo "Clock theorem not certified"
+            exit 1
+          fi
       - name: Upload log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: k511-bochner-log
-          path: k511-compile.log
+          path: |
+            k511-compile.log
+            k511-clock-compile.log
