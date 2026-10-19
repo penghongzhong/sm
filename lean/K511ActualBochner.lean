@@ -410,4 +410,42 @@ theorem actualCoeffConvolution_edge_L2
 #print axioms SM.K.Actual511.tracefreeComplexAction_pair_bound
 #print axioms SM.K.Actual511.actualCoeffConvolution_edge_L2
 
+
+/-- Matrix representation of the REAL symmetric traceless Hessian via
+its two independent real coefficients. -/
+def tracefreeMatrixOfCoeffs (a b : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  ![![a, b], ![b, -a]]
+
+private theorem tracefreeMatrixOfCoeffs_trace (a b : ℝ) :
+    tracefreeMatrixOfCoeffs a b 0 0 +
+      tracefreeMatrixOfCoeffs a b 1 1 = 0 := by
+  simp [tracefreeMatrixOfCoeffs]
+
+/-- Exact original Z_jk contraction and imaginary Hilbert pairing
+for the same REAL tracefree matrix, with all coefficients preserved.
+In particular there is NO sharp-constant loss here. -/
+theorem originalZ_eq_complex_pair
+    (a b : ℝ) (q d : ComplexPlane2) :
+    -2 * (∑ j : Fin 2, ∑ k : Fin 2,
+      tracefreeMatrixOfCoeffs a b j k *
+        originalZ (fun i => q i) (fun i => d i) j k) =
+      -4 * (inner (𝕜 := ℂ) q (tracefreeComplexAction a b d)).im := by
+  calc
+    -2 * (∑ j : Fin 2, ∑ k : Fin 2,
+      tracefreeMatrixOfCoeffs a b j k *
+        originalZ (fun i => q i) (fun i => d i) j k) =
+      -4 * (∑ j : Fin 2, ∑ k : Fin 2,
+        tracefreeMatrixOfCoeffs a b j k *
+          ((star (q j)) * d k).im) :=
+        tracefreeZ_contract_exact _ _ _ (tracefreeMatrixOfCoeffs_trace a b)
+    _ = -4 * (inner (𝕜 := ℂ) q (tracefreeComplexAction a b d)).im := by
+      congr 1
+      rw [EuclideanSpace.inner_eq_star_dotProduct]
+      simp [tracefreeMatrixOfCoeffs, tracefreeComplexAction,
+        dotProduct, Fin.sum_univ_two, Complex.add_im, Complex.mul_im,
+        Complex.ofReal_re, Complex.ofReal_im]
+      ring
+
+#print axioms SM.K.Actual511.originalZ_eq_complex_pair
+
 end SM.K.Actual511
