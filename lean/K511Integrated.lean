@@ -866,4 +866,68 @@ theorem edge_pair_measurable_of_joint
 
 #print axioms SM.K.Original511.edge_pair_measurable_of_joint
 
+
+
+/-- AE measurability requires only the ORIGINAL L² field hypothesis.
+It is not necessary to choose globally Borel representatives of q or d.
+The product-measure Fubini interface supplies the Bochner convolution
+as an a.e.-strongly measurable x-field. -/
+theorem edge_pair_measurable_from_L2
+    (μ : Measure α) [SFinite μ]
+    (q d : α → ComplexPlane2)
+    (K : α → α → EuclideanSpace ℝ (Fin 2))
+    (hq : MemLp q 2 μ) (hd : MemLp d 2 μ)
+    (hKJoint : StronglyMeasurable (fun p : α × α => K p.1 p.2)) :
+    AEStronglyMeasurable (fun x =>
+      (inner (𝕜 := ℂ) (q x)
+        (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+          (actualCoeffConvolution μ q K x 1) (d x))).im) μ := by
+  have hQProd : AEStronglyMeasurable
+      (fun p : α × α => q p.2) (μ.prod μ) :=
+    hq.aestronglyMeasurable.snd
+  have hmass : AEStronglyMeasurable
+      (fun p : α × α => ‖q p.2‖ ^ 2) (μ.prod μ) :=
+    (show Continuous (fun v : ComplexPlane2 => ‖v‖ ^ (2:ℕ)) by
+      fun_prop).comp_aestronglyMeasurable hQProd
+  have hJoint : AEStronglyMeasurable
+      (fun p : α × α => (‖q p.2‖ ^ 2) • K p.1 p.2) (μ.prod μ) :=
+    hmass.smul hKJoint.aestronglyMeasurable
+  have hConv : AEStronglyMeasurable (actualCoeffConvolution μ q K) μ := by
+    simpa only [actualCoeffConvolution] using hJoint.integral_prod_right'
+  have h0 : AEStronglyMeasurable
+      (fun x => actualCoeffConvolution μ q K x 0) μ :=
+    (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin 2 => ℝ) 0).continuous.comp_aestronglyMeasurable hConv
+  have h1 : AEStronglyMeasurable
+      (fun x => actualCoeffConvolution μ q K x 1) μ :=
+    (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin 2 => ℝ) 1).continuous.comp_aestronglyMeasurable hConv
+  have hArgs : AEStronglyMeasurable
+      (fun x => ((actualCoeffConvolution μ q K x 0,
+        actualCoeffConvolution μ q K x 1), d x)) μ :=
+    (h0.prodMk h1).prodMk hd.aestronglyMeasurable
+  have hCont : Continuous
+      (fun z : (ℝ × ℝ) × ComplexPlane2 =>
+        tracefreeComplexAction z.1.1 z.1.2 z.2) := by
+    have hPi : Continuous (fun z : (ℝ × ℝ) × ComplexPlane2 =>
+        (![ (z.1.1 : ℂ) * z.2 0 + (z.1.2 : ℂ) * z.2 1,
+            (z.1.2 : ℂ) * z.2 0 - (z.1.1 : ℂ) * z.2 1] : Fin 2 → ℂ)) := by
+      apply continuous_pi
+      intro i
+      fin_cases i
+      · change Continuous (fun z : (ℝ × ℝ) × ComplexPlane2 =>
+          (z.1.1 : ℂ) * z.2 0 + (z.1.2 : ℂ) * z.2 1)
+        fun_prop
+      · change Continuous (fun z : (ℝ × ℝ) × ComplexPlane2 =>
+          (z.1.2 : ℂ) * z.2 0 - (z.1.1 : ℂ) * z.2 1)
+        fun_prop
+    have hF : Continuous ((WithLp.equiv 2 (Fin 2 → ℂ)).symm) :=
+      PiLp.continuous_equiv_symm 2 (fun _ : Fin 2 => ℂ)
+    simpa only [tracefreeComplexAction] using hF.comp hPi
+  have hAction : AEStronglyMeasurable (fun x =>
+      tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+        (actualCoeffConvolution μ q K x 1) (d x)) μ :=
+    hCont.comp_aestronglyMeasurable hArgs
+  exact (hq.aestronglyMeasurable.inner hAction).im
+
+#print axioms SM.K.Original511.edge_pair_measurable_from_L2
+
 end SM.K.Original511
