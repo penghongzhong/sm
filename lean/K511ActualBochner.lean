@@ -1,5 +1,7 @@
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.Analysis.Normed.Group.Basic
+import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Tactic.Ring
 
 noncomputable section
 set_option autoImplicit false
@@ -145,5 +147,33 @@ theorem realMatrixConvolution_from_L2
 
 #print axioms SM.K.Actual511.realMatrixConvolution_tracefree_symmetric
 #print axioms SM.K.Actual511.realMatrixConvolution_from_L2
+
+
+/-- Exact two-dimensional real tracefree matrix norm identity, with
+the sharp coefficient one and no dimension-dependent loss. -/
+theorem tracefree_real_sqnorm
+    (a b v₀ v₁ : ℝ) :
+    (a * v₀ + b * v₁) ^ 2 + (b * v₀ - a * v₁) ^ 2 =
+      (a ^ 2 + b ^ 2) * (v₀ ^ 2 + v₁ ^ 2) := by
+  ring
+
+/-- The sharp Lebesgue/Bochner bound for the two coefficient fields of
+a real symmetric tracefree 2x2 Hessian: H = [[a,b],[b,-a]].
+It uses the genuine L² mass, with no finite-sum approximation. -/
+theorem actual_tracefree_coeff_convolution_bound
+    (μ : Measure α) (q : α → E)
+    (K : α → EuclideanSpace ℝ (Fin 2)) (B : ℝ)
+    (hq : MemLp q 2 μ) (hB : 0 ≤ B)
+    (hKStrong : StronglyMeasurable K)
+    (hKBound : ∀ y, ‖K y‖ ≤ B) :
+    ‖∫ y, (‖q y‖ ^ 2) • K y ∂μ‖ ≤
+      B * (∫ y, ‖q y‖ ^ 2 ∂μ) := by
+  have hm : Integrable (fun y => ‖q y‖ ^ 2) μ :=
+    hq.integrable_norm_pow (by norm_num)
+  exact (integralWeightedKernel_norm_le μ (fun y => ‖q y‖ ^ 2)
+    K B hm (fun y => sq_nonneg _) hB hKStrong hKBound).2
+
+#print axioms SM.K.Actual511.tracefree_real_sqnorm
+#print axioms SM.K.Actual511.actual_tracefree_coeff_convolution_bound
 
 end SM.K.Actual511
