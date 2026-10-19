@@ -230,4 +230,21 @@ theorem actualLebesgue_Z_contract
 #print axioms SM.K.Actual511.tracefreeZ_contract_exact
 #print axioms SM.K.Actual511.actualLebesgue_Z_contract
 
+
+/-- Isometry identity for the complex action of a *real* tracefree
+symmetric matrix [[a,b],[b,-a]]. This is the sharp 2D step required
+to avoid a spurious sqrt(2) loss in the edge estimate. -/
+theorem tracefree_complex_sqnorm
+    (a b : ℝ) (z w : ℂ) :
+    ‖(a : ℂ) * z + (b : ℂ) * w‖ ^ 2 +
+      ‖(b : ℂ) * z - (a : ℂ) * w‖ ^ 2 =
+      (a ^ 2 + b ^ 2) * (‖z‖ ^ 2 + ‖w‖ ^ 2) := by
+  simp only [← Complex.normSq_eq_norm_sq]
+  simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im,
+    Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im,
+    Complex.ofReal_re, Complex.ofReal_im]
+  ring
+
+#print axioms SM.K.Actual511.tracefree_complex_sqnorm
+
 end SM.K.Actual511
