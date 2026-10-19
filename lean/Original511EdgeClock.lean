@@ -163,7 +163,7 @@ theorem local_to_heat_layer
       e ^ ((5:ℝ)/2) = e ^ ((2:ℝ) + (1:ℝ)/2) := by congr 1; ring
       _ = e ^ (2:ℝ) * e ^ ((1:ℝ)/2) := Real.rpow_add he _ _
       _ = e ^ 2 * Real.sqrt e := by
-        rw [Real.rpow_natCast, ← Real.sqrt_eq_rpow]
+        rw [← Real.sqrt_eq_rpow]
   have hr : Real.sqrt (2 * e) = Real.sqrt 2 * Real.sqrt e := by
     rw [Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2)]
   have hcoef : 0 ≤ 4 * (Cz / (2 * J)) *
