@@ -4,6 +4,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic.GCongr
 import Mathlib.Tactic.Positivity
@@ -447,5 +448,78 @@ theorem originalZ_eq_complex_pair
       ring
 
 #print axioms SM.K.Actual511.originalZ_eq_complex_pair
+
+
+/-- Projection of the genuine Banach-valued Bochner integral equals the
+ordinary Lebesgue integral of the corresponding Hessian coefficient. -/
+theorem actualCoeffConvolution_coordinate
+    (μ : Measure α) (q : α → ComplexPlane2)
+    (K : α → α → EuclideanSpace ℝ (Fin 2)) (B : ℝ)
+    (hq : MemLp q 2 μ) (hB : 0 ≤ B)
+    (hKMeas : ∀ x, StronglyMeasurable (K x))
+    (hKBound : ∀ x y, ‖K x y‖ ≤ B)
+    (x : α) (i : Fin 2) :
+    (actualCoeffConvolution μ q K x) i =
+      ∫ y, (‖q y‖ ^ 2) * (K x y i) ∂μ := by
+  let L : EuclideanSpace ℝ (Fin 2) →L[ℝ] ℝ := PiLp.proj i
+  have hm : Integrable (fun y => ‖q y‖ ^ 2) μ :=
+    hq.integrable_norm_pow (by norm_num)
+  have hInt : Integrable (fun y => (‖q y‖ ^ 2) • K x y) μ :=
+    (integralWeightedKernel_norm_le μ (fun y => ‖q y‖ ^ 2) (K x)
+      B hm (fun y => sq_nonneg _) hB (hKMeas x) (hKBound x)).1
+  have hComp := L.integral_comp_comm hInt
+  calc
+    (actualCoeffConvolution μ q K x) i =
+      L (∫ y, (‖q y‖ ^ 2) • K x y ∂μ) := rfl
+    _ = ∫ y, L ((‖q y‖ ^ 2) • K x y) ∂μ := hComp.symm
+    _ = ∫ y, ‖q y‖ ^ 2 * (K x y i) ∂μ := by
+      simp only [L, PiLp.proj_apply, PiLp.smul_apply, smul_eq_mul]
+
+/-- The local bound in the ORIGINAL Z_jk contraction, using the same
+two independent Lebesgue-convolved coefficients as the sharp Bochner
+bound. The only explicitly supplied measurability is the x-variable
+complex pairing, automatically available for smooth Hessian kernels. -/
+theorem actualOriginalZ_edge_L2
+    (μ : Measure α) (q d : α → ComplexPlane2)
+    (K : α → α → EuclideanSpace ℝ (Fin 2)) (B : ℝ)
+    (hq : MemLp q 2 μ) (hd : MemLp d 2 μ) (hB : 0 ≤ B)
+    (hKMeas : ∀ x, StronglyMeasurable (K x))
+    (hKBound : ∀ x y, ‖K x y‖ ≤ B)
+    (hEdgeMeas : AEStronglyMeasurable (fun x =>
+      (inner (𝕜 := ℂ) (q x)
+        (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+          (actualCoeffConvolution μ q K x 1) (d x))).im) μ) :
+    |-2 * (∫ x, ∑ j : Fin 2, ∑ k : Fin 2,
+      tracefreeMatrixOfCoeffs (actualCoeffConvolution μ q K x 0)
+        (actualCoeffConvolution μ q K x 1) j k *
+        originalZ (fun i => q x i) (fun i => d x i) j k ∂μ)| ≤
+      4 * B * (∫ x, ‖q x‖ ^ 2 ∂μ) *
+      Real.sqrt (∫ x, ‖q x‖ ^ 2 ∂μ) *
+      Real.sqrt (∫ x, ‖d x‖ ^ 2 ∂μ) := by
+  let R : α → ℝ := fun x => ∑ j : Fin 2, ∑ k : Fin 2,
+      tracefreeMatrixOfCoeffs (actualCoeffConvolution μ q K x 0)
+        (actualCoeffConvolution μ q K x 1) j k *
+        originalZ (fun i => q x i) (fun i => d x i) j k
+  let edge : α → ℝ := fun x =>
+      (inner (𝕜 := ℂ) (q x)
+        (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
+          (actualCoeffConvolution μ q K x 1) (d x))).im
+  have hbridge (x : α) : -2 * R x = -4 * edge x :=
+    originalZ_eq_complex_pair _ _ (q x) (d x)
+  have hIntEq : -2 * (∫ x, R x ∂μ) = -4 * (∫ x, edge x ∂μ) := by
+    calc
+      -2 * (∫ x, R x ∂μ) = ∫ x, -2 * R x ∂μ :=
+        (integral_const_mul _ _).symm
+      _ = ∫ x, -4 * edge x ∂μ :=
+        integral_congr_ae (Filter.Eventually.of_forall hbridge)
+      _ = -4 * (∫ x, edge x ∂μ) := integral_const_mul _ _
+  have hBound := actualCoeffConvolution_edge_L2
+    μ q d K B hq hd hB hKMeas hKBound hEdgeMeas
+  change |-2 * (∫ x, R x ∂μ)| ≤ _
+  rw [hIntEq]
+  exact hBound
+
+#print axioms SM.K.Actual511.actualCoeffConvolution_coordinate
+#print axioms SM.K.Actual511.actualOriginalZ_edge_L2
 
 end SM.K.Actual511
