@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Function.StronglyMeasurable.Inner
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
@@ -818,9 +819,9 @@ theorem edge_pair_measurable_of_joint
         (tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
           (actualCoeffConvolution μ q K x 1) (d x))).im) μ := by
   have hQProd : StronglyMeasurable (fun p : α × α => q p.2) :=
-    hqSM.comp measurable_snd
-  have hmass : StronglyMeasurable (fun p : α × α => ‖q p.2‖ ^ 2) := by
-    fun_prop
+    hqSM.comp_measurable measurable_snd
+  have hmass : StronglyMeasurable (fun p : α × α => ‖q p.2‖ ^ 2) :=
+    (show Continuous (fun v : ComplexPlane2 => ‖v‖ ^ (2:ℕ)) by fun_prop).comp_stronglyMeasurable hQProd
   have hJoint : StronglyMeasurable
       (fun p : α × α => (‖q p.2‖ ^ 2) • K p.1 p.2) :=
     hmass.smul hKJoint
@@ -837,6 +838,7 @@ theorem edge_pair_measurable_of_joint
   have hCont : Continuous
       (fun z : (ℝ × ℝ) × ComplexPlane2 =>
         tracefreeComplexAction z.1.1 z.1.2 z.2) := by
+    dsimp only [tracefreeComplexAction]
     fun_prop
   have hAction : StronglyMeasurable (fun x =>
       tracefreeComplexAction (actualCoeffConvolution μ q K x 0)
