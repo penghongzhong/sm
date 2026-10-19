@@ -282,7 +282,7 @@ theorem tracefreeComplexAction_norm_le
     rw [mul_pow, Real.sq_sqrt (by positivity)]
   have hprod : 0 ≤ Real.sqrt (a ^ 2 + b ^ 2) * ‖v‖ :=
     mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)
-  apply (sq_le_sq₀ (norm_nonneg _) hprod).mpr
+  apply (sq_le_sq₀ (norm_nonneg _) hprod).mp
   rw [hs, hp]
 
 #print axioms SM.K.Actual511.tracefreeComplexAction_norm_le
